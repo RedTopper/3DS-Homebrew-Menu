@@ -154,8 +154,8 @@ void exitServices() {
     acExit();
     hidExit();
     gfxExit();
-    exitFilesystem();
     closeSDArchive();
+    exitFilesystem();
     aptExit();
     srvExit();
 }

@@ -18,10 +18,15 @@ int extractSmdhData(smdh_s* s, char* name, char* desc, char* auth, u8* iconData)
 {
 	if(!s)return -1;
 	if(s->header.magic!=0x48444D53)return -2;
+    
+//    strcpy(name, "pokémon Ω");
+//    strcpy(desc, "world");
+//    strcpy(auth, "there");
 
 	if(name)unicodeToChar(name, s->applicationTitles[1].shortDescription, 0x40);
 	if(desc)unicodeToChar(desc, s->applicationTitles[1].longDescription, 0x80);
 	if(auth)unicodeToChar(auth, s->applicationTitles[1].publisher, 0x40);
+    
 	if(iconData)
 	{
 		u16* data=s->bigIconData;

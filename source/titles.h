@@ -33,6 +33,12 @@ typedef struct
 	menuEntry_s selectedEntry;
 }titleBrowser_s;
 
+extern menu_s titleMenu;
+extern titleBrowser_s titleBrowser;
+extern bool titlemenuIsUpdating;
+extern bool titleMenuInitialLoadDone;
+extern bool preloadTitles;
+
 void titlesInit();
 void titlesExit();
 
@@ -44,8 +50,17 @@ void freeTitleList(titleList_s* tl);
 int populateTitleList(titleList_s* tl);
 
 void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter);
-void updateTitleBrowser(titleBrowser_s* tb);
-void drawTitleBrowser(titleBrowser_s* tb);
+//void updateTitleBrowser(titleBrowser_s* tb);
+//void drawTitleBrowser(titleBrowser_s* tb);
 titleInfo_s* findTitleBrowser(titleBrowser_s* tb, u8 mediatype, u64 tid);
+
+void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb);
+//void drawTitleMenu(menuEntry_s* titleMenu);
+
+titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid);
+
+void refreshTitleBrowser(titleBrowser_s* tb);
+
+void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText);
 
 #endif

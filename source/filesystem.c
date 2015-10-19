@@ -1,12 +1,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <3ds.h>
+#include "stdlib.h"
 
 #include "installerIcon_bin.h"
 
 #include "filesystem.h"
 #include "smdh.h"
 #include "utils.h"
+
+#include "addmenuentry.h"
+#include "config.h"
 
 FS_archive sdmcArchive;
 
@@ -18,7 +22,7 @@ void initFilesystem(void)
 
 void exitFilesystem(void)
 {
-	sdmcExit();
+	sdmcExit(); //Crashes here
 	fsExit();
 }
 
@@ -86,7 +90,7 @@ void addFileToMenu(menu_s* m, char* execPath)
 
 	int i, l=-1; for(i=0; execPath[i]; i++) if(execPath[i]=='/')l=i;
 
-	initMenuEntry(&tmpEntry, execPath, &execPath[l+1], execPath, "Unknown publisher", (u8*)installerIcon_bin);
+	initMenuEntry(&tmpEntry, execPath, &execPath[l+1], execPath, "", (u8*)installerIcon_bin);
 
 	static char xmlPath[128];
 	snprintf(xmlPath, 128, "%s", execPath);
@@ -135,7 +139,7 @@ void addDirectoryToMenu(menu_s* m, char* path)
 		strncpy(tmpEntry.executablePath, execPath, ENTRY_PATHLENGTH);
 	}
 
-	if(ret)initMenuEntry(&tmpEntry, execPath, &path[l+1], execPath, "Unknown publisher", (u8*)installerIcon_bin);
+	if(ret)initMenuEntry(&tmpEntry, execPath, &path[l+1], execPath, "", (u8*)installerIcon_bin);
 
 	snprintf(xmlPath, 128, "%s/descriptor.xml", path);
 	if(!fileExists(xmlPath, &sdmcArchive))snprintf(xmlPath, 128, "%s/%s.xml", path, &path[l+1]);
@@ -145,36 +149,101 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	addMenuEntryCopy(m, &tmpEntry);
 }
 
-void scanHomebrewDirectory(menu_s* m, char* path)
-{
-	if(!path)return;
-
-	Handle dirHandle;
-	FS_path dirPath=FS_makePath(PATH_CHAR, path);
-	FSUSER_OpenDirectory(NULL, &dirHandle, sdmcArchive, dirPath);
-	
-	static char fullPath[1024];
-	u32 entriesRead;
-	do
-	{
-		static FS_dirent entry;
-		memset(&entry,0,sizeof(FS_dirent));
-		entriesRead=0;
-		FSDIR_Read(dirHandle, &entriesRead, 1, &entry);
-		if(entriesRead)
-		{
-			strncpy(fullPath, path, 1024);
-			int n=strlen(fullPath);
-			unicodeToChar(&fullPath[n], entry.name, 1024-n);
-			if(entry.isDirectory) //directories
-			{
-				addDirectoryToMenu(m, fullPath);
-			}else{ //stray executables
-				n=strlen(fullPath);
-				if(n>5 && !strcmp(".3dsx", &fullPath[n-5]))addFileToMenu(m, fullPath);
-			}
-		}
-	}while(entriesRead);
-
-	FSDIR_Close(dirHandle);
+void scanHomebrewDirectory(menu_s* m, char* path) {
+    if(!path)return;
+    
+    Handle dirHandle;
+    FS_path dirPath=FS_makePath(PATH_CHAR, path);
+    FSUSER_OpenDirectory(NULL, &dirHandle, sdmcArchive, dirPath);
+    
+    static char fullPath[1024][1024];
+    u32 entriesRead;
+    int totalentries = 0;
+    do
+    {
+        static FS_dirent entry;
+        memset(&entry,0,sizeof(FS_dirent));
+        entriesRead=0;
+        FSDIR_Read(dirHandle, &entriesRead, 1, &entry);
+        if(entriesRead)
+        {
+            strncpy(fullPath[totalentries], path, 1024);
+            int n=strlen(fullPath[totalentries]);
+            unicodeToChar(&fullPath[totalentries][n], entry.name, 1024-n);
+            if(entry.isDirectory) //directories
+            {
+                //addDirectoryToMenu(m, fullPath[totalentries]);
+                totalentries++;
+            }else{ //stray executables
+                n=strlen(fullPath[totalentries]);
+                if(n>5 && !strcmp(".3dsx", &fullPath[totalentries][n-5])){
+                    //addFileToMenu(m, fullPath[totalentries]);
+                    totalentries++;
+                }
+            }
+        }
+    }while(entriesRead);
+    
+    FSDIR_Close(dirHandle);
+    
+    bool sortAlpha = getConfigBoolForKey("sortAlpha", false, configTypeMain);
+    addMenuEntries(fullPath, totalentries, strlen(path), m, sortAlpha);
+    
+    updateMenuIconPositions(m);
 }
+
+char * currentThemePath() {
+    char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
+    int len = strlen(themesPath) + strlen(currentThemeName) + 2;
+    char * path = malloc(len);
+    sprintf(path, "%s%s/", themesPath, currentThemeName);
+    return path;
+}
+
+int compareStrings(const void *stringA, const void *stringB) {
+    const char *a = *(const char**)stringA;
+    const char *b = *(const char**)stringB;
+    return strcmp(a, b);
+}
+
+directoryContents * contentsOfDirectoryAtPath(char * path, bool dirsOnly) {
+    directoryContents * contents = malloc(sizeof(directoryContents));
+    
+    int numPaths = 0;
+    
+    Handle dirHandle;
+    FS_path dirPath=FS_makePath(PATH_CHAR, path);
+    FSUSER_OpenDirectory(NULL, &dirHandle, sdmcArchive, dirPath);
+    
+    u32 entriesRead;
+    do
+    {
+        static FS_dirent entry;
+        memset(&entry,0,sizeof(FS_dirent));
+        entriesRead=0;
+        FSDIR_Read(dirHandle, &entriesRead, 1, &entry);
+        if(entriesRead) {
+            if(!dirsOnly || (dirsOnly && entry.isDirectory)) {
+                char fullPath[1024];
+                strncpy(fullPath, path, 1024);
+                int n=strlen(path);
+                unicodeToChar(&fullPath[n], entry.name, 1024-n);
+
+                strcpy(contents->paths[numPaths], fullPath);
+                numPaths++;
+            }
+        }
+    }while(entriesRead);
+    
+    FSDIR_Close(dirHandle);
+    
+//    qsort(contents->paths, numPaths, 1024, compareStrings);
+    
+    contents->numPaths = numPaths;
+    return contents;
+}
+
+
+
+
+

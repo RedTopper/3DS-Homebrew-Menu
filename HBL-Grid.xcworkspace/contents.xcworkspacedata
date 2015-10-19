@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "container:"
+      name = "Filesystem">
+      <FileRef
+         location = "group:source/descriptor.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:source/descriptor.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/filesystem.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/filesystem.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/folders.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/folders.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/scanner.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/scanner.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/smdh.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/smdh.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/tinyxml2.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:source/tinyxml2.h">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "GFX">
+      <FileRef
+         location = "group:source/background.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/background.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/gfx.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/gfx.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/MAGFX.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/MAGFX.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/wallpaper.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/wallpaper.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/water.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/water.h">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "Text">
+      <FileRef
+         location = "group:source/MAFontRobotoRegular.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/MAFontRobotoRegular.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/MAText.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/MAText.h">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "UI">
+      <FileRef
+         location = "group:source/alert.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/alert.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/button.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/button.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/colours.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/colours.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/statusbar.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/statusbar.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/touchblock.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/touchblock.h">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "Utils">
+      <FileRef
+         location = "group:source/costable.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/utils.h">
+      </FileRef>
+   </Group>
+   <FileRef
+      location = "group:source/addmenuentry.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:source/addmenuentry.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/boot.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/boot.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/config.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/config.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/help.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/help.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/logText.cpp">
+   </FileRef>
+   <FileRef
+      location = "group:source/logText.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/main.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/menu.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/menu.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/netloader.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/netloader.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/regionfree.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/regionfree.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/screenshot.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/screenshot.h">
+   </FileRef>
+   <FileRef
+      location = "group:source/titles.c">
+   </FileRef>
+   <FileRef
+      location = "group:source/titles.h">
+   </FileRef>
+</Workspace>

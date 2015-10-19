@@ -16,6 +16,7 @@ extern menuEntry_s gamecardMenuEntry;
 Result regionFreeInit();
 Result regionFreeExit();
 Result regionFreeRun();
+Result regionFreeRun2(u32 pid_low, u32 pid_high, u8 mediatype, u8 flag);
 
 void regionFreeUpdate();
 

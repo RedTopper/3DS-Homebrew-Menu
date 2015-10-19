@@ -5,9 +5,23 @@
 #include <3ds.h>
 
 #include "titles.h"
-#include "error.h"
+#include "smdh.h"
+#include "menu.h"
+#include "filesystem.h"
+#include "MAGFX.h"
 
 extern int debugValues[100];
+menu_s titleMenu;
+titleBrowser_s titleBrowser;
+
+#define maxIgnoreTitleIDs 100
+bool ignoreTitleIDsLoaded = false;
+char ignoreTitleIDs[maxIgnoreTitleIDs][17];
+int numIgnoreTitleIDs;
+
+bool titlemenuIsUpdating = false;
+bool titleMenuInitialLoadDone = false;
+bool preloadTitles = true;
 
 void titlesInit()
 {
@@ -197,7 +211,7 @@ void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter)
 	int i;
 	for(i=0; i<3; i++)
 	{
-		initTitleList(&tb->lists[i], filter, (u8)2-i);
+		initTitleList(&tb->lists[i], filter, (u8)i);
 	}
 
 	tb->total = 0;
@@ -206,89 +220,186 @@ void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter)
 	tb->selected = NULL;
 }
 
-void updateTitleBrowser(titleBrowser_s* tb)
-{
-	if(!tb)return;
-
-	int i;
-
-	if (osGetTime() > tb->nextCheck)
-	{
-		bool updated = false;
-
-		tb->total = 0;
-
-		for(i=0; i<3; i++)
-		{
-			updated = populateTitleList(&tb->lists[i]) || updated;
-			tb->total += tb->lists[i].num;
-		}
-
-		if(updated)
-		{
-			tb->selectedId = 0;
-		}
-
-		tb->nextCheck = osGetTime() + 250;
-	}
-
-	tb->selected = NULL;
-
-	if(!tb->total)return;
-
-	u32 padDown = hidKeysDown();
-
-	int move = 0;
-	if(padDown & KEY_LEFT)move--;
-	if(padDown & KEY_RIGHT)move++;
-
-	tb->selectedId += move;
-
-	while(tb->selectedId < 0) tb->selectedId += tb->total;
-	while(tb->selectedId >= tb->total) tb->selectedId -= tb->total;
-
-	int id = tb->selectedId;
-	for(i=0; i<3; i++)
-	{
-		const titleList_s* tl = &tb->lists[i];
-		if(id >= 0 && id < tl->num)
-		{
-			tb->selected = &tl->titles[id];
-			break;
-		}else id -= tl->num;
-	}
-
-	if(tb->selected)
-	{
-		if(!tb->selected->icon)loadTitleInfoIcon(tb->selected);
-		if(tb->selected->icon)extractSmdhData(tb->selected->icon, tb->selectedEntry.name, tb->selectedEntry.description, tb->selectedEntry.author, tb->selectedEntry.iconData);
-		else
-		{
-			tb->selected = NULL;
-			if(!move)tb->selectedId++;
-			else tb->selectedId += move;
-		}
-	}
+void refreshTitleBrowser(titleBrowser_s* tb) {
+    tb->total = 0;
+    tb->selectedId = 0;
+    
+    int i;
+    
+    for(i=0; i<3; i++) {
+        freeTitleList(&tb->lists[i]);
+        populateTitleList(&tb->lists[i]);
+        tb->total += tb->lists[i].num;
+    }
 }
 
-void drawTitleBrowser(titleBrowser_s* tb)
-{
-	if(!tb)return;
+void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb) {
+    if (!ignoreTitleIDsLoaded) {
+        ignoreTitleIDsLoaded = true;
+        numIgnoreTitleIDs = 0;
+        int maxTextSize = 9 * maxIgnoreTitleIDs;
+        char ignoreText[maxTextSize];
+        
+        FILE *fp = fopen(ignoredTitlesPath, "r");
+        
+        if (fp != NULL) {
+            fgets(ignoreText, maxTextSize, fp);
+            char * split;
+            split = strtok(ignoreText, ",");
+            while (split != NULL) {
+                strcpy(ignoreTitleIDs[numIgnoreTitleIDs], split);
+                numIgnoreTitleIDs++;
+                
+                split = strtok(NULL, ",");
+            }
+        }
+        fclose(fp);
+    }
+    
+    if (!titleMenu) {
+        return;
+    }
+    
+    titleMenu->entries=NULL;
+    titleMenu->numEntries=0;
+    titleMenu->selectedEntry=0;
+    titleMenu->scrollLocation=0;
+    titleMenu->scrollVelocity=0;
+    titleMenu->scrollBarSize=0;
+    titleMenu->scrollBarPos=0;
+    titleMenu->scrollTarget=0;
+    titleMenu->atEquilibrium=false;
+    
+//    int numEntries = 0;
+    
+    addMenuEntryCopy(titleMenu, &regionfreeEntry);
+    titleMenu->numEntries = titleMenu->numEntries + 1;
+    updateMenuIconPositions(titleMenu);
+//    numEntries++;
+    
+    u64 cartTitleId = 0;
+    
+    int i;
+    
+    for(i=0; i<3; i++) {
+        const titleList_s* tl = &tb->lists[i];
+        titleInfo_s *titles = tl->titles;
+        
+        int titleNum;
+        int count = tl->num;
+        
+        for (titleNum = 0; titleNum < count; titleNum++) {
+            
+            titleInfo_s aTitle = titles[titleNum];
+            
+            if (i == 2 && titleNum == count-1) {
+                cartTitleId = aTitle.title_id;
+            }
+            else {
+                char sTitleId[17];
+                sprintf(sTitleId, "%llu", aTitle.title_id);
+                bool titleIgnored = false;
+                
+                int iIgnoreTitleID;
+                for (iIgnoreTitleID=0; iIgnoreTitleID<numIgnoreTitleIDs; iIgnoreTitleID++) {
+                    if (strcmp(sTitleId, ignoreTitleIDs[iIgnoreTitleID]) == 0) {
+                        titleIgnored = true;
+                        break;
+                    }
+                }
+                
+                if (titleIgnored) {
+                    continue;
+                }
+                
+                if (!aTitle.icon) {
+                    loadTitleInfoIcon(&aTitle);
+                }
+                
+                if (!aTitle.icon) {
+                    continue;
+                }
+                
+                static menuEntry_s me;
+                
+                me.hidden = false;
+                me.isTitleEntry = false;
+                me.isRegionFreeEntry = false;
+                
+                extractSmdhData(aTitle.icon, me.name, me.description, me.author, me.iconData);
+                
+                me.title_id = aTitle.title_id;
+                
+                if (me.title_id == 1125968626461184) {
+                    strcpy(me.name, "System Transfer");
+                    strcpy(me.description, "System Transfer");
+                }
+                
+                addMenuEntryCopy(titleMenu, &me);
+//                numEntries++;
+                titleMenu->numEntries = titleMenu->numEntries + 1;
+                updateMenuIconPositions(titleMenu);
+            }
+        }
+    }
+    
+    menuEntry_s * rf = &titleMenu->entries[0];
+    rf->title_id = cartTitleId;
+    rf->hidden = false;
+    updateMenuIconPositions(titleMenu);
+    
+//    titleMenu->numEntries = numEntries;
+}
 
-	if(tb->selected && tb->selected->icon)
-	{
-		drawError(GFX_BOTTOM,
-			"Target title selector",
-			"    The application you're trying to run requires that you select a target.\n\n"
-			"                                                                                                        A : Select target\n"
-			"                                                                                                        B : Cancel\n",
-			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true));
-	}else{
-		drawError(GFX_BOTTOM,
-			"Target title selector",
-			"    The application you're trying to run requires that you select a target.\n"
-			"    No adequate target title could be found. :(\n\n"
-			"                                                                                            B : Cancel\n",
-			0);
-	}
+titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid) {
+    int i;
+    for(i=0; i<3; i++) {
+        const titleList_s* tl = &tb->lists[i];
+        titleInfo_s *titles = tl->titles;
+        
+        int titleNum;
+        int count = tl->num;// sizeof(titles) / sizeof(titleInfo_s);
+                
+        for (titleNum = 0; titleNum < count; titleNum++) {
+            titleInfo_s * aTitle = &titles[titleNum];
+            if (aTitle->title_id == tid) {
+                return aTitle;
+            }
+        }
+        
+    }
+    
+    return NULL;
+}
+
+void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText) {
+    titlemenuIsUpdating = true;
+    
+    if (!preloadTitles) {
+        u8 dimmer[4];
+        dimmer[0] = 128;
+        dimmer[1] = 128;
+        dimmer[2] = 128;
+        dimmer[3] = 200;
+
+        int x, y;
+        
+        int totalWidth = 240;
+        int totalHeight = 320;
+        
+        for (y = 0; y < totalHeight; y++) {
+            for (x = 0; x < totalWidth; x++) {
+                gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, dimmer, 1, 1, x, y);
+            }
+        }
+        
+        drawDisk(titleText);
+        gfxFlip();
+    }
+    
+    refreshTitleBrowser(aTitleBrowser);
+    clearMenuEntries(aTitleMenu);
+    populateTitleMenu(aTitleMenu, aTitleBrowser);
+    
+    titlemenuIsUpdating = false;
 }

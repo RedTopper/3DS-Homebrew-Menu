@@ -79,3 +79,12 @@ Result regionFreeRun()
 
 	return ret;
 }
+
+Result regionFreeRun2(u32 pid_low, u32 pid_high, u8 mediatype, u8 flag)
+{
+    Result ret = NSS_Reboot(pid_low, pid_high, mediatype, flag);
+    
+    regionFreeExit();
+    
+    return ret;
+}

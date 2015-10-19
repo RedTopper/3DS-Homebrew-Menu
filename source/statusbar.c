@@ -13,6 +13,14 @@
 #include "battery_lowest_bin.h"
 #include "battery_charging_bin.h"
 
+#include "config.h"
+
+#include "colours.h"
+#include "MAFontRobotoRegular.h"
+
+#include "MAGFX.h"
+#include "menu.h"
+
 u8* batteryLevels[] = {
 	(u8*)battery_lowest_bin,
 	(u8*)battery_lowest_bin,
@@ -26,34 +34,68 @@ u8* batteryLevels[] = {
 #define SECONDS_IN_HOUR 3600
 #define SECONDS_IN_MINUTE 60
 
+u8 topBar[18*400*4];
+bool statusbarNeedsUpdate = true;
+
 void drawStatusBar(bool wifiStatus, bool charging, int batteryLevel)
 {
+    if (statusbarNeedsUpdate) {
+        statusbarNeedsUpdate = false;
+        rgbColour * rgb = tintColour();
+        MAGFXTranslucentRect(18, 400, rgb->r, rgb->g, rgb->b, translucencyTopBar, topBar);
+    }
+
+    gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, topBar, 18, 400, 240-18, 0);
+    
 	u64 timeInSeconds = osGetTime() / 1000;
 	u64 dayTime = timeInSeconds % SECONDS_IN_DAY;
 	u8 hour = dayTime / SECONDS_IN_HOUR;
 	u8 min = (dayTime % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
 	u8 seconds = dayTime % SECONDS_IN_MINUTE;
-
-	char timeString[9];
-	sprintf(timeString, "%02d:%02d:%02d", hour, min, seconds);
-	gfxDrawText(GFX_TOP, GFX_LEFT, NULL, timeString, 240 - 18, 400 / 2 - 16);
+        
+    char *ampm = "";
+    
+    if (!clock24) {
+        if (hour == 12) {
+            ampm = " pm";
+        }
+        else if (hour == 0) {
+            hour = 12;
+            ampm = " am";
+        }
+        else if (hour > 12) {
+            hour -= 12;
+            ampm = " pm";
+        }
+        else {
+            ampm = " am";
+        }
+    }
+    
+    rgbColour *light = lightTextColour();
+    
+	char timeString[13];
+    memset(timeString, 0, 11);
+	sprintf(timeString, "%02d:%02d:%02d%s", hour, min, seconds, ampm);
+    int textWidth = MATextWidthInPixels(timeString, &MAFontRobotoRegular10);
+    MADrawText(GFX_TOP, GFX_LEFT, 240-20, (400/2) - (textWidth/2), timeString, &MAFontRobotoRegular10, light->r, light->g, light->b);
 
 	if(wifiStatus)
 	{
-		gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)wifi_full_bin, 18, 20, 240 - 18, 0);
+		gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)wifi_full_bin, 18, 20, 240 - 18, 2);
 	}
 	else
 	{
-		gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)wifi_none_bin, 18, 20, 240 - 18, 0);
+		gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)wifi_none_bin, 18, 20, 240 - 18, 2);
 	}
 
 	if(charging)
 	{
-		gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)battery_charging_bin, 18, 27, 240 - 18, 400 - 27);
+		gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)battery_charging_bin, 18, 27, 240 - 18, 400 - 29);
 	}
 	else
 	{
-		gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, batteryLevels[batteryLevel], 18, 27, 240 - 18, 400 - 27);
+		gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, batteryLevels[batteryLevel], 18, 27, 240 - 18, 400 - 29);
 	}
 }
 

@@ -12,9 +12,10 @@
 
 #define ZLIB_CHUNK (16 * 1024)
 
-#include "error.h"
+//#include "error.h"
 #include "filesystem.h"
 #include "netloader.h"
+#include "alert.h"
 
 char *netloadedPath = NULL;
 char *netloaded_commandline = NULL;
@@ -30,7 +31,6 @@ static int netloader_udpfd = -1;
 
 static void *SOC_buffer = NULL;
 
-
 unsigned char in[ZLIB_CHUNK];
 unsigned char out[ZLIB_CHUNK];
 
@@ -44,7 +44,8 @@ static char progress[256];
 static int netloader_draw_progress(void) {
 	char info[1024];
 	sprintf(info, "Transferring: %s\n\n%s",netloadedPath,progress);
-	drawError(GFX_BOTTOM, "NetLoader", info, 0);
+    
+    drawAlert("NetLoader", info, NULL, 0, NULL);
 	gfxFlushBuffers();
 	gfxSwapBuffers();
 
@@ -166,7 +167,7 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
 
 
 int netloader_draw_error(void) {
-	drawError(GFX_BOTTOM, "Failure", errbuf, 0);
+    drawAlert("NetLoader error", errbuf, NULL, 0, NULL);
 	return 0;
 }
 

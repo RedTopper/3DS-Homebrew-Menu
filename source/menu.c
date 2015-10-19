@@ -150,6 +150,12 @@ void showSettings() {
     setMenuStatus(menuStatusSettings);
 }
 
+void checkReturnToGrid(menu_s* m) {
+    if (m->rowPosition == -1) {
+        gotoFirstIcon(m);
+    }
+}
+
 void toolbarTopLeftAction() {
     if (menuStatus == menuStatusIcons) {
         showSettings();
@@ -161,6 +167,7 @@ void toolbarTopLeftAction() {
         killTitleBrowser = true;
     }
     else if (menuStatus == menuStatusFolders) {
+        checkReturnToGrid(&menu);
         setMenuStatus(menuStatusIcons);
     }
     else if (menuStatus == menuStatusColourSettings) {
@@ -880,7 +887,7 @@ void quitSettings(menu_s* m) {
     
     updateMenuIconPositions(m);
     setMenuStatus(menuStatusIcons);
-    gotoFirstIcon(m);
+    checkReturnToGrid(m);
 }
 
 void showFolders() {

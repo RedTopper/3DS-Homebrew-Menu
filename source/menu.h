@@ -145,5 +145,4 @@ void loadThemeConfig();
 
 void handleNonGridToolbarNavigation();
 
-
-
+void checkReturnToGrid(menu_s* m);

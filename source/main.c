@@ -392,8 +392,8 @@ void showHomeMenuTitleSelect() {
 
 void closeTitleBrowser() {
     setMenuStatus(menuStatusIcons);
-    updateMenuIconPositions(&menu);
-    gotoFirstIcon(&menu);
+//    updateMenuIconPositions(&menu);
+    checkReturnToGrid(&menu);
     hbmenu_state = HBMENU_DEFAULT;
 }
 

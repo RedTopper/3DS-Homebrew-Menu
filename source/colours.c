@@ -340,12 +340,12 @@ void drawColourAdjuster() {
     rectColour[0] = inactiveColour()->r;
     rectColour[1] = inactiveColour()->g;
     rectColour[2] = inactiveColour()->b;
-    gfxDrawRectangle(GFX_TOP, GFX_LEFT, rectColour, (160-previewRectSize) + MAFontRobotoRegular16.lineHeight, 180, previewRectSize, previewRectSize);
+    gfxDrawRectangle(GFX_TOP, GFX_LEFT, rectColour, (160-previewRectSize) + MAFontRobotoRegular16.lineHeight, (400-40-previewRectSize), previewRectSize, previewRectSize);
     
     rectColour[0] = settingsColour->r;
     rectColour[1] = settingsColour->g;
     rectColour[2] = settingsColour->b;
-    gfxDrawRectangle(GFX_TOP, GFX_LEFT, rectColour, (160-previewRectSize) + MAFontRobotoRegular16.lineHeight + previewRectBorderSize, 180+previewRectBorderSize, previewRectSize-(previewRectBorderSize*2), previewRectSize-(previewRectBorderSize*2));
+    gfxDrawRectangle(GFX_TOP, GFX_LEFT, rectColour, (160-previewRectSize) + MAFontRobotoRegular16.lineHeight + previewRectBorderSize, (400-40-previewRectSize)+previewRectBorderSize, previewRectSize-(previewRectBorderSize*2), previewRectSize-(previewRectBorderSize*2));
 }
 
 void addValueToSlider(button * slider, int value) {

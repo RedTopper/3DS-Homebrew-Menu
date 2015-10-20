@@ -112,7 +112,7 @@ void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int fold
     me->drawFullTitle = true;
     
     addMenuEntryCopy(&themesMenu, me);
-    themesMenu.numEntries = themesMenu.numEntries + 1;
+//    themesMenu.numEntries = themesMenu.numEntries + 1;
 }
 
 void buildThemesList() {
@@ -192,7 +192,6 @@ void addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * sho
     settingsMenuEntry.callbackObject2 = callbackObject2;
     
     addMenuEntryCopy(m, &settingsMenuEntry);
-    m->numEntries = m->numEntries + 1;
 }
 
 void settingsToggleBool(bool * aBool) {

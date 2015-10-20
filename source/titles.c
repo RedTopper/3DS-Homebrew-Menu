@@ -273,7 +273,7 @@ void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb) {
 //    int numEntries = 0;
     
     addMenuEntryCopy(titleMenu, &regionfreeEntry);
-    titleMenu->numEntries = titleMenu->numEntries + 1;
+//    titleMenu->numEntries = titleMenu->numEntries + 1;
     updateMenuIconPositions(titleMenu);
 //    numEntries++;
     
@@ -336,7 +336,7 @@ void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb) {
                 }
                 
                 addMenuEntryCopy(titleMenu, &me);
-                titleMenu->numEntries = titleMenu->numEntries + 1;
+//                titleMenu->numEntries = titleMenu->numEntries + 1;
                 updateMenuIconPositions(titleMenu);
             }
         }

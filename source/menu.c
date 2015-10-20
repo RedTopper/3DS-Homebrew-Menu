@@ -1046,17 +1046,17 @@ bool updateGrid(menu_s* m) {
     }
     if(hidKeysDown()&KEY_UP) {
         if (dPadNavigation && m->rowPosition == 0) {
-            m->rowPosition = -1;
-            
             if (toolbarButtons.buttons[1]->visible && m->colPosition > 1) {
                 dPadSelectedToolbarButton = 1;
+                m->rowPosition = -1;
+                m->selectedEntry = -1;
             }
             else {
                 dPadSelectedToolbarButton = 0;
+                m->rowPosition = -1;
+                m->selectedEntry = -1;
             }
-            
-            m->selectedEntry = -1;
-            
+
             return false;
         }
         
@@ -1112,18 +1112,19 @@ bool updateGrid(menu_s* m) {
             return false;
         }
         else if (dPadNavigation && (m->rowPosition == totalRows-1 || (m->selectedEntry + totalCols) >= m->numEntries)) {
-            m->rowPosition = -1;
+            
             
             if (toolbarButtons.buttons[2]->visible && m->colPosition > 1) {
                 dPadSelectedToolbarButton = 2;
+                m->rowPosition = -1;
+                m->selectedEntry = -1;
             }
             if (toolbarButtons.buttons[3]->visible && m->colPosition < 2) {
                 dPadSelectedToolbarButton = 3;
+                m->rowPosition = -1;
+                m->selectedEntry = -1;
             }
             
-//            previousSelectedEntry = m->selectedEntry;
-            m->selectedEntry = -1;
-//            dPadSelectedToolbarButton = 3;
             return false;
         }
         
@@ -1336,16 +1337,6 @@ bool updateMenu(menu_s* m) {
         
         return updateGrid(m);
     }
-//    else if (menuStatus == menuStatusFolders) {
-//        handleGridButtonTouches(m, &folderButtons);
-//        handleNonGridToolbarNavigation();
-//        return false;
-//    }
-//    else if (menuStatus == menuStatusThemeSelect) {
-//        handleGridButtonTouches(m, &themeButtons);
-//        handleNonGridToolbarNavigation();
-//        return false;
-//    }
     else if (menuStatus == menuStatusFolderChanged) {
         logText("Reloading main menu");
         

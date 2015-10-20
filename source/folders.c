@@ -112,7 +112,7 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
     me->drawFirstLetterOfName = iconNeedsToBeGenerated;
     
     addMenuEntryCopy(&foldersMenu, me);
-    foldersMenu.numEntries = foldersMenu.numEntries + 1;
+//    foldersMenu.numEntries = foldersMenu.numEntries + 1;
 }
 
 bool foldersLoaded = false;

@@ -554,16 +554,8 @@ void drawMenu(menu_s* m)
         m->selectedEntry = 1;
     }
 
-    if (menuStatus == menuStatusFolders) {
-        drawBottomStatusBar("Select folder");
-        drawFoldersList();
-    }
-    else if (menuStatus == menuStatusThemeSelect) {
-        drawBottomStatusBar("Select theme");
-        drawThemesList();
-    }
     
-    else if (menuStatusIcons == menuStatusIcons) {
+    if (menuStatusIcons == menuStatusIcons) {
         char * cfn = currentFolderName();
         char title[strlen(cfn) + strlen("Folder: ")];
         strcpy(title, "Folder: ");
@@ -924,9 +916,6 @@ void keyBAction() {
     else if (menuStatus == menuStatusHelp) {
         handleHelpBackButton();
     }
-//    else if (menuStatus == menuStatusFoldersHelp) {
-//        closeFoldersHelp();
-//    }
     else if (menuStatus == menuStatusFolders) {
         setMenuStatus(menuStatusIcons);
     }
@@ -1257,23 +1246,24 @@ bool updateGrid(menu_s* m) {
     return false;
 }
 
-void handleGridButtonTouches(menu_s *m, buttonList *aButtonList) {
-    touchPosition touch;
-    hidTouchRead(&touch);
-    touchX = touch.px;
-    touchY = touch.py;
-    
-    if (hidKeysDown()&KEY_TOUCH || hidKeysHeld()&KEY_TOUCH) {
-        btnListCheckHighlight(aButtonList, touchX, touchY);
-        m->previousTouch.px = touchX;
-        m->previousTouch.py = touchY;
-    }
-    else if (hidKeysUp()&KEY_TOUCH) {
-        btnListCheckHighlight(aButtonList, touchX, touchY);
-        btnListCheckRunCallback(aButtonList, m->previousTouch.px, m->previousTouch.py);
-    }
-}
+//void handleGridButtonTouches(menu_s *m, buttonList *aButtonList) {
+//    touchPosition touch;
+//    hidTouchRead(&touch);
+//    touchX = touch.px;
+//    touchY = touch.py;
+//    
+//    if (hidKeysDown()&KEY_TOUCH || hidKeysHeld()&KEY_TOUCH) {
+//        btnListCheckHighlight(aButtonList, touchX, touchY);
+//        m->previousTouch.px = touchX;
+//        m->previousTouch.py = touchY;
+//    }
+//    else if (hidKeysUp()&KEY_TOUCH) {
+//        btnListCheckHighlight(aButtonList, touchX, touchY);
+//        btnListCheckRunCallback(aButtonList, m->previousTouch.px, m->previousTouch.py);
+//    }
+//}
 
+#warning Try to get rid of this if possible
 void handleNonGridToolbarNavigation() {
     btnListUnHighlight(&toolbarButtons);
     
@@ -1346,20 +1336,25 @@ bool updateMenu(menu_s* m) {
         
         return updateGrid(m);
     }
-    else if (menuStatus == menuStatusFolders) {
-        handleGridButtonTouches(m, &folderButtons);
-        handleNonGridToolbarNavigation();
-        return false;
-    }
-    else if (menuStatus == menuStatusThemeSelect) {
-        handleGridButtonTouches(m, &themeButtons);
-        handleNonGridToolbarNavigation();
-        return false;
-    }
+//    else if (menuStatus == menuStatusFolders) {
+//        handleGridButtonTouches(m, &folderButtons);
+//        handleNonGridToolbarNavigation();
+//        return false;
+//    }
+//    else if (menuStatus == menuStatusThemeSelect) {
+//        handleGridButtonTouches(m, &themeButtons);
+//        handleNonGridToolbarNavigation();
+//        return false;
+//    }
     else if (menuStatus == menuStatusFolderChanged) {
+        logText("Reloading main menu");
+        
         reloadMenu(m);
         gotoFirstIcon(m);
         setMenuStatus(menuStatusIcons);
+        
+        logText("Done reloading");
+        
         return false;
     }
     else {
@@ -1464,6 +1459,16 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m)
         
         //Draw the icon on the bottom screen
         gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, transparentIcon, ENTRY_ICON_WIDTH, ENTRY_ICON_HEIGHT, x+7, y+8);
+        
+        if (me->drawFirstLetterOfName) {
+            char firstLetter[2];
+            memcpy(firstLetter, &me->name, 1);
+            firstLetter[1] = '\0';
+            
+            rgbColour * light = lightTextColour();
+            
+            MADrawText(screen, GFX_LEFT, x+9, y+27, firstLetter, &MAFontRobotoRegular16, light->r, light->g, light->b);
+        }
     }
     
     /*
@@ -1473,12 +1478,12 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m)
         gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, tick, 48, 48, x+7, y+8);
     }
     
-    rgbColour * dark = darkTextColour();
-    
     /*
      Top screen stuff for the selected item
      */
     if (selected) {
+        rgbColour * dark = darkTextColour();
+        
         int top = 240-50-18;
         
         int xPos = 30;

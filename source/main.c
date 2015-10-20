@@ -30,6 +30,7 @@
 
 #include "help.h"
 #include "touchblock.h"
+#include "folders.h"
 
 u8 sdmcCurrent = 0;
 u64 nextSdCheck = 0;
@@ -40,6 +41,7 @@ u8 charging = 0;
 
 bool die = false;
 bool showRebootMenu = false;
+bool startRebootProcess = false;
 
 Handle threadHandle, threadRequest;
 #define STACKSIZE (4 * 1024)
@@ -248,19 +250,32 @@ void renderFrame()
 
 
         //menu stuff
-        if (showRebootMenu)
-        {
+        if (showRebootMenu) {
             //about to reboot
             char buttonTitles[3][32];
-            strcpy(buttonTitles[0], "Reboot");
+            
+            if (startRebootProcess) {
+                strcpy(buttonTitles[0], "Rebooting...");
+            }
+            else {
+                strcpy(buttonTitles[0], "Reboot");
+            }
+            
+//            strcpy(buttonTitles[0], "Reboot");
             strcpy(buttonTitles[1], "Back");
             
             int alertResult = drawAlert("Reboot", "You're about to reboot your console into the Home Menu.", NULL, 2, buttonTitles);
-            if (alertResult == 0) {
+            
+            if (startRebootProcess) {
                 doReboot();
             }
-            else if (alertResult == 1 || alertResult == alertButtonKeyB) {
-                closeReboot();
+            else {
+                if (alertResult == 0) {
+                    startRebootProcess = true;
+                }
+                else if (alertResult == 1 || alertResult == alertButtonKeyB) {
+                    closeReboot();
+                }
             }
 
         }else if(!sdmcCurrent)
@@ -309,9 +324,17 @@ void renderFrame()
             if (menuStatus == menuStatusHomeMenuApps) {
                 putTitleMenu("Select Title to Launch");
             }
+            else if (menuStatus == menuStatusFolders) {
+                drawGrid(&foldersMenu);
+                drawBottomStatusBar("Select folder");
+            }
             else if (menuStatus == menuStatusSettings) {
                 drawGrid(&settingsMenu);
                 drawBottomStatusBar("Settings");
+            }
+            else if (menuStatus == menuStatusThemeSelect) {
+                drawGrid(&themesMenu);
+                drawBottomStatusBar("Select theme");
             }
             else if (menuStatus == menuStatusColourSettings) {
                 drawGrid(&colourSelectMenu);
@@ -628,10 +651,22 @@ int main()
                     launchTitleFromTitleMenu();
                 }
             }
+            else if (menuStatus == menuStatusFolders) {
+                if (updateGrid(&foldersMenu)) {
+                    menuEntry_s* me = getMenuEntry(&foldersMenu, foldersMenu.selectedEntry);
+                    setFolder(me->name);
+                }
+            }
             
             else if (menuStatus == menuStatusSettings) {
                 if (updateGrid(&settingsMenu)) {
                     handleSettingsMenuSelection();
+                }
+            }
+            else if (menuStatus == menuStatusThemeSelect) {
+                if (updateGrid(&themesMenu)) {
+                    menuEntry_s* me = getMenuEntry(&themesMenu, themesMenu.selectedEntry);
+                    setTheme(me->name);
                 }
             }
             else if (menuStatus == menuStatusHelp) {

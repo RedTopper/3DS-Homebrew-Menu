@@ -94,6 +94,7 @@ typedef struct menuEntry_s
     void (*callback)();
     void *callbackObject1;
     void *callbackObject2;
+    bool drawFirstLetterOfName;
 }menuEntry_s;
 
 typedef struct

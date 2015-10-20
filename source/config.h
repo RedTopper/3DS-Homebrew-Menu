@@ -10,6 +10,8 @@ extern "C" {
 #endif
     
     extern menu_s settingsMenu;
+    extern menu_s themesMenu;
+    
     extern bool settingsMenuNeedsInit;
     
     extern bool showRegionFree;
@@ -40,7 +42,9 @@ extern "C" {
     void handleSettingsMenuSelection();
     void addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * showTick, menu_s *m,  void (*callback)(), void *callbackObject1, void *callbackObject2);
     
-    void drawThemesList();
+    void setTheme(char * themeName);
+    
+//    void drawThemesList();
     
 #ifdef __cplusplus
 }

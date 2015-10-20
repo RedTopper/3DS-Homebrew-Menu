@@ -10,7 +10,7 @@ int panelAlphaTop;
 int panelAlphaBottom;
 bool panelsDrawn = false;
 
-void MAGFXImageWithRGBAndAlphaMask(u8 r, u8 g, u8 b, u8* GRBAAlphaSource, u8* dest, int width, int height) {
+void MAGFXImageWithRGBAndAlphaMask(u8 r, u8 g, u8 b, u8* alphaSourceMask, u8* dest, int width, int height) {
     int alphaSourceByte = 0;
     int destByte = 0;
     int len = width*height;
@@ -19,7 +19,7 @@ void MAGFXImageWithRGBAndAlphaMask(u8 r, u8 g, u8 b, u8* GRBAAlphaSource, u8* de
         memcpy(&dest[destByte], &b, 1); destByte++;
         memcpy(&dest[destByte], &g, 1); destByte++;
         memcpy(&dest[destByte], &r, 1); destByte++;
-        memcpy(&dest[destByte], &GRBAAlphaSource[alphaSourceByte], 1); destByte++;
+        memcpy(&dest[destByte], &alphaSourceMask[alphaSourceByte], 1); destByte++;
         
         alphaSourceByte ++;
     }

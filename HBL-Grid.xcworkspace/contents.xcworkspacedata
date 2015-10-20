@@ -113,6 +113,12 @@
          location = "group:source/colours.h">
       </FileRef>
       <FileRef
+         location = "group:source/progresswheel.c">
+      </FileRef>
+      <FileRef
+         location = "group:source/progresswheel.h">
+      </FileRef>
+      <FileRef
          location = "group:source/statusbar.c">
       </FileRef>
       <FileRef

@@ -34,13 +34,16 @@
 menu_s settingsMenu;
 bool settingsMenuNeedsInit = true;
 
+menu_s themesMenu;
+
 bool showRegionFree = true;
 bool sortAlpha = false;
 bool showAppBackgrounds = true;
 bool wrapScrolling = true;
 
 bool themesLoaded = false;
-buttonList themeButtons;
+//#warning Remove all references to this
+//buttonList themeButtons;
 
 void loadConfigWithType(int configType);
 
@@ -73,6 +76,49 @@ void setTheme(char * themeName) {
     alphaImagesDrawn = false;
 }
 
+void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int folderPathLen) {
+    me->hidden = false;
+    me->isTitleEntry = false;
+    me->isRegionFreeEntry = false;
+    
+    char smdhPath[strlen(fullPath) + strlen(smdhName) + 1];
+    strcpy(smdhPath, fullPath);
+    strcat(smdhPath, smdhName);
+    
+    bool iconNeedsToBeGenerated = true;
+    
+    if(fileExists(smdhPath, &sdmcArchive)) {
+        static smdh_s tmpSmdh;
+        int ret = loadFile(smdhPath, &tmpSmdh, &sdmcArchive, sizeof(smdh_s));
+        
+        if (!ret) {
+            ret = extractSmdhData(&tmpSmdh, me->name, me->description, me->author, me->iconData);
+            if (!ret) {
+                iconNeedsToBeGenerated = false;
+            }
+        }
+    }
+    
+    if (iconNeedsToBeGenerated) {
+        memcpy(me->iconData, settingsIconTheme_bin, 48*48*3);
+        
+        strcpy(me->description, "");
+        strcpy(me->author, "");
+    }
+    
+    if (strcmp(fullPath, "/3ds/") == 0) {
+        strcpy(me->name, "3ds");
+    }
+    else {
+        strcpy(me->name, fullPath+folderPathLen);
+    }
+    
+    me->drawFirstLetterOfName = iconNeedsToBeGenerated;
+    
+    addMenuEntryCopy(&themesMenu, me);
+    themesMenu.numEntries = themesMenu.numEntries + 1;
+}
+
 void buildThemesList() {
     if (themesLoaded) {
         return;
@@ -80,48 +126,52 @@ void buildThemesList() {
     
     themesLoaded = true;
     
-    int x = -1;
-    int y = -1;
-    
     directoryContents * contents = contentsOfDirectoryAtPath(themesPath, true);
+    
+    themesMenu.entries=NULL;
+    themesMenu.numEntries=0;
+    themesMenu.selectedEntry=0;
+    themesMenu.scrollLocation=0;
+    themesMenu.scrollVelocity=0;
+    themesMenu.scrollBarSize=0;
+    themesMenu.scrollBarPos=0;
+    themesMenu.scrollTarget=0;
+    themesMenu.atEquilibrium=false;
+    
+    char * smdhName = "/theme.smdh";
+    int folderPathLen = strlen(themesPath);
     
     int i;
     for (i=0; i<contents->numPaths; i++) {
         char * fullPath = contents->paths[i];
-        button * pathButton = malloc(sizeof(button));
-        int themesPathLen = strlen(themesPath);
-        btnConfigureButtonForGrid(pathButton, &x, &y, "", "", fullPath+themesPathLen);
-        pathButton->callback = &setTheme;
-        char * filenameCopy = malloc(1024);
-        strcpy(filenameCopy, fullPath+themesPathLen);
-        pathButton->callbackObject1 = filenameCopy;
-        btnAddButtonToButtonList(pathButton, &themeButtons);
-        free(pathButton);
+        static menuEntry_s me;
+        addThemeToList(fullPath, &me, smdhName, folderPathLen);
     }
     
+    updateMenuIconPositions(&themesMenu);
     free(contents);
 }
 
-void drawThemesList() {
-    buildThemesList();
-    
-    char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
-    
-    int i;
-    for (i=0; i<themeButtons.numButtons; i++) {
-        button * aButton = themeButtons.buttons[i];
-        if (strcmp(aButton->longText, currentThemeName) == 0) {
-            aButton->selected = true;
-            aButton->enabled = false;
-        }
-        else {
-            aButton->selected = false;
-            aButton->enabled = true;
-        }
-    }
-    
-    btnDrawButtonList(&themeButtons);
-}
+//void drawThemesList() {
+//    buildThemesList();
+//    
+//    char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
+//    
+//    int i;
+//    for (i=0; i<themeButtons.numButtons; i++) {
+//        button * aButton = themeButtons.buttons[i];
+//        if (strcmp(aButton->longText, currentThemeName) == 0) {
+//            aButton->selected = true;
+//            aButton->enabled = false;
+//        }
+//        else {
+//            aButton->selected = false;
+//            aButton->enabled = true;
+//        }
+//    }
+//    
+//    btnDrawButtonList(&themeButtons);
+//}
 
 void addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * showTick, menu_s *m,  void (*callback)(), void *callbackObject1, void *callbackObject2) {
     static menuEntry_s settingsMenuEntry;
@@ -174,6 +224,10 @@ void settingsShowColours() {
 }
 
 void settingsSetMenuStatus(int * status) {
+    if (*status == menuStatusThemeSelect) {
+        buildThemesList();
+    }
+    
     setMenuStatus(*status);
 }
 

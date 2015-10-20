@@ -4,8 +4,12 @@
 #include "utils.h"
 #include "config.h"
 #include "stdlib.h"
+#include "smdh.h"
+#include "defaultFolder_bin.h"
+#include "MAGFX.h"
 
-buttonList folderButtons;
+//buttonList folderButtons;
+menu_s foldersMenu;
 
 //button buttons[1024][sizeof(button)];
 //int buttonCount = 0;
@@ -23,10 +27,6 @@ char * currentFolderName() {
         return folderName;
     }
     else {
-//        char * folderName2 = malloc(strlen("foo"));
-//        strcpy(folderName2, "foo");
-//        return folderName2;
-//        
         int foldersPathLen = strlen(foldersPath);
         int len = strlen(cf)-foldersPathLen;
         char * folderName = malloc(len);
@@ -54,26 +54,6 @@ char * folderPathForFolderName(char * folderName) {
     return folderPath;
 }
 
-void drawFoldersList() {
-    char * currentFolder = getConfigStringForKey("currentfolder", "/3ds/", configTypeMain);
-    
-    int i;
-    for (i=0; i<folderButtons.numButtons; i++) {
-        button * aButton = folderButtons.buttons[i];
-        char *folderPath = folderPathForFolderName(aButton->longText);
-        if (strcmp(folderPath, currentFolder) == 0) {
-            aButton->selected = true;
-            aButton->enabled = false;
-        }
-        else {
-            aButton->selected = false;
-            aButton->enabled = true;
-        }
-    }
-    
-    btnDrawButtonList(&folderButtons);
-}
-
 void setFolder(char * folderName) {
     char * folderPath = folderPathForFolderName(folderName);
 
@@ -88,6 +68,49 @@ void setFolder(char * folderName) {
     free(folderPath);
 }
 
+void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int folderPathLen) {
+    me->hidden = false;
+    me->isTitleEntry = false;
+    me->isRegionFreeEntry = false;
+    
+    char smdhPath[strlen(fullPath) + strlen(smdhName) + 1];
+    strcpy(smdhPath, fullPath);
+    strcat(smdhPath, smdhName);
+    
+    bool iconNeedsToBeGenerated = true;
+    
+    if(fileExists(smdhPath, &sdmcArchive)) {
+        static smdh_s tmpSmdh;
+        int ret = loadFile(smdhPath, &tmpSmdh, &sdmcArchive, sizeof(smdh_s));
+        
+        if (!ret) {
+            ret = extractSmdhData(&tmpSmdh, me->name, me->description, me->author, me->iconData);
+            if (!ret) {
+                iconNeedsToBeGenerated = false;
+            }
+        }
+    }
+    
+    if (iconNeedsToBeGenerated) {
+        memcpy(me->iconData, defaultFolder_bin, 48*48*3);
+        
+        strcpy(me->description, "");
+        strcpy(me->author, "");
+    }
+    
+    if (strcmp(fullPath, "/3ds/") == 0) {
+        strcpy(me->name, "3ds");
+    }
+    else {
+        strcpy(me->name, fullPath+folderPathLen);
+    }
+    
+    me->drawFirstLetterOfName = iconNeedsToBeGenerated;
+    
+    addMenuEntryCopy(&foldersMenu, me);
+    foldersMenu.numEntries = foldersMenu.numEntries + 1;
+}
+
 bool foldersLoaded = false;
 
 void buildFoldersList() {
@@ -97,30 +120,32 @@ void buildFoldersList() {
     
     foldersLoaded = true;
     
-    int x = -1;
-    int y = -1;
-    
-    button rootButton;
-    btnConfigureButtonForGrid(&rootButton, &x, &y, "", "", "3ds");
-    rootButton.callback = &setFolder;
-    rootButton.callbackObject1 = "3ds";
-    btnAddButtonToButtonList(&rootButton, &folderButtons);
-    
     directoryContents * contents = contentsOfDirectoryAtPath(foldersPath, true);
+    
+    foldersMenu.entries=NULL;
+    foldersMenu.numEntries=0;
+    foldersMenu.selectedEntry=0;
+    foldersMenu.scrollLocation=0;
+    foldersMenu.scrollVelocity=0;
+    foldersMenu.scrollBarSize=0;
+    foldersMenu.scrollBarPos=0;
+    foldersMenu.scrollTarget=0;
+    foldersMenu.atEquilibrium=false;
+    
+    char * smdhName = "/folder.smdh";
+    int folderPathLen = strlen(foldersPath);
+    
+    menuEntry_s rootEntry;
+    addFolderToList("/3ds/", &rootEntry, smdhName, folderPathLen);
     
     int i;
     for (i=0; i<contents->numPaths; i++) {
         char * fullPath = contents->paths[i];
-        button * pathButton = malloc(sizeof(button));
-        int folderPathLen = strlen(foldersPath);
-        btnConfigureButtonForGrid(pathButton, &x, &y, "", "", fullPath+folderPathLen);
-        pathButton->callback = &setFolder;
-        char * filenameCopy = malloc(1024);
-        strcpy(filenameCopy, fullPath+folderPathLen);
-        pathButton->callbackObject1 = filenameCopy;
-        btnAddButtonToButtonList(pathButton, &folderButtons);
-        free(pathButton);
+        static menuEntry_s me;
+        addFolderToList(fullPath, &me, smdhName, folderPathLen);
     }
+    
+    updateMenuIconPositions(&foldersMenu);
     
     free(contents);
 }

@@ -332,11 +332,20 @@ void drawColourAdjuster() {
     sprintf(rgbText, "%03d\n%03d\n%03d", settingsColour->r, settingsColour->g, settingsColour->b);
     MADrawTextWrap(GFX_TOP, GFX_LEFT, 130, 90, rgbText, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, 500, 0);
     
+    int previewRectSize = 100;
+    int previewRectBorderSize = 5;
+    
     u8 rectColour[3];
+    
+    rectColour[0] = inactiveColour()->r;
+    rectColour[1] = inactiveColour()->g;
+    rectColour[2] = inactiveColour()->b;
+    gfxDrawRectangle(GFX_TOP, GFX_LEFT, rectColour, (160-previewRectSize) + MAFontRobotoRegular16.lineHeight, 180, previewRectSize, previewRectSize);
+    
     rectColour[0] = settingsColour->r;
     rectColour[1] = settingsColour->g;
     rectColour[2] = settingsColour->b;
-    gfxDrawRectangle(GFX_TOP, GFX_LEFT, rectColour, 0, 0, 100, 100);
+    gfxDrawRectangle(GFX_TOP, GFX_LEFT, rectColour, (160-previewRectSize) + MAFontRobotoRegular16.lineHeight + previewRectBorderSize, 180+previewRectBorderSize, previewRectSize-(previewRectBorderSize*2), previewRectSize-(previewRectBorderSize*2));
 }
 
 void addValueToSlider(button * slider, int value) {

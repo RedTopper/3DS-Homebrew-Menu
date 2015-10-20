@@ -1370,7 +1370,7 @@ void initEmptyMenuEntry(menuEntry_s* me)
 	me->name[0]=0x00;
 	me->description[0]=0x00;
 	me->executablePath[0]=0x00;
-
+    
 	initDescriptor(&me->descriptor);
 
 	me->next=NULL;
@@ -1392,15 +1392,6 @@ void initMenuEntry(menuEntry_s* me, char* execPath, char* name, char* descriptio
     
     me->title_id = 0;
 }
-
-//void drawAuthorText(char * author, int x, int y, int maximumTextWidth) {
-//    int size = strlen("Author: ") + strlen(author);
-//    char authortext[size];
-//    strcpy(authortext, "Author: ");
-//    strcat(authortext, author);
-//    rgbColour * dark = darkTextColour();
-//    MADrawTextWrap(GFX_TOP, GFX_LEFT, x, y, authortext, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
-//}
 
 int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m) {
     if(!me) {
@@ -1524,11 +1515,13 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m)
         
         rgbColour *titleColour = titleTextColour();
         
+        int maxLines = (me->drawFullTitle) ? 100 : 1;
+        
         if (me == &gamecardMenuEntry || (me->isRegionFreeEntry && regionFreeGamecardIn)) {
-            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, 1);
+            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
         }
         else {
-            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, 1);
+            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
         }
         
         /*

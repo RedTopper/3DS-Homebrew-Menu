@@ -97,9 +97,6 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
     
     if (iconNeedsToBeGenerated) {
         memcpy(me->iconData, defaultFolder_bin, 48*48*3);
-        
-        strcpy(me->description, "");
-        strcpy(me->author, "");
     }
     
     if (strcmp(fullPath, "/3ds") == 0) {
@@ -108,6 +105,9 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
     else {
         strcpy(me->name, fullPath+folderPathLen);
     }
+    
+    strcpy(me->description, "");
+    strcpy(me->author, "");
     
     me->drawFirstLetterOfName = iconNeedsToBeGenerated;
     

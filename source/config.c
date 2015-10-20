@@ -53,9 +53,6 @@ void setTheme(char * themeName) {
     //Save the selected theme in main config
     setConfigString("currentTheme", themeName, configTypeMain);
     
-    //Save main config
-//    saveConfigWithType(configTypeMain);
-    
     //Reload theme config
     loadConfigWithType(configTypeTheme);
     
@@ -67,9 +64,7 @@ void setTheme(char * themeName) {
     
     //Re-initialise colours
     initColours();
-    
-//    saveConfigWithType(configTypeTheme);
-    
+        
     //Force reload of GUI elements
     statusbarNeedsUpdate = true;
     toolbarNeedsUpdate = true;
@@ -101,9 +96,6 @@ void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int fold
     
     if (iconNeedsToBeGenerated) {
         memcpy(me->iconData, settingsIconTheme_bin, 48*48*3);
-        
-        strcpy(me->description, "");
-        strcpy(me->author, "");
     }
     
     if (strcmp(fullPath, "/3ds/") == 0) {
@@ -113,7 +105,11 @@ void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int fold
         strcpy(me->name, fullPath+folderPathLen);
     }
     
+    strcpy(me->description, "");
+    strcpy(me->author, "");
+    
     me->drawFirstLetterOfName = iconNeedsToBeGenerated;
+    me->drawFullTitle = true;
     
     addMenuEntryCopy(&themesMenu, me);
     themesMenu.numEntries = themesMenu.numEntries + 1;

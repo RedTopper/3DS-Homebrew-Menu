@@ -72,6 +72,7 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
     me->hidden = false;
     me->isTitleEntry = false;
     me->isRegionFreeEntry = false;
+    me->showTick = NULL;
     
 //    logText(fullPath);
     

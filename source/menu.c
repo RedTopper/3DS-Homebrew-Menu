@@ -889,8 +889,30 @@ void quitSettings(menu_s* m) {
     checkReturnToGrid(m);
 }
 
+bool trueBool = true;
+
+void updateMenuTicks(menu_s* m, char * selectedString) {
+    menuEntry_s* me = m->entries;
+    
+    while(me) {
+        if (strcmp(me->name, selectedString) == 0) {
+            me->showTick = &trueBool;
+        }
+        else {
+            me->showTick = NULL;
+        }
+        
+        me=me->next;
+    }
+    
+    //    free(cfn);
+}
+
 void showFolders() {
     buildFoldersList();
+    char * cfn = currentFolderName();
+    updateMenuTicks(&foldersMenu, cfn);
+    free(cfn);
     setMenuStatus(menuStatusFolders);
 }
 

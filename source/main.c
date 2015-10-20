@@ -625,7 +625,7 @@ int main()
             else if(hidKeysDown()&KEY_B) {
                 closeTitleBrowser();
             }
-//			else updateTitleBrowser(&titleBrowser);
+
 		}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
 			if(hidKeysDown()&KEY_B)
 				hbmenu_state = HBMENU_DEFAULT;
@@ -643,8 +643,6 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
-//			if(secretCode())brewMode = true;
-//			else if(updateMenu(&menu))
             
             if (menuStatus == menuStatusHomeMenuApps) {
                 if (updateGrid(&titleMenu)) {
@@ -654,7 +652,10 @@ int main()
             else if (menuStatus == menuStatusFolders) {
                 if (updateGrid(&foldersMenu)) {
                     menuEntry_s* me = getMenuEntry(&foldersMenu, foldersMenu.selectedEntry);
-                    setFolder(me->name);
+                    
+                    if (me->showTick == NULL) {
+                        setFolder(me->name);
+                    }
                 }
             }
             
@@ -666,7 +667,12 @@ int main()
             else if (menuStatus == menuStatusThemeSelect) {
                 if (updateGrid(&themesMenu)) {
                     menuEntry_s* me = getMenuEntry(&themesMenu, themesMenu.selectedEntry);
-                    setTheme(me->name);
+                    
+                    if (me->showTick == NULL) {
+                        setTheme(me->name);
+                        char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
+                        updateMenuTicks(&themesMenu, currentThemeName);
+                    }
                 }
             }
             else if (menuStatus == menuStatusHelp) {

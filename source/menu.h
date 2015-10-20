@@ -149,3 +149,7 @@ void loadThemeConfig();
 void handleNonGridToolbarNavigation();
 
 void checkReturnToGrid(menu_s* m);
+
+void updateMenuTicks(menu_s* m, char * selectedString);
+
+

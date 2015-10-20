@@ -12,5 +12,3 @@ char * currentFolderName();
 
 void buildFoldersList();
 void setFolder(char * folderName);
-//void drawFoldersList();
-//void checkFolderTouches();

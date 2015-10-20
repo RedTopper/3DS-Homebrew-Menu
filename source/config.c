@@ -221,6 +221,8 @@ void settingsShowColours() {
 void settingsSetMenuStatus(int * status) {
     if (*status == menuStatusThemeSelect) {
         buildThemesList();
+        char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
+        updateMenuTicks(&themesMenu, currentThemeName);
     }
     
     setMenuStatus(*status);

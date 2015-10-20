@@ -33,6 +33,7 @@ extern bool alphaImagesDrawn;
 extern bool pageControlPanelsDrawn;
 extern bool menuReloadRequired;
 extern bool thirdRowVisible;
+extern bool dPadNavigation;
 
 extern bool menuForceReturnTrue;
 

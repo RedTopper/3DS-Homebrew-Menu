@@ -61,6 +61,7 @@ int menuStatusThemeSelect = 14;
 
 bool killTitleBrowser = false;
 bool thirdRowVisible = false;
+bool dPadNavigation = true;
 
 int translucencyTopBar = 255;
 int translucencyBottomBar = 255;
@@ -297,6 +298,8 @@ void initMenu(menu_s* m)
     showAppBackgrounds = getConfigBoolForKey("showAppBackgrounds", true, configTypeMain);
     wrapScrolling = getConfigBoolForKey("wrapScrolling", true, configTypeMain);
     keysExciteWater = getConfigBoolForKey("keysExciteWater", true, configTypeMain);
+    
+    dPadNavigation = getConfigBoolForKey("dPadNavigation", true, configTypeMain);
     
     loadThemeConfig();
     
@@ -1053,7 +1056,7 @@ bool updateGrid(menu_s* m) {
         }
     }
     if(hidKeysDown()&KEY_UP) {
-        if (m->rowPosition == 0) {
+        if (dPadNavigation && m->rowPosition == 0) {
             m->rowPosition = -1;
             
             if (toolbarButtons.buttons[1]->visible && m->colPosition > 1) {
@@ -1068,7 +1071,7 @@ bool updateGrid(menu_s* m) {
             return false;
         }
         
-        else if (m->rowPosition == -1) {
+        else if (dPadNavigation && m->rowPosition == -1) {
             int last = indexOfLastVisibleMenuEntryOnPage(m->pagePosition, m);
             
             if (dPadSelectedToolbarButton == 2) {
@@ -1097,7 +1100,7 @@ bool updateGrid(menu_s* m) {
     }
     
     if(hidKeysDown()&KEY_DOWN) {
-        if (m->rowPosition == -1) {
+        if (dPadNavigation && m->rowPosition == -1) {
             if (dPadSelectedToolbarButton == 0) {
                 m->selectedEntry = indexOfFirstVisibleMenuEntryOnPage(m->pagePosition, m);
             }
@@ -1119,7 +1122,7 @@ bool updateGrid(menu_s* m) {
             btnListUnHighlight(&toolbarButtons);
             return false;
         }
-        else if (m->rowPosition == totalRows-1 || (m->selectedEntry + totalCols) >= m->numEntries) {
+        else if (dPadNavigation && (m->rowPosition == totalRows-1 || (m->selectedEntry + totalCols) >= m->numEntries)) {
             m->rowPosition = -1;
             
             if (toolbarButtons.buttons[2]->visible && m->colPosition > 1) {

@@ -26,6 +26,7 @@
 #include "settingsIconPanels_bin.h"
 #include "settingsIconPreloadTitles_bin.h"
 #include "settingsIconTheme_bin.h"
+#include "settingsIconDPadControls_bin.h"
 
 #include "wallpaper.h"
 #include "titles.h"
@@ -221,7 +222,11 @@ void initConfigMenu() {
     
     addSettingsMenuEntry("Theme", "Select which theme to use in the launcher", (u8*)settingsIconTheme_bin, NULL, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSelect, NULL);
     
-    addSettingsMenuEntry("Preload titles", "Load entries for the titles menu in the background when the launcher boots. May be unstable on o3DS", (u8*)settingsIconPreloadTitles_bin, &preloadTitles, &settingsMenu, &settingsToggleBool, &preloadTitles, NULL);
+    addSettingsMenuEntry("Preload titles", "Load entries for the titles menu in the background when the launcher boots. May be unstable on devices with a large number of titles", (u8*)settingsIconPreloadTitles_bin, &preloadTitles, &settingsMenu, &settingsToggleBool, &preloadTitles, NULL);
+    
+    addSettingsMenuEntry("D-Pad Navigation", "Allows the use of the corner icons on the bottom screen using the D-Pad", (u8*)settingsIconDPadControls_bin, &dPadNavigation, &settingsMenu, &settingsToggleBool, &dPadNavigation, NULL);
+    
+    
 }
 
 void handleSettingsMenuSelection() {

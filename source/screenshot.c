@@ -11,6 +11,7 @@
 #include "string.h"
 
 #include "logText.h"
+#include "filesystem.h"
 
 FILE *fp = NULL;
 png_structp png_ptr = NULL;
@@ -95,9 +96,9 @@ void fillPNGGap(int gap, int width, int fillR, int fillG, int fillB) {
 
 void takeScreenshot() {
     u64 timeInSeconds = osGetTime() / 1000;
-    char filePath[64];
+    char filePath[128];
     strcpy(filePath, "");
-    sprintf(filePath, "/hbl-grid-screenshot-%llu.png", timeInSeconds);
+    sprintf(filePath, "/gridlauncher/screenshots/hbl-grid-screenshot-%llu.png", timeInSeconds);
     
     int gap = 10;
     

@@ -6,6 +6,7 @@
 #define themesPath        "/gridlauncher/themes/"
 #define foldersPath       "/gridlauncher/folders/"
 #define defaultThemePath  "/gridlauncher/themes/Default/"
+#define screenshotPath    "/gridlauncher/screenshots/"
 #define configFilePath    "/gridlauncher/hbl.cfg"
 #define ignoredTitlesPath "/gridlauncher/ignoredtitles.txt"
 

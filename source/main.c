@@ -433,6 +433,7 @@ int main()
     mkdir(themesPath, 777);
     mkdir(foldersPath, 777);
     mkdir(defaultThemePath, 777);
+    mkdir("/gridlauncher/screenshots/", 777);
 
 	// offset potential issues caused by homebrew that just ran
 	aptOpenSession();

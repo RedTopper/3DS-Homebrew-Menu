@@ -127,6 +127,7 @@ bool menuReloadRequired = false;
 void toggleThirdRow() {
     totalRows = (totalRows == 3) ? 2 : 3;
     thirdRowVisible = (totalRows == 3);
+    updateMenuIconPositions(&settingsMenu);
 }
 
 void addToolbarButton(int buttonType, void (*callback)(), int tag) {

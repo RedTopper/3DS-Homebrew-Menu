@@ -191,6 +191,8 @@ void addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * sho
     settingsMenuEntry.callbackObject1 = callbackObject1;
     settingsMenuEntry.callbackObject2 = callbackObject2;
     
+    strcpy(settingsMenuEntry.author, "");
+    
     addMenuEntryCopy(m, &settingsMenuEntry);
 }
 

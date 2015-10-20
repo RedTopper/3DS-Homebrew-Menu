@@ -117,8 +117,8 @@ void setMenuStatus(int status) {
 
 void menuRegionFreeToggled() {
     menu.entries[0].hidden = !showRegionFree;
-//    updateMenuIconPositions(&menu);
-//    gotoFirstIcon(&menu);
+    updateMenuIconPositions(&menu);
+    gotoFirstIcon(&menu);
 }
 
 bool menuReloadRequired = false;

@@ -336,7 +336,6 @@ void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb) {
                 }
                 
                 addMenuEntryCopy(titleMenu, &me);
-//                numEntries++;
                 titleMenu->numEntries = titleMenu->numEntries + 1;
                 updateMenuIconPositions(titleMenu);
             }

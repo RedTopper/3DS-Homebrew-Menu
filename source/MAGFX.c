@@ -4,6 +4,7 @@
 #include "colours.h"
 #include "diskalphamask_bin.h"
 #include "MAFontRobotoRegular.h"
+#include "config.h"
 
 int panelAlphaTop;
 int panelAlphaBottom;
@@ -54,6 +55,7 @@ void MAGFXTranslucentRect(int width, int height, int r, int g, int b, int a, u8*
 }
 
 int panelEdgeOffset = 20;
+int panelLeftOffsetTop = 0;
 int panelHeightTop = 360;
 int panelHeightBottom = 280;
 int panelWidthTop = 182;
@@ -63,6 +65,8 @@ u8 panelPixel[4]; // 360 * 182 * 4
 
 void MAGFXDrawPanel(gfxScreen_t screen) {
     if (!panelsDrawn) {
+//        panelLeftOffsetTop = getConfigIntForKey("panelLeftOffsetTop", 0, configTypeTheme);
+        
         int panelColour = 128;
         int panelAlpha = (screen == GFX_TOP) ? panelAlphaTop : panelAlphaBottom;
         
@@ -82,15 +86,19 @@ void MAGFXDrawPanel(gfxScreen_t screen) {
 
     int drawWidth;
     int drawHeight;
+    int leftOffset = 0;
     
     if (screen == GFX_TOP) {
         drawWidth = panelWidthTop;
         drawHeight = panelHeightTop;
+        leftOffset = panelLeftOffsetTop;
     }
     else {
         drawWidth = panelWidthBottom;
         drawHeight = panelHeightBottom;
     }
+    
+    drawHeight -= leftOffset;
     
     int x, y;
     
@@ -99,7 +107,7 @@ void MAGFXDrawPanel(gfxScreen_t screen) {
     
     for (y = panelEdgeOffset; y < totalHeight; y++) {
         for (x = panelEdgeOffset; x < totalWidth; x++) {
-            gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, panelPixel, 1, 1, x, y);
+            gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, panelPixel, 1, 1, x, y+leftOffset);
         }
     }
 }

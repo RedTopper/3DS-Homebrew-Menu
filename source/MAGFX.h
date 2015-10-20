@@ -3,6 +3,7 @@
 
 extern int panelAlphaTop;
 extern int panelAlphaBottom;
+extern int panelLeftOffsetTop;
 extern bool panelsDrawn;
 
 

@@ -229,6 +229,8 @@ void loadThemeConfig() {
     translucencyPageControls = getConfigIntForKey("translucencyPageControls", 255, configTypeTheme);
     translucencyWater = getConfigIntForKey("translucencyWater", 255, configTypeTheme);
     translucencyAppShadow = getConfigIntForKey("translucencyAppShadow", 255, configTypeTheme);
+    
+    panelLeftOffsetTop = getConfigIntForKey("panelLeftOffsetTop", 0, configTypeTheme);
 }
 
 void initMenu(menu_s* m)
@@ -878,6 +880,8 @@ void quitSettings(menu_s* m) {
     setConfigInt("translucencyPageControls", translucencyPageControls, configTypeTheme);
     
     setConfigInt("preloadTitles", preloadTitles, configTypeMain);
+    
+    setConfigInt("panelLeftOffsetTop", panelLeftOffsetTop, configTypeTheme);
     
     saveConfig();
     

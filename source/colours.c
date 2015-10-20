@@ -331,6 +331,12 @@ void drawColourAdjuster() {
     char rgbText[32];
     sprintf(rgbText, "%03d\n%03d\n%03d", settingsColour->r, settingsColour->g, settingsColour->b);
     MADrawTextWrap(GFX_TOP, GFX_LEFT, 130, 90, rgbText, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, 500, 0);
+    
+    u8 rectColour[3];
+    rectColour[0] = settingsColour->r;
+    rectColour[1] = settingsColour->g;
+    rectColour[2] = settingsColour->b;
+    gfxDrawRectangle(GFX_TOP, GFX_LEFT, rectColour, 0, 0, 100, 100);
 }
 
 void addValueToSlider(button * slider, int value) {
@@ -469,6 +475,7 @@ void drawPanelTranslucencyAdjust() {
         
         addSlider(160, "Top screen panels", &panelTranslucencySliders);
         addSlider(120, "Bottom screen panels", &panelTranslucencySliders);
+        addSlider(80, "Top screen panel edge offset", &panelTranslucencySliders);
     }
     
     MAGFXDrawPanel(GFX_TOP);
@@ -476,12 +483,15 @@ void drawPanelTranslucencyAdjust() {
     
     button * topSlider = panelTranslucencySliders.buttons[0];
     button * bottomSlider = panelTranslucencySliders.buttons[1];
+    button * topLeftOffsetSlider = panelTranslucencySliders.buttons[2];
 
     topSlider->value = panelAlphaTop;
     bottomSlider->value = panelAlphaBottom;
+    topLeftOffsetSlider->value = panelLeftOffsetTop;
     
     addValueToSlider(topSlider, panelAlphaTop);
     addValueToSlider(bottomSlider, panelAlphaBottom);
+    addValueToSlider(topLeftOffsetSlider, panelLeftOffsetTop);
     
     if (!touchesAreBlocked && (hidKeysDown()&KEY_TOUCH || hidKeysHeld()&KEY_TOUCH || hidKeysUp()&KEY_TOUCH)) {
         touchPosition touch;
@@ -499,9 +509,11 @@ void drawPanelTranslucencyAdjust() {
 
         int newTop = updateSliderValue(touchX, touchY, topSlider);
         int newBottom = updateSliderValue(touchX, touchY, bottomSlider);
+        int newLeftOffset = updateSliderValue(touchX, touchY, topLeftOffsetSlider);
         
         panelAlphaTop = newTop;
         panelAlphaBottom = newBottom;
+        panelLeftOffsetTop = newLeftOffset;
 
         if (newTop != previousTop || newBottom != previousBottom) {
             panelsDrawn = false;

@@ -194,19 +194,33 @@ void initConfigMenu() {
     }
     
     addSettingsMenuEntry("App sorting", "Toggle alphabetic sorting in the main menu grid", (u8*)settingsIconAlphaSort_bin, &sortAlpha, &settingsMenu, &settingsToggleSortAlpha, NULL, NULL);
+    
     addSettingsMenuEntry("Top screen water", "Toggle the visibility of the water on the top screen", (u8*)settingsIconWaterVisible_bin, &waterEnabled, &settingsMenu, &settingsToggleBool, &waterEnabled, NULL);
+    
     addSettingsMenuEntry("Animated water", "Toggle the animated water effect", (u8*)settingsIconWaterAnimated_bin, &waterAnimated, &settingsMenu, &settingsToggleBool, &waterAnimated, NULL);
+    
     addSettingsMenuEntry("Keys excite water", "Pressing D-Pad keys makes the water excite", (u8*)settingsIconKeysExciteWater_bin, &keysExciteWater, &settingsMenu, &settingsToggleBool, &keysExciteWater, NULL);
+    
     addSettingsMenuEntry("Third row of icons", "Display a third row of icons in the menu grids", (u8*)settingsIconThirdRow_bin, &thirdRowVisible, &settingsMenu, &toggleThirdRow, NULL, NULL);
+    
     addSettingsMenuEntry("24 hour clock", "Displays the clock in 24 hour format", (u8*)settingsIconClock24_bin, &clock24, &settingsMenu, &settingsToggleBool, &clock24, NULL);
+    
     addSettingsMenuEntry("Empty icon backgrounds", "Choose whether empty icon positions should show a background", (u8*)settingsIconAppBackgrounds_bin, &showAppBackgrounds, &settingsMenu, &settingsToggleBool, &showAppBackgrounds, NULL);
+    
     addSettingsMenuEntry("Wraparound scrolling", "Choose whether page scrolling should wrap around at the beginning and of the grid", (u8*)settingsIconWrapScrolling_bin, &wrapScrolling, &settingsMenu, &settingsToggleBool, &wrapScrolling, NULL);
+    
     addSettingsMenuEntry("Theme colours", "Adjust the colour scheme of the launcher", (u8*)settingsIconColours_bin, NULL, &settingsMenu, &settingsShowColours, NULL, NULL);
+    
     addSettingsMenuEntry("Translucency (top screen)", "Draw the user interface with translucency - useful if using custom wallpapers", (u8*)settingsIconTranslucencyTop_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusTranslucencyTop, NULL);
+    
     addSettingsMenuEntry("Translucency (bottom screen)", "Draw the user interface with translucency - useful if using custom wallpapers", (u8*)settingsIconTranslucencyBottom_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusTranslucencyBottom, NULL);
+    
     addSettingsMenuEntry("Logo", "Show the 'Homebrew Launcher' logo at the bottom of the screen", (u8*)settingsIconLogo_bin, &showLogo, &settingsMenu, &settingsToggleBool, &showLogo, NULL);
+    
     addSettingsMenuEntry("Panels", "Show panels behind text to make it easier to read against wallpaper", (u8*)settingsIconPanels_bin, NULL, &settingsMenu, &settingsSetMenuStatus, &menuStatusPanelSettings, NULL);
+    
     addSettingsMenuEntry("Theme", "Select which theme to use in the launcher", (u8*)settingsIconTheme_bin, NULL, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSelect, NULL);
+    
     addSettingsMenuEntry("Preload titles", "Load entries for the titles menu in the background when the launcher boots. May be unstable on o3DS", (u8*)settingsIconPreloadTitles_bin, &preloadTitles, &settingsMenu, &settingsToggleBool, &preloadTitles, NULL);
 }
 

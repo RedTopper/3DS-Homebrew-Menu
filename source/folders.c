@@ -73,9 +73,13 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
     me->isTitleEntry = false;
     me->isRegionFreeEntry = false;
     
+//    logText(fullPath);
+    
     char smdhPath[strlen(fullPath) + strlen(smdhName) + 1];
     strcpy(smdhPath, fullPath);
     strcat(smdhPath, smdhName);
+    
+    logText(smdhPath);
     
     bool iconNeedsToBeGenerated = true;
     
@@ -98,7 +102,7 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
         strcpy(me->author, "");
     }
     
-    if (strcmp(fullPath, "/3ds/") == 0) {
+    if (strcmp(fullPath, "/3ds") == 0) {
         strcpy(me->name, "3ds");
     }
     else {
@@ -136,7 +140,7 @@ void buildFoldersList() {
     int folderPathLen = strlen(foldersPath);
     
     menuEntry_s rootEntry;
-    addFolderToList("/3ds/", &rootEntry, smdhName, folderPathLen);
+    addFolderToList("/3ds", &rootEntry, smdhName, folderPathLen);
     
     int i;
     for (i=0; i<contents->numPaths; i++) {

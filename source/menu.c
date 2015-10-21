@@ -859,6 +859,7 @@ void quitSettings(menu_s* m) {
     setConfigBool("showAppBackgrounds", showAppBackgrounds, configTypeMain);
     setConfigBool("wrapScrolling", wrapScrolling, configTypeMain);
     setConfigBool("keysExciteWater", keysExciteWater, configTypeMain);
+    setConfigBool("dPadNavigation", dPadNavigation, configTypeMain);
     
     setConfigBool("waterEnabled", waterEnabled, configTypeTheme);
     setConfigBool("showLogo", showLogo, configTypeTheme);

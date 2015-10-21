@@ -915,6 +915,7 @@ void showFolders() {
     char * cfn = currentFolderName();
     updateMenuTicks(&foldersMenu, cfn);
     free(cfn);
+    checkReturnToGrid(&foldersMenu);
     setMenuStatus(menuStatusFolders);
 }
 

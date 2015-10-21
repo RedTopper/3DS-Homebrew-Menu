@@ -225,6 +225,7 @@ void settingsSetMenuStatus(int * status) {
         buildThemesList();
         char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
         updateMenuTicks(&themesMenu, currentThemeName);
+        checkReturnToGrid(&themesMenu);
     }
     
     setMenuStatus(*status);

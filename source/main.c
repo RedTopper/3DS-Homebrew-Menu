@@ -152,7 +152,6 @@ void exitServices() {
     titlesExit();
     ptmExit();
     acExit();
-    irrstExit();
     hidExit();
     gfxExit();
     exitFilesystem();
@@ -492,13 +491,14 @@ int main()
 	gfxInitDefault();
 	initFilesystem();
 	openSDArchive();
-	hidInit(NULL);
-	irrstInit(NULL);
+	hidInit();
 	acInit();
 	ptmInit();
 	titlesInit();
 	regionFreeInit();
 	netloader_init();
+
+	osSetSpeedupEnable(true);
 
     mkdir(rootPath, 777);
     mkdir(themesPath, 777);

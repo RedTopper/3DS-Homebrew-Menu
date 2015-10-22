@@ -413,6 +413,8 @@ void loadConfig() {
 }
 
 void saveConfigWithType(int configType) {
+    logInt(configType, "Saving config with type");
+    
     configData *data = configDataForType(configType);
     if (!data) {
         return;
@@ -441,6 +443,9 @@ void saveConfigWithType(int configType) {
         strncat(out, data->values[i], strlen(data->values[i]));
         strncat(out, "|", 1);
     }
+
+    
+//    logInt(configType, "Saving config with type");
     
     char * configPath = configPathForType(configType);
     if (configPath == NULL) {

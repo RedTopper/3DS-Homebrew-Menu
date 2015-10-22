@@ -1363,13 +1363,13 @@ bool updateMenu(menu_s* m) {
         return updateGrid(m);
     }
     else if (menuStatus == menuStatusFolderChanged) {
-        logText("Reloading main menu");
+//        logText("Reloading main menu");
         
         reloadMenu(m);
         gotoFirstIcon(m);
         setMenuStatus(menuStatusIcons);
         
-        logText("Done reloading");
+//        logText("Done reloading");
         
         return false;
     }

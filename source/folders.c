@@ -79,9 +79,7 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
     char smdhPath[strlen(fullPath) + strlen(smdhName) + 1];
     strcpy(smdhPath, fullPath);
     strcat(smdhPath, smdhName);
-    
-    logText(smdhPath);
-    
+        
     bool iconNeedsToBeGenerated = true;
     
     if(fileExists(smdhPath, &sdmcArchive)) {

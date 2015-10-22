@@ -332,6 +332,18 @@ void renderFrame()
                 drawGrid(&settingsMenu);
                 drawBottomStatusBar("Settings");
             }
+            else if (menuStatus == menuStatusGridSettings) {
+                drawGrid(&gridSettingsMenu);
+                drawBottomStatusBar("Grid settings");
+            }
+            else if (menuStatus == menuStatusWaterSettings) {
+                drawGrid(&waterMenu);
+                drawBottomStatusBar("Water settings");
+            }
+            else if (menuStatus == menuStatusThemeSettings) {
+                drawGrid(&themeSettingsMenu);
+                drawBottomStatusBar("Theme settings");
+            }
             else if (menuStatus == menuStatusThemeSelect) {
                 drawGrid(&themesMenu);
                 drawBottomStatusBar("Select theme");
@@ -661,7 +673,22 @@ int main()
             
             else if (menuStatus == menuStatusSettings) {
                 if (updateGrid(&settingsMenu)) {
-                    handleSettingsMenuSelection();
+                    handleSettingsMenuSelection(&settingsMenu);
+                }
+            }
+            else if (menuStatus == menuStatusGridSettings) {
+                if (updateGrid(&gridSettingsMenu)) {
+                    handleSettingsMenuSelection(&gridSettingsMenu);
+                }
+            }
+            else if (menuStatus == menuStatusWaterSettings) {
+                if (updateGrid(&waterMenu)) {
+                    handleSettingsMenuSelection(&waterMenu);
+                }
+            }
+            else if (menuStatus == menuStatusThemeSettings) {
+                if (updateGrid(&themeSettingsMenu)) {
+                    handleSettingsMenuSelection(&themeSettingsMenu);
                 }
             }
             else if (menuStatus == menuStatusThemeSelect) {

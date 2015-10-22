@@ -27,6 +27,8 @@
 #include "settingsIconPreloadTitles_bin.h"
 #include "settingsIconTheme_bin.h"
 #include "settingsIconDPadControls_bin.h"
+#include "settingsIconWater_bin.h"
+#include "settingsIconGrid_bin.h"
 
 #include "wallpaper.h"
 #include "titles.h"
@@ -35,6 +37,9 @@ menu_s settingsMenu;
 bool settingsMenuNeedsInit = true;
 
 menu_s themesMenu;
+menu_s waterMenu;
+menu_s themeSettingsMenu;
+menu_s gridSettingsMenu;
 
 bool showRegionFree = true;
 bool sortAlpha = false;
@@ -148,27 +153,6 @@ void buildThemesList() {
     free(contents);
 }
 
-//void drawThemesList() {
-//    buildThemesList();
-//    
-//    char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
-//    
-//    int i;
-//    for (i=0; i<themeButtons.numButtons; i++) {
-//        button * aButton = themeButtons.buttons[i];
-//        if (strcmp(aButton->longText, currentThemeName) == 0) {
-//            aButton->selected = true;
-//            aButton->enabled = false;
-//        }
-//        else {
-//            aButton->selected = false;
-//            aButton->enabled = true;
-//        }
-//    }
-//    
-//    btnDrawButtonList(&themeButtons);
-//}
-
 void addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * showTick, menu_s *m,  void (*callback)(), void *callbackObject1, void *callbackObject2) {
     static menuEntry_s settingsMenuEntry;
     
@@ -220,12 +204,117 @@ void settingsShowColours() {
     setMenuStatus(menuStatusColourSettings);
 }
 
+void settingsSetMenuStatus(int * status);
+
+bool waterMenuNeedsInit = true;
+
+void initWaterMenu() {
+    if (!waterMenuNeedsInit) {
+        return;
+    }
+    
+    waterMenuNeedsInit = false;
+    
+    waterMenu.entries=NULL;
+    waterMenu.numEntries=0;
+    waterMenu.selectedEntry=0;
+    waterMenu.scrollLocation=0;
+    waterMenu.scrollVelocity=0;
+    waterMenu.scrollBarSize=0;
+    waterMenu.scrollBarPos=0;
+    waterMenu.scrollTarget=0;
+    waterMenu.atEquilibrium=false;
+    
+    addSettingsMenuEntry("Top screen water", "Toggle the visibility of the water on the top screen", (u8*)settingsIconWaterVisible_bin, &waterEnabled, &waterMenu, &settingsToggleBool, &waterEnabled, NULL);
+    
+    addSettingsMenuEntry("Animated water", "Toggle the animated water effect", (u8*)settingsIconWaterAnimated_bin, &waterAnimated, &waterMenu, &settingsToggleBool, &waterAnimated, NULL);
+    
+    addSettingsMenuEntry("Keys excite water", "Pressing D-Pad keys makes the water excite", (u8*)settingsIconKeysExciteWater_bin, &keysExciteWater, &waterMenu, &settingsToggleBool, &keysExciteWater, NULL);
+}
+
+bool gridSettingsMenuNeedsInit = true;
+
+void initGridSettingsMenu() {
+    if (!gridSettingsMenuNeedsInit) {
+        return;
+    }
+    
+    gridSettingsMenuNeedsInit = false;
+    
+    gridSettingsMenu.entries=NULL;
+    gridSettingsMenu.numEntries=0;
+    gridSettingsMenu.selectedEntry=0;
+    gridSettingsMenu.scrollLocation=0;
+    gridSettingsMenu.scrollVelocity=0;
+    gridSettingsMenu.scrollBarSize=0;
+    gridSettingsMenu.scrollBarPos=0;
+    gridSettingsMenu.scrollTarget=0;
+    gridSettingsMenu.atEquilibrium=false;
+    
+    addSettingsMenuEntry("Third row of icons", "Display a third row of icons in the menu grids", (u8*)settingsIconThirdRow_bin, &thirdRowVisible, &gridSettingsMenu, &toggleThirdRow, NULL, NULL);
+    
+    addSettingsMenuEntry("Empty icon backgrounds", "Choose whether empty icon positions should show a background", (u8*)settingsIconAppBackgrounds_bin, &showAppBackgrounds, &gridSettingsMenu, &settingsToggleBool, &showAppBackgrounds, NULL);
+    
+    addSettingsMenuEntry("Wraparound scrolling", "Choose whether page scrolling should wrap around at the beginning and of the grid", (u8*)settingsIconWrapScrolling_bin, &wrapScrolling, &gridSettingsMenu, &settingsToggleBool, &wrapScrolling, NULL);
+    
+    addSettingsMenuEntry("D-Pad Navigation", "Allows the use of the corner icons on the bottom screen using the D-Pad", (u8*)settingsIconDPadControls_bin, &dPadNavigation, &gridSettingsMenu, &settingsToggleBool, &dPadNavigation, NULL);
+}
+
+bool themeSettingsMenuNeedsInit = true;
+
+void initThemeSettingsMenu() {
+    if (!themeSettingsMenuNeedsInit) {
+        return;
+    }
+    
+    themeSettingsMenuNeedsInit = false;
+    
+    themeSettingsMenu.entries=NULL;
+    themeSettingsMenu.numEntries=0;
+    themeSettingsMenu.selectedEntry=0;
+    themeSettingsMenu.scrollLocation=0;
+    themeSettingsMenu.scrollVelocity=0;
+    themeSettingsMenu.scrollBarSize=0;
+    themeSettingsMenu.scrollBarPos=0;
+    themeSettingsMenu.scrollTarget=0;
+    themeSettingsMenu.atEquilibrium=false;
+    
+    addSettingsMenuEntry("Water", "Various settings for the water on the top screen", (u8*)settingsIconWater_bin, false, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusWaterSettings, NULL);
+    
+    addSettingsMenuEntry("Theme colours", "Adjust the colour scheme of the launcher", (u8*)settingsIconColours_bin, NULL, &themeSettingsMenu, &settingsShowColours, NULL, NULL);
+    
+    addSettingsMenuEntry("Translucency (top screen)", "Draw the user interface with translucency - useful if using custom wallpapers", (u8*)settingsIconTranslucencyTop_bin, false, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusTranslucencyTop, NULL);
+    
+    addSettingsMenuEntry("Translucency (bottom screen)", "Draw the user interface with translucency - useful if using custom wallpapers", (u8*)settingsIconTranslucencyBottom_bin, false, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusTranslucencyBottom, NULL);
+    
+    addSettingsMenuEntry("Panels", "Show panels behind text to make it easier to read against wallpaper", (u8*)settingsIconPanels_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusPanelSettings, NULL);
+    
+    addSettingsMenuEntry("Logo", "Show the 'Homebrew Launcher' logo at the bottom of the screen", (u8*)settingsIconLogo_bin, &showLogo, &themeSettingsMenu, &settingsToggleBool, &showLogo, NULL);
+    
+    addSettingsMenuEntry("Theme", "Select which theme to use in the launcher", (u8*)settingsIconTheme_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusThemeSelect, NULL);
+}
+
 void settingsSetMenuStatus(int * status) {
     if (*status == menuStatusThemeSelect) {
         buildThemesList();
         char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
         updateMenuTicks(&themesMenu, currentThemeName);
         checkReturnToGrid(&themesMenu);
+    }
+    else if (*status == menuStatusWaterSettings) {
+        initWaterMenu();
+        updateMenuIconPositions(&waterMenu);
+        gotoFirstIcon(&waterMenu);
+    }
+    else if (*status == menuStatusThemeSettings) {
+        initThemeSettingsMenu();
+        updateMenuIconPositions(&themeSettingsMenu);
+        gotoFirstIcon(&themeSettingsMenu);
+    }
+    else if (*status == menuStatusGridSettings) {
+        initGridSettingsMenu();
+        updateMenuIconPositions(&gridSettingsMenu);
+        gotoFirstIcon(&gridSettingsMenu);
     }
     
     setMenuStatus(*status);
@@ -248,44 +337,20 @@ void initConfigMenu() {
         addSettingsMenuEntry("Region free loader", "Toggle the region free loader in the main menu grid", (u8*)regionfreeEntry.iconData, &showRegionFree, &settingsMenu, &settingsToggleRegionFree, NULL, NULL);
     }
     
+    addSettingsMenuEntry("Grids", "Various settings to control how the launcher's grids function", (u8*)settingsIconGrid_bin, NULL, &settingsMenu, &settingsSetMenuStatus, &menuStatusGridSettings, NULL);
+    
     addSettingsMenuEntry("App sorting", "Toggle alphabetic sorting in the main menu grid", (u8*)settingsIconAlphaSort_bin, &sortAlpha, &settingsMenu, &settingsToggleSortAlpha, NULL, NULL);
-    
-    addSettingsMenuEntry("Top screen water", "Toggle the visibility of the water on the top screen", (u8*)settingsIconWaterVisible_bin, &waterEnabled, &settingsMenu, &settingsToggleBool, &waterEnabled, NULL);
-    
-    addSettingsMenuEntry("Animated water", "Toggle the animated water effect", (u8*)settingsIconWaterAnimated_bin, &waterAnimated, &settingsMenu, &settingsToggleBool, &waterAnimated, NULL);
-    
-    addSettingsMenuEntry("Keys excite water", "Pressing D-Pad keys makes the water excite", (u8*)settingsIconKeysExciteWater_bin, &keysExciteWater, &settingsMenu, &settingsToggleBool, &keysExciteWater, NULL);
-    
-    addSettingsMenuEntry("Third row of icons", "Display a third row of icons in the menu grids", (u8*)settingsIconThirdRow_bin, &thirdRowVisible, &settingsMenu, &toggleThirdRow, NULL, NULL);
     
     addSettingsMenuEntry("24 hour clock", "Displays the clock in 24 hour format", (u8*)settingsIconClock24_bin, &clock24, &settingsMenu, &settingsToggleBool, &clock24, NULL);
     
-    addSettingsMenuEntry("Empty icon backgrounds", "Choose whether empty icon positions should show a background", (u8*)settingsIconAppBackgrounds_bin, &showAppBackgrounds, &settingsMenu, &settingsToggleBool, &showAppBackgrounds, NULL);
-    
-    addSettingsMenuEntry("Wraparound scrolling", "Choose whether page scrolling should wrap around at the beginning and of the grid", (u8*)settingsIconWrapScrolling_bin, &wrapScrolling, &settingsMenu, &settingsToggleBool, &wrapScrolling, NULL);
-    
-    addSettingsMenuEntry("Theme colours", "Adjust the colour scheme of the launcher", (u8*)settingsIconColours_bin, NULL, &settingsMenu, &settingsShowColours, NULL, NULL);
-    
-    addSettingsMenuEntry("Translucency (top screen)", "Draw the user interface with translucency - useful if using custom wallpapers", (u8*)settingsIconTranslucencyTop_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusTranslucencyTop, NULL);
-    
-    addSettingsMenuEntry("Translucency (bottom screen)", "Draw the user interface with translucency - useful if using custom wallpapers", (u8*)settingsIconTranslucencyBottom_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusTranslucencyBottom, NULL);
-    
-    addSettingsMenuEntry("Logo", "Show the 'Homebrew Launcher' logo at the bottom of the screen", (u8*)settingsIconLogo_bin, &showLogo, &settingsMenu, &settingsToggleBool, &showLogo, NULL);
-    
-    addSettingsMenuEntry("Panels", "Show panels behind text to make it easier to read against wallpaper", (u8*)settingsIconPanels_bin, NULL, &settingsMenu, &settingsSetMenuStatus, &menuStatusPanelSettings, NULL);
-    
-    addSettingsMenuEntry("Theme", "Select which theme to use in the launcher", (u8*)settingsIconTheme_bin, NULL, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSelect, NULL);
-    
     addSettingsMenuEntry("Preload titles", "Load entries for the titles menu in the background when the launcher boots. May be unstable on devices with a large number of titles", (u8*)settingsIconPreloadTitles_bin, &preloadTitles, &settingsMenu, &settingsToggleBool, &preloadTitles, NULL);
     
-    addSettingsMenuEntry("D-Pad Navigation", "Allows the use of the corner icons on the bottom screen using the D-Pad", (u8*)settingsIconDPadControls_bin, &dPadNavigation, &settingsMenu, &settingsToggleBool, &dPadNavigation, NULL);
-    
-    
+    addSettingsMenuEntry("Theme settings", "Configure the theme for the launcher", (u8*)settingsIconTheme_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSettings, NULL);
 }
 
-void handleSettingsMenuSelection() {
-    int selectedEntry = settingsMenu.selectedEntry;
-    menuEntry_s * selectedMenuEntry = getMenuEntry(&settingsMenu, selectedEntry);
+void handleSettingsMenuSelection(menu_s *m) {
+    int selectedEntry = m->selectedEntry;
+    menuEntry_s * selectedMenuEntry = getMenuEntry(m, selectedEntry);
     (selectedMenuEntry->callback)(selectedMenuEntry->callbackObject1);
 }
 

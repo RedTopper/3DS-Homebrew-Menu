@@ -58,6 +58,9 @@ int menuStatusTranslucencyTop = 11;
 int menuStatusTranslucencyBottom = 12;
 int menuStatusPanelSettings = 13;
 int menuStatusThemeSelect = 14;
+int menuStatusWaterSettings = 15;
+int menuStatusThemeSettings = 16;
+int menuStatusGridSettings = 17;
 
 bool killTitleBrowser = false;
 bool thirdRowVisible = false;
@@ -158,8 +161,11 @@ void checkReturnToGrid(menu_s* m) {
     }
 }
 
-void toolbarTopLeftAction() {
-    if (menuStatus == menuStatusIcons) {
+#define menuTopLeftActionSourceKeyB 10
+#define menuTopLeftActionSourceTopLeft 20
+
+void handleMenuTopLeftActions(int source) {
+    if (source == menuTopLeftActionSourceTopLeft && menuStatus == menuStatusIcons) {
         showSettings();
     }
     else if (menuStatus == menuStatusSettings) {
@@ -169,22 +175,33 @@ void toolbarTopLeftAction() {
         killTitleBrowser = true;
     }
     else if (menuStatus == menuStatusFolders) {
-        checkReturnToGrid(&menu);
+        if (source == menuTopLeftActionSourceTopLeft) {
+            checkReturnToGrid(&menu);
+        }
+
         setMenuStatus(menuStatusIcons);
-    }
-    else if (menuStatus == menuStatusColourSettings) {
-        setMenuStatus(menuStatusSettings);
     }
     else if (menuStatus == menuStatusColourAdjust) {
         saveColour(settingsColour);
         setMenuStatus(menuStatusColourSettings);
     }
-    else if (menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusThemeSelect) {
-        setMenuStatus(menuStatusSettings);
+    else if (menuStatus == menuStatusColourSettings) {
+        alphaImagesDrawn = false;
+        setMenuStatus(menuStatusThemeSettings);
     }
     else if (menuStatus == menuStatusHelp) {
         handleHelpBackButton();
     }
+    else if (menuStatus == menuStatusThemeSettings || menuStatus == menuStatusGridSettings) {
+        setMenuStatus(menuStatusSettings);
+    }
+    else if (menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusThemeSelect || menuStatus == menuStatusWaterSettings) {
+        setMenuStatus(menuStatusThemeSettings);
+    }
+}
+
+void toolbarTopLeftAction() {
+    handleMenuTopLeftActions(menuTopLeftActionSourceTopLeft);
 }
 
 void toolbarTopRightAction() {
@@ -398,7 +415,7 @@ void drawBottomStatusBar(char* title) {
         buttonIconLeft = btnButtonIconBackArrow;
         buttonIconRight = btnButtonIconQuestionMark;
     }
-    else if (menuStatus == menuStatusColourSettings || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings) {
+    else if (menuStatus == menuStatusColourSettings || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusWaterSettings || menuStatus == menuStatusThemeSettings || menuStatus == menuStatusGridSettings) {
         buttonIconLeft = btnButtonIconBackArrow;
     }
 
@@ -924,29 +941,7 @@ void showHomeMenuApps() {
 }
 
 void keyBAction() {
-    if (menuStatus == menuStatusTitleBrowser || menuStatus == menuStatusHomeMenuApps) {
-        killTitleBrowser = true;
-    }
-    else if (menuStatus == menuStatusColourSettings) {
-        alphaImagesDrawn = false;
-        setMenuStatus(menuStatusSettings);
-    }
-    else if (menuStatus == menuStatusColourAdjust) {
-        saveColour(settingsColour);
-        setMenuStatus(menuStatusColourSettings);
-    }
-    else if (menuStatus == menuStatusSettings) {
-        quitSettings(&menu);
-    }
-    else if (menuStatus == menuStatusHelp) {
-        handleHelpBackButton();
-    }
-    else if (menuStatus == menuStatusFolders) {
-        setMenuStatus(menuStatusIcons);
-    }
-    else if (menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusThemeSelect) {
-        setMenuStatus(menuStatusSettings);
-    }
+    handleMenuTopLeftActions(menuTopLeftActionSourceKeyB);
 }
 
 void switchToolbarButtons() {

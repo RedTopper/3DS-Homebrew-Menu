@@ -23,6 +23,9 @@ extern int menuStatusTranslucencyTop;
 extern int menuStatusTranslucencyBottom;
 extern int menuStatusPanelSettings;
 extern int menuStatusThemeSelect;
+extern int menuStatusWaterSettings;
+extern int menuStatusThemeSettings;
+extern int menuStatusGridSettings;
 
 //Checked by main.c so that the menu can force the title browser to close
 extern bool killTitleBrowser;

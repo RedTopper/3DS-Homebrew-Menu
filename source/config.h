@@ -11,6 +11,9 @@ extern "C" {
     
     extern menu_s settingsMenu;
     extern menu_s themesMenu;
+    extern menu_s waterMenu;
+    extern menu_s themeSettingsMenu;
+    extern menu_s gridSettingsMenu;
     
     extern bool settingsMenuNeedsInit;
     
@@ -39,7 +42,7 @@ extern "C" {
     void saveConfigWithType(int configType);
     
     void initConfigMenu();
-    void handleSettingsMenuSelection();
+    void handleSettingsMenuSelection(menu_s *m);
     void addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * showTick, menu_s *m,  void (*callback)(), void *callbackObject1, void *callbackObject2);
     
     void setTheme(char * themeName);

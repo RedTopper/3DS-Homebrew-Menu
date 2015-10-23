@@ -45,6 +45,12 @@
       location = "container:"
       name = "GFX">
       <FileRef
+         location = "group:/Users/mash/Desktop/3ds_hb_menu/source/themegfx.c">
+      </FileRef>
+      <FileRef
+         location = "group:/Users/mash/Desktop/3ds_hb_menu/source/themegfx.h">
+      </FileRef>
+      <FileRef
          location = "group:source/background.c">
       </FileRef>
       <FileRef
@@ -63,10 +69,10 @@
          location = "group:source/MAGFX.h">
       </FileRef>
       <FileRef
-         location = "group:source/wallpaper.c">
+         location = "group:source/pngloader.c">
       </FileRef>
       <FileRef
-         location = "group:source/wallpaper.h">
+         location = "group:source/pngloader.h">
       </FileRef>
       <FileRef
          location = "group:source/water.c">

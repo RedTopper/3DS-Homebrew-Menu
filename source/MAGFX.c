@@ -25,18 +25,19 @@ void MAGFXImageWithRGBAndAlphaMask(u8 r, u8 g, u8 b, u8* alphaSourceMask, u8* de
     }
 }
 
-void MAGFXApplyAlphaMask(u8* GRBImageSource, u8* GRBAAlphaSource, u8* dest, int width, int height) {
+void MAGFXApplyAlphaMask(u8* imageSource, u8* alphaSourceMask, u8* dest, int width, int height, bool sourceHasAlpha) {
     int GRBSourceByte = 0;
     int alphaSourceByte = 0;
     int destByte = 0;
-    int len = width*height*3;
+    int bytesPerPixel = sourceHasAlpha ? 4 : 3;
+    int len = width*height*bytesPerPixel;
     
     while (GRBSourceByte < len) {
-        memcpy(&dest[destByte], &GRBImageSource[GRBSourceByte], 3);
+        memcpy(&dest[destByte], &imageSource[GRBSourceByte], 3);
         destByte += 3;
-        GRBSourceByte += 3;
+        GRBSourceByte += bytesPerPixel;
         
-        memcpy(&dest[destByte], &GRBAAlphaSource[alphaSourceByte], 1);
+        memcpy(&dest[destByte], &alphaSourceMask[alphaSourceByte], 1);
         destByte += 1;
         alphaSourceByte += 1;
     }

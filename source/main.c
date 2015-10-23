@@ -24,13 +24,12 @@
 #include "screenshot.h"
 #include "config.h"
 
-#include "wallpaper.h"
-
 #include "MAGFX.h"
 
 #include "help.h"
 #include "touchblock.h"
 #include "folders.h"
+#include "themegfx.h"
 
 u8 sdmcCurrent = 0;
 u64 nextSdCheck = 0;
@@ -237,7 +236,15 @@ void renderFrame()
     gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
     
     //Wallpaper
-    drawWallpaper();
+    if (themeHasTopWallpaper) {
+        drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
+    }
+    
+    if (themeHasBottomWallpaper) {
+        drawThemeImage(themeImageBottomWallpaper, GFX_BOTTOM, 0, 0);
+    }
+    
+//    drawWallpaper();
     
 	// debug text
 	// drawDebug();
@@ -493,7 +500,7 @@ int main()
     
     gamecardWasIn = regionFreeGamecardIn;
     
-    initWallpaper();
+    initThemeImages();
 
     u32 *threadStack;
     

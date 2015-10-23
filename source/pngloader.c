@@ -6,7 +6,7 @@
  *
  */
 
-#include "wallpaper.h"
+#include "pngloader.h"
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,21 +16,11 @@
 #define PNG_DEBUG 3
 #include <png.h>
 
-#include "gfx.h"
-#include "filesystem.h"
-#include "config.h"
-
-u8 * wallpaperTop;
-u8 * wallpaperBottom;
-
-bool wallpaperTopHasAlpha = false;
-bool wallpaperBottomHasAlpha = false;
-
 #include "logText.h"
 
 int x, y;
 
-int width, height;
+int pngWidth, pngHeight;
 png_byte color_type;
 png_byte bit_depth;
 
@@ -45,7 +35,7 @@ bool read_png_file(char* file_name) {
     /* open file and test for it being a png */
     FILE *fp = fopen(file_name, "rb");
     if (!fp) {
-//        logText("[read_png_file] File could not be opened for reading"); // We don't need to log an error about this
+        //        logText("[read_png_file] File could not be opened for reading"); // We don't need to log an error about this
         return false;
     }
     
@@ -84,8 +74,8 @@ bool read_png_file(char* file_name) {
     
     png_read_info(png_ptr, info_ptr);
     
-    width = png_get_image_width(png_ptr, info_ptr);
-    height = png_get_image_height(png_ptr, info_ptr);
+    pngWidth = png_get_image_width(png_ptr, info_ptr);
+    pngHeight = png_get_image_height(png_ptr, info_ptr);
     
     color_type = png_get_color_type(png_ptr, info_ptr);
     bit_depth = png_get_bit_depth(png_ptr, info_ptr);
@@ -101,8 +91,8 @@ bool read_png_file(char* file_name) {
         return false;
     }
     
-    row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
-    for (y=0; y<height; y++)
+    row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * pngHeight);
+    for (y=0; y<pngHeight; y++)
         row_pointers[y] = (png_byte*) malloc(png_get_rowbytes(png_ptr,info_ptr));
     
     png_read_image(png_ptr, row_pointers);
@@ -114,29 +104,29 @@ bool read_png_file(char* file_name) {
 
 int bytesPerPixel;
 
-u8 * process_file(void) {
+u8 * process_png_file(void) {
     bytesPerPixel = 3;
     
     if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGBA) {
         bytesPerPixel = 4;
-//        
-//        logText("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGB");
-//        return NULL;
+        //
+        //        logText("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGB");
+        //        return NULL;
     }
-
     
-    u8 * out = malloc(width*height*bytesPerPixel);
     
-    for (y=0; y<height; y++) {
-        int moveRight = height - y;
+    u8 * out = malloc(pngWidth*pngHeight*bytesPerPixel);
+    
+    for (y=0; y<pngHeight; y++) {
+        int moveRight = pngHeight - y;
         
         png_byte* row = row_pointers[y];
-        for (x=0; x<width; x++) {
-            int moveDown = x * height;
+        for (x=0; x<pngWidth; x++) {
+            int moveDown = x * pngHeight;
             
             png_byte* ptr = &(row[x*bytesPerPixel]);
             
-//            int offset = (((y*height) + x) * 3);
+            //            int offset = (((y*height) + x) * 3);
             int offset = (moveRight + moveDown) * bytesPerPixel;
             offset -= bytesPerPixel;
             
@@ -153,58 +143,3 @@ u8 * process_file(void) {
     return out;
 }
 
-u8 * loadWallpaper(gfxScreen_t screen) {
-    char * themePath = currentThemePath();
-    char * sScreen = (screen == GFX_TOP) ? "top" : "bottom";
-    char filename[128];
-    sprintf(filename, "%swallpaper%s.png", themePath, sScreen);
-    free(themePath);
-    
-    bool success = read_png_file(filename);
-    
-    if (success) {
-        int requiredWidth = (screen == GFX_TOP) ? 400 : 320;
-        int requiredHeight = 240;
-        char * sScreen = (screen == GFX_TOP) ? "top" : "bottom";
-        
-        if (width != requiredWidth || height != requiredHeight) {
-            char error[100];
-            sprintf(error, "Wallpaper for the %s screen must be %d pixels wide and %d pixels high", sScreen, requiredWidth, requiredHeight);
-            logText(error);
-            return NULL;
-        }
-        
-        u8 * out = process_file();
-        return out;
-    }
-    
-    return NULL;
-}
-
-void initWallpaper() {
-    wallpaperTop = loadWallpaper(GFX_TOP);
-    wallpaperTopHasAlpha = (bytesPerPixel==4);
-    
-    wallpaperBottom = loadWallpaper(GFX_BOTTOM);
-    wallpaperBottomHasAlpha = (bytesPerPixel==4);
-}
-
-void drawWallpaper() {
-    if (wallpaperTop) {
-        if (wallpaperTopHasAlpha) {
-            gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, wallpaperTop, 240, 400, 0, 0);
-        }
-        else {
-            gfxDrawSprite(GFX_TOP, GFX_LEFT, wallpaperTop, 240, 400, 0, 0);
-        }
-    }
-    
-    if (wallpaperBottom) {
-        if (wallpaperBottomHasAlpha) {
-            gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, wallpaperBottom, 240, 320, 0, 0);
-        }
-        else {
-            gfxDrawSprite(GFX_BOTTOM, GFX_LEFT, wallpaperBottom, 240, 320, 0, 0);
-        }
-    }
-}

@@ -36,6 +36,8 @@
 
 #include "touchblock.h"
 
+#include "themegfx.h"
+
 #define buttonTagTopLeft 10
 #define buttonTagTopRight 20
 #define buttonTagBottomLeft 30
@@ -546,8 +548,13 @@ void drawGrid(menu_s* m) {
             int x = coords[0];
             int y = coords[1];
             
-            gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, appBackground, 56, 56, x+3, y+4, translucencyAppBackgrounds);
-            
+            if (themeHasAppBackgroundImage) {
+                drawThemeImage(themeImageAppBackground, GFX_BOTTOM, x+3, y+4);
+            }
+            else {
+                gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, appBackground, 56, 56, x+3, y+4, translucencyAppBackgrounds);
+            }
+
             c--;
             if (c < 0) {
                 c = totalCols-1;
@@ -1430,18 +1437,39 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m)
     if (me != &gamecardMenuEntry && !me->isTitleEntry) {
         if (me->isRegionFreeEntry) {
             if (selected) {
-                gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)cartBackgroundSelected, 59, 59, x+3, y+4);
+                if (themeHasCartBackgroundImageSelected) {
+                    drawThemeImage(themeImageCartBackgroundSelected, screen, x+3, y+4);
+                }
+                else {
+                    gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)cartBackgroundSelected, 59, 59, x+3, y+4);
+                }
             }
             else {
-                gfxDrawSpriteAlphaBlendFade(screen, GFX_LEFT, (u8*)cartBackground, 59, 59, x+3, y+4, translucencyAppBackgrounds);
+                if (themeHasCartBackgroundImage) {
+                    drawThemeImage(themeImageCartBackground, screen, x+3, y+4);
+                }
+                else {
+                    gfxDrawSpriteAlphaBlendFade(screen, GFX_LEFT, (u8*)cartBackground, 59, 59, x+3, y+4, translucencyAppBackgrounds);
+                }
             }
         }
         else {
             if (selected) {
-                gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, appBackgroundSelected, 56, 56, x+3, y+4);
+                if (themeHasAppBackgroundImageSelected) {
+                    drawThemeImage(themeImageAppBackgroundSelected, screen, x+3, y+4);
+                }
+                else {
+                    gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, appBackgroundSelected, 56, 56, x+3, y+4);
+                }
             }
             else {
-                gfxDrawSpriteAlphaBlendFade(screen, GFX_LEFT, appBackground, 56, 56, x+3, y+4, translucencyAppBackgrounds);
+                if (themeHasAppBackgroundImage) {
+                    drawThemeImage(themeImageAppBackground, screen, x+3, y+4);
+                }
+                else {
+                    gfxDrawSpriteAlphaBlendFade(screen, GFX_LEFT, appBackground, 56, 56, x+3, y+4, translucencyAppBackgrounds);
+                }
+                
             }
         }
         
@@ -1453,10 +1481,10 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m)
         
         //Mask whichever icon is going to be drawn (either the game card icon or a homebrew app's icon
         if (me->isRegionFreeEntry && regionFreeGamecardIn) {
-            MAGFXApplyAlphaMask(gamecardMenuEntry.iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48);
+            MAGFXApplyAlphaMask(gamecardMenuEntry.iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
         }
         else {
-            MAGFXApplyAlphaMask(me->iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48);
+            MAGFXApplyAlphaMask(me->iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
         }
         
         //Draw the icon on the bottom screen
@@ -1506,10 +1534,10 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m)
         u8 transparentIcon[48*48*4];
         
         if (me->isRegionFreeEntry && regionFreeGamecardIn) {
-            MAGFXApplyAlphaMask(gamecardMenuEntry.iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48);
+            MAGFXApplyAlphaMask(gamecardMenuEntry.iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
         }
         else {
-            MAGFXApplyAlphaMask(me->iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48);
+            MAGFXApplyAlphaMask(me->iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
         }
 
         gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, transparentIcon, ENTRY_ICON_WIDTH, ENTRY_ICON_HEIGHT, displayIconX, displayIconY);

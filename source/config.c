@@ -30,8 +30,8 @@
 #include "settingsIconWater_bin.h"
 #include "settingsIconGrid_bin.h"
 
-#include "wallpaper.h"
 #include "titles.h"
+#include "themegfx.h"
 
 menu_s settingsMenu;
 bool settingsMenuNeedsInit = true;
@@ -64,8 +64,8 @@ void setTheme(char * themeName) {
     //Reload theme variables for menu
     loadThemeConfig();
     
-    //Reload wallpaper
-    initWallpaper();
+    //Reload theme images    
+    initThemeImages();
     
     //Re-initialise colours
     initColours();

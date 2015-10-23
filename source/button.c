@@ -34,6 +34,8 @@
 
 #include "menu.h"
 
+#include "themegfx.h"
+
 #define sliderIndicatorWidth 4
 
 void btnSetButtonType(button * aButton, int type) {
@@ -234,20 +236,60 @@ void btnDrawButton(button * aButton) {
     
     
     if (aButton->buttonType == btnButtonTypeToolbarLeft) {
-        gfxDrawSpriteAlphaBlendFade(aButton->screen, aButton->side, (u8*)toolbarbuttonshadowleft_bin, 41, 41, aButton->x-(41-aButton->h), aButton->y, translucencyBarIcons);
-        btnDrawMaskedBitmapForButton(aButton, lefttoolbarbuttonalphamask_bin, r, g, b, translucencyBarIcons);
+        if (themeHasTopLeftButton) {
+            if (aButton->highlighted && themeHasTopLeftButtonSelected) {
+                drawThemeImage(themeImageTopLeftButtonSelected, aButton->screen, aButton->x-(36-aButton->h), aButton->y);
+            }
+            else {
+                drawThemeImage(themeImageTopLeftButton, aButton->screen, aButton->x-(36-aButton->h), aButton->y);
+            }
+        }
+        else {
+            gfxDrawSpriteAlphaBlendFade(aButton->screen, aButton->side, (u8*)toolbarbuttonshadowleft_bin, 41, 41, aButton->x-(41-aButton->h), aButton->y, translucencyBarIcons);
+            btnDrawMaskedBitmapForButton(aButton, lefttoolbarbuttonalphamask_bin, r, g, b, translucencyBarIcons);
+        }
     }
     else if (aButton->buttonType == btnButtonTypeToolbarRight) {
-        gfxDrawSpriteAlphaBlendFade(aButton->screen, aButton->side, (u8*)toolbarbuttonshadowright_bin, 41, 41, aButton->x-(41-aButton->h), aButton->y-(41-aButton->w), translucencyBarIcons);
-        btnDrawMaskedBitmapForButton(aButton, righttoolbarbuttonalphamask_bin, r, g, b, translucencyBarIcons);
+        if (themeHasTopRightButton) {
+            if (aButton->highlighted && themeHasTopRightButtonSelected) {
+                drawThemeImage(themeImageTopRightButtonSelected, aButton->screen, aButton->x-(36-aButton->h), aButton->y-(36-aButton->w));
+            }
+            else {
+                drawThemeImage(themeImageTopRightButton, aButton->screen, aButton->x-(36-aButton->h), aButton->y-(36-aButton->w));
+            }
+        }
+        else {
+            gfxDrawSpriteAlphaBlendFade(aButton->screen, aButton->side, (u8*)toolbarbuttonshadowright_bin, 41, 41, aButton->x-(41-aButton->h), aButton->y-(41-aButton->w), translucencyBarIcons);
+            btnDrawMaskedBitmapForButton(aButton, righttoolbarbuttonalphamask_bin, r, g, b, translucencyBarIcons);
+        }
     }
     else if (aButton->buttonType == btnButtonTypeToolbarBottomRight) {
-        gfxDrawSpriteAlphaBlendFade(aButton->screen, aButton->side, (u8*)toolbarbuttonshadowbottomright_bin, 41, 41, aButton->x, aButton->y-(41-aButton->w), translucencyBarIcons);
-        btnDrawMaskedBitmapForButton(aButton, bottomrighttoolbarbuttonalphamask_bin, r, g, b, translucencyBarIcons);
+        if (themeHasBottomRightButton) {
+            if (aButton->highlighted && themeHasBottomRightButtonSelected) {
+                drawThemeImage(themeImageBottomRightButtonSelected, aButton->screen, aButton->x, aButton->y-(36-aButton->w));
+            }
+            else {
+                drawThemeImage(themeImageBottomRightButton, aButton->screen, aButton->x, aButton->y-(36-aButton->w));
+            }
+        }
+        else {
+            gfxDrawSpriteAlphaBlendFade(aButton->screen, aButton->side, (u8*)toolbarbuttonshadowbottomright_bin, 41, 41, aButton->x, aButton->y-(41-aButton->w), translucencyBarIcons);
+            btnDrawMaskedBitmapForButton(aButton, bottomrighttoolbarbuttonalphamask_bin, r, g, b, translucencyBarIcons);
+        }
     }
     else if (aButton->buttonType == btnButtonTypeToolbarBottomLeft) {
-        gfxDrawSpriteAlphaBlendFade(aButton->screen, aButton->side, (u8*)toolbarbuttonshadowbottomleft_bin, 41, 41, aButton->x, aButton->y, translucencyBarIcons);
-        btnDrawMaskedBitmapForButton(aButton, bottomlefttoolbarbuttonalphamask_bin, r, g, b, translucencyBarIcons);
+        if (themeHasBottomLeftButton) {
+            if (aButton->highlighted && themeHasBottomLeftButtonSelected) {
+                drawThemeImage(themeImageBottomLeftButtonSelected, aButton->screen, aButton->x, aButton->y);
+            }
+            else {
+                drawThemeImage(themeImageBottomLeftButton, aButton->screen, aButton->x, aButton->y);
+            }
+        }
+        else {
+            gfxDrawSpriteAlphaBlendFade(aButton->screen, aButton->side, (u8*)toolbarbuttonshadowbottomleft_bin, 41, 41, aButton->x, aButton->y, translucencyBarIcons);
+            btnDrawMaskedBitmapForButton(aButton, bottomlefttoolbarbuttonalphamask_bin, r, g, b, translucencyBarIcons);
+        }
     }
     else if (aButton->buttonType == btnButtonTypePageArrowLeft) {
         btnDrawMaskedBitmapForButton(aButton, arrowleftalphamask_bin, r, g, b, translucencyPageControls);
@@ -271,19 +313,44 @@ void btnDrawButton(button * aButton) {
     }
     
     if (aButton->buttonIcon == btnButtonIconBackArrow) {
-        btnDrawIcon(aButton, (u8*)backarrow_bin);
+        if (themeHasBackSymbol) {
+            drawThemeImage(themeImageBackSymbol, aButton->screen, aButton->x, aButton->y);
+        }
+        else {
+            btnDrawIcon(aButton, (u8*)backarrow_bin);
+        }
     }
     else if (aButton->buttonIcon == btnButtonIconSpanner) {
-        btnDrawIcon(aButton, (u8*)spanner_bin);
+        if (themeHasSettingsSymbol) {
+            drawThemeImage(themeImageSettingsSymbol, aButton->screen, aButton->x, aButton->y);
+        }
+        else {
+            btnDrawIcon(aButton, (u8*)spanner_bin);
+        }
     }
     else if (aButton->buttonIcon == btnButtonIconQuestionMark) {
-        btnDrawIcon(aButton, (u8*)questionmark_bin);
+        if (themeHasHelpSymbol) {
+            drawThemeImage(themeImageHelpSymbol, aButton->screen, aButton->x, aButton->y);
+        }
+        else {
+            btnDrawIcon(aButton, (u8*)questionmark_bin);
+        }
     }
     else if (aButton->buttonIcon == btnButtonIconFolder) {
-        btnDrawIcon(aButton, (u8*)folder_bin);
+        if (themeHasFoldersSymbol) {
+            drawThemeImage(themeImageFoldersSymbol, aButton->screen, aButton->x, aButton->y);
+        }
+        else {
+            btnDrawIcon(aButton, (u8*)folder_bin);
+        }
     }
     else if (aButton->buttonIcon == btnButtonIconHome) {
-        btnDrawIcon(aButton, (u8*)home_bin);
+        if (themeHasHomeSymbol) {
+            drawThemeImage(themeImageHomeSymbol, aButton->screen, aButton->x, aButton->y);
+        }
+        else {
+            btnDrawIcon(aButton, (u8*)home_bin);
+        }
     }
     
     MAFont *font = &MAFontRobotoRegular10;

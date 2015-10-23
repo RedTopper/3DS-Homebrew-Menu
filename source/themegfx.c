@@ -31,7 +31,61 @@ u8 bottomWallpaper[320*240*4];
 bool themeHasBottomWallpaper = false;
 bool bottomWallpaperHasAlpha;
 
+u8 buttonTopLeft[36*36*4];
+bool themeHasTopLeftButton = false;
+bool topLeftButtonHasAlpha;
+
+u8 buttonTopRight[36*36*4];
+bool themeHasTopRightButton = false;
+bool topRightButtonHasAlpha;
+
+u8 buttonBottomLeft[36*36*4];
+bool themeHasBottomLeftButton = false;
+bool bottomLeftButtonHasAlpha;
+
+u8 buttonBottomRight[36*36*4];
+bool themeHasBottomRightButton = false;
+bool bottomRightButtonHasAlpha;
+
+u8 buttonTopLeftSelected[36*36*4];
+bool themeHasTopLeftButtonSelected = false;
+bool topLeftSelectedButtonHasAlpha;
+
+u8 buttonTopRightSelected[36*36*4];
+bool themeHasTopRightButtonSelected = false;
+bool topRightSelectedButtonHasAlpha;
+
+u8 buttonBottomLeftSelected[36*36*4];
+bool themeHasBottomLeftButtonSelected = false;
+bool bottomLeftSelectedButtonHasAlpha;
+
+u8 buttonBottomRightSelected[36*36*4];
+bool themeHasBottomRightButtonSelected = false;
+bool bottomRightSelectedButtonHasAlpha;
+
+u8 helpSymbol[36*36*4];
+bool themeHasHelpSymbol = false;
+bool helpSymbolHasAlpha;
+
+u8 backSymbol[36*36*4];
+bool themeHasBackSymbol = false;
+bool backSymbolHasAlpha;
+
+u8 homeSymbol[36*36*4];
+bool themeHasHomeSymbol = false;
+bool homeSymbolHasAlpha;
+
+u8 settingsSymbol[36*36*4];
+bool themeHasSettingsSymbol = false;
+bool settingsSymbolHasAlpha;
+
+u8 foldersSymbol[36*36*4];
+bool themeHasFoldersSymbol = false;
+bool foldersSymbolHasAlpha;
+
 void loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, u8 * dest, bool * hasImageBool) {
+    *hasImageBool = false;
+    
     bool success = read_png_file(path);
     
     if (success) {
@@ -54,9 +108,6 @@ void loadThemeImage(char * path, char * description, int expectedWidth, int expe
             
             *hasImageBool = true;
         }
-        else {
-            *hasImageBool = false;
-        }
         
         free(out);
     }
@@ -73,12 +124,28 @@ void initThemeImages() {
     
     sprintf(path, "%sappbackgroundselected.png", themePath);
     loadThemeImage(path, "Selected app background", 56, 56, (u8*)appbackgroundalphamask_bin, (u8*)appBackgroundImageSelected, &themeHasAppBackgroundImageSelected);
+    
+    
+    
+    
+    
+    
+    
+    
 
     sprintf(path, "%scartbackground.png", themePath);
     loadThemeImage(path, "Cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, (u8*)cartBackgroundImage, &themeHasCartBackgroundImage);
 
     sprintf(path, "%scartbackgroundselected.png", themePath);
     loadThemeImage(path, "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, (u8*)cartBackgroundImageSelected, &themeHasCartBackgroundImageSelected);
+    
+    
+    
+    
+    
+    
+    
+    
     
     sprintf(path, "%swallpapertop.png", themePath);
     loadThemeImage(path, "Top wallpaper", 400, 240, NULL, (u8*)topWallpaper, &themeHasTopWallpaper);
@@ -88,7 +155,92 @@ void initThemeImages() {
     loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, (u8*)bottomWallpaper, &themeHasBottomWallpaper);
     bottomWallpaperHasAlpha = (bytesPerPixel == 4);
     
+    
+    
+    
+    
+    
+    
+    
+    
+    sprintf(path, "%sbuttontopleft.png", themePath);
+    loadThemeImage(path, "Top left button", 36, 36, NULL, (u8*)buttonTopLeft, &themeHasTopLeftButton);
+    topLeftButtonHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%sbuttontopright.png", themePath);
+    loadThemeImage(path, "Top right button", 36, 36, NULL, (u8*)buttonTopRight, &themeHasTopRightButton);
+    topRightButtonHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%sbuttonbottomleft.png", themePath);
+    loadThemeImage(path, "Bottom left button", 36, 36, NULL, (u8*)buttonBottomLeft, &themeHasBottomLeftButton);
+    bottomLeftButtonHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%sbuttonbottomright.png", themePath);
+    loadThemeImage(path, "Bottom right button", 36, 36, NULL, (u8*)buttonBottomRight, &themeHasBottomRightButton);
+    bottomRightButtonHasAlpha = (bytesPerPixel == 4);
+    
+
+    
+    
+    
+    
+    sprintf(path, "%sbuttontopleftselected.png", themePath);
+    loadThemeImage(path, "Top left selected button", 36, 36, NULL, (u8*)buttonTopLeftSelected, &themeHasTopLeftButtonSelected);
+    topLeftSelectedButtonHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%sbuttontoprightselected.png", themePath);
+    loadThemeImage(path, "Top right selected button", 36, 36, NULL, (u8*)buttonTopRightSelected, &themeHasTopRightButtonSelected);
+    topRightSelectedButtonHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%sbuttonbottomleftselected.png", themePath);
+    loadThemeImage(path, "Bottom left selected button", 36, 36, NULL, (u8*)buttonBottomLeftSelected, &themeHasBottomLeftButtonSelected);
+    bottomLeftSelectedButtonHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%sbuttonbottomrightselected.png", themePath);
+    loadThemeImage(path, "Bottom right selected button", 36, 36, NULL, (u8*)buttonBottomRightSelected, &themeHasBottomRightButtonSelected);
+    bottomRightSelectedButtonHasAlpha = (bytesPerPixel == 4);
+    
+    
+    
+    
+    
+    
+    sprintf(path, "%shelpicon.png", themePath);
+    loadThemeImage(path, "Help icon", 36, 36, NULL, (u8*)helpSymbol, &themeHasHelpSymbol);
+    helpSymbolHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%sbackicon.png", themePath);
+    loadThemeImage(path, "Back icon", 36, 36, NULL, (u8*)backSymbol, &themeHasBackSymbol);
+    backSymbolHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%shomeicon.png", themePath);
+    loadThemeImage(path, "Home icon", 36, 36, NULL, (u8*)homeSymbol, &themeHasHomeSymbol);
+    homeSymbolHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%ssettingsicon.png", themePath);
+    loadThemeImage(path, "Settings icon", 36, 36, NULL, (u8*)settingsSymbol, &themeHasSettingsSymbol);
+    settingsSymbolHasAlpha = (bytesPerPixel == 4);
+    
+    sprintf(path, "%sfoldersicon.png", themePath);
+    loadThemeImage(path, "Folders icon", 36, 36, NULL, (u8*)foldersSymbol, &themeHasFoldersSymbol);
+    foldersSymbolHasAlpha = (bytesPerPixel == 4);
+    
+    
+    
+    
+    
+    
+    
     free(themePath);
+}
+
+void drawThemeImageCheckAlpha(u8 * image, gfxScreen_t screen, int x, int y, int w, int h, bool hasAlpha) {
+    if (hasAlpha) {
+        gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, image, w, h, x, y);
+    }
+    else {
+        gfxDrawSprite(screen, GFX_LEFT, topWallpaper, w, h, x, y);
+    }
 }
 
 void drawThemeImage(themeImageID imageID, gfxScreen_t screen, int x, int y) {
@@ -101,6 +253,13 @@ void drawThemeImage(themeImageID imageID, gfxScreen_t screen, int x, int y) {
             gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, appBackgroundImageSelected, 56, 56, x, y);
             break;
             
+            
+            
+            
+            
+            
+            
+            
         case themeImageCartBackground:
             gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, cartBackgroundImage, 59, 59, x, y);
             break;
@@ -109,24 +268,96 @@ void drawThemeImage(themeImageID imageID, gfxScreen_t screen, int x, int y) {
             gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, cartBackgroundImageSelected, 59, 59, x, y);
             break;
             
+            
+            
+            
+            
+            
+            
+            
         case themeImageTopWallpaper:
-            if (topWallpaperHasAlpha) {
-                gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, topWallpaper, 240, 400, x, y);
-            }
-            else {
-                gfxDrawSprite(screen, GFX_LEFT, topWallpaper, 240, 400, x, y);
-            }
+            drawThemeImageCheckAlpha(topWallpaper, screen, x, y, 240, 400, topWallpaperHasAlpha);
             break;
             
         case themeImageBottomWallpaper:
-            if (bottomWallpaperHasAlpha) {
-                gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, bottomWallpaper, 240, 320, x, y);
-            }
-            else {
-                gfxDrawSprite(screen, GFX_LEFT, bottomWallpaper, 240, 320, x, y);
-            }
-            
+            drawThemeImageCheckAlpha(bottomWallpaper, screen, x, y, 240, 320, bottomWallpaperHasAlpha);
             break;
+            
+            
+            
+            
+            
+            
+            
+            
+        case themeImageTopLeftButton:
+            drawThemeImageCheckAlpha(buttonTopLeft, screen, x, y, 36, 36, topLeftButtonHasAlpha);
+            break;
+            
+        case themeImageTopRightButton:
+            drawThemeImageCheckAlpha(buttonTopRight, screen, x, y, 36, 36, topRightButtonHasAlpha);
+            break;
+            
+        case themeImageBottomLeftButton:
+            drawThemeImageCheckAlpha(buttonBottomLeft, screen, x, y, 36, 36, bottomLeftButtonHasAlpha);
+            break;
+            
+        case themeImageBottomRightButton:
+            drawThemeImageCheckAlpha(buttonBottomRight, screen, x, y, 36, 36, bottomRightButtonHasAlpha);
+            break;
+            
+            
+            
+            
+            
+            
+        case themeImageTopLeftButtonSelected:
+            drawThemeImageCheckAlpha(buttonTopLeftSelected, screen, x, y, 36, 36, topLeftSelectedButtonHasAlpha);
+            break;
+            
+        case themeImageTopRightButtonSelected:
+            drawThemeImageCheckAlpha(buttonTopRightSelected, screen, x, y, 36, 36, topRightSelectedButtonHasAlpha);
+            break;
+            
+        case themeImageBottomLeftButtonSelected:
+            drawThemeImageCheckAlpha(buttonBottomLeftSelected, screen, x, y, 36, 36, bottomLeftSelectedButtonHasAlpha);
+            break;
+            
+        case themeImageBottomRightButtonSelected:
+            drawThemeImageCheckAlpha(buttonBottomRightSelected, screen, x, y, 36, 36, bottomRightSelectedButtonHasAlpha);
+            break;
+            
+            
+            
+            
+            
+            
+        case themeImageHelpSymbol:
+            drawThemeImageCheckAlpha(helpSymbol, screen, x, y, 36, 36, helpSymbolHasAlpha);
+            break;
+            
+        case themeImageBackSymbol:
+            drawThemeImageCheckAlpha(backSymbol, screen, x, y, 36, 36, backSymbolHasAlpha);
+            break;
+            
+        case themeImageHomeSymbol:
+            drawThemeImageCheckAlpha(homeSymbol, screen, x, y, 36, 36, homeSymbolHasAlpha);
+            break;
+            
+        case themeImageSettingsSymbol:
+            drawThemeImageCheckAlpha(settingsSymbol, screen, x, y, 36, 36, settingsSymbolHasAlpha);
+            break;
+            
+        case themeImageFoldersSymbol:
+            drawThemeImageCheckAlpha(foldersSymbol, screen, x, y, 36, 36, foldersSymbolHasAlpha);
+            break;
+            
+            
+            
+            
+            
+            
+            
             
         default:
             break;

@@ -51,6 +51,8 @@ extern int translucencyAppShadow;
 
 extern bool toolbarNeedsUpdate;
 
+extern bool displayTitleID;
+
 #endif
 
 #define ENTRY_PATHLENGTH (128)

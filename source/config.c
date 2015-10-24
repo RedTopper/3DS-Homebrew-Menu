@@ -30,6 +30,7 @@
 #include "settingsIconWater_bin.h"
 #include "settingsIconGrid_bin.h"
 #include "settingsIconRandomTheme_bin.h"
+#include "settingsIconShowTitleID_bin.h"
 
 #include "titles.h"
 #include "themegfx.h"
@@ -359,6 +360,8 @@ void initConfigMenu() {
     addSettingsMenuEntry("Preload titles", "Load entries for the titles menu in the background when the launcher boots. May be unstable on devices with a large number of titles", (u8*)settingsIconPreloadTitles_bin, &preloadTitles, &settingsMenu, &settingsToggleBool, &preloadTitles, NULL);
     
     addSettingsMenuEntry("Theme settings", "Configure the theme for the launcher", (u8*)settingsIconTheme_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSettings, NULL);
+    
+    addSettingsMenuEntry("Display title ID", "Displays the title ID for the selected item in the title menu. The ID is shown in the bottom left corner of the top screen.", (u8*)settingsIconShowTitleID_bin, &displayTitleID, &settingsMenu, &settingsToggleBool, &displayTitleID, NULL);
 }
 
 void handleSettingsMenuSelection(menu_s *m) {

@@ -239,7 +239,7 @@ void drawThemeImageCheckAlpha(u8 * image, gfxScreen_t screen, int x, int y, int 
         gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, image, w, h, x, y);
     }
     else {
-        gfxDrawSprite(screen, GFX_LEFT, topWallpaper, w, h, x, y);
+        gfxDrawSprite(screen, GFX_LEFT, image, w, h, x, y);
     }
 }
 

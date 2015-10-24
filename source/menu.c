@@ -885,6 +885,8 @@ void quitSettings(menu_s* m) {
     setConfigBool("keysExciteWater", keysExciteWater, configTypeMain);
     setConfigBool("dPadNavigation", dPadNavigation, configTypeMain);
     
+    setConfigBool("randomTheme", randomTheme, configTypeMain);
+    
     setConfigBool("waterEnabled", waterEnabled, configTypeTheme);
     setConfigBool("showLogo", showLogo, configTypeTheme);
     setConfigInt("panelAlphaTop", panelAlphaTop, configTypeTheme);
@@ -920,16 +922,36 @@ bool trueBool = true;
 void updateMenuTicks(menu_s* m, char * selectedString) {
     menuEntry_s* me = m->entries;
     
-    while(me) {
-        if (strcmp(me->name, selectedString) == 0) {
-            me->showTick = &trueBool;
+    if (m == &themesMenu && randomTheme) {
+        bool first = true;
+        while (me) {
+            if (first) {
+                me->showTick = &trueBool;
+                first = false;
+            }
+            else {
+                me->showTick = NULL;
+            }
+            
+            me=me->next;
         }
-        else {
-            me->showTick = NULL;
-        }
-        
-        me=me->next;
     }
+    else {
+        
+        
+        while(me) {
+            if (strcmp(me->name, selectedString) == 0) {
+                me->showTick = &trueBool;
+            }
+            else {
+                me->showTick = NULL;
+            }
+            
+            me=me->next;
+        }
+    }
+    
+    
     
     //    free(cfn);
 }

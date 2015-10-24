@@ -29,6 +29,7 @@
 #include "settingsIconDPadControls_bin.h"
 #include "settingsIconWater_bin.h"
 #include "settingsIconGrid_bin.h"
+#include "settingsIconRandomTheme_bin.h"
 
 #include "titles.h"
 #include "themegfx.h"
@@ -45,6 +46,8 @@ bool showRegionFree = true;
 bool sortAlpha = false;
 bool showAppBackgrounds = true;
 bool wrapScrolling = true;
+
+bool randomTheme = false;
 
 bool themesLoaded = false;
 //#warning Remove all references to this
@@ -138,6 +141,16 @@ void buildThemesList() {
     themesMenu.scrollBarPos=0;
     themesMenu.scrollTarget=0;
     themesMenu.atEquilibrium=false;
+    
+    menuEntry_s randomEntry;
+    strcpy(randomEntry.name, "Random theme");
+    strcpy(randomEntry.description, "A random theme will be selected each time the launcher boots. Excludes the default theme.");
+    strcpy(randomEntry.author, "");
+    memcpy(randomEntry.iconData, settingsIconRandomTheme_bin, sizeof(randomEntry.iconData));
+    randomEntry.hidden = false;
+    randomEntry.isTitleEntry = false;
+    randomEntry.isRegionFreeEntry = false;
+    addMenuEntryCopy(&themesMenu, &randomEntry);
     
     char * smdhName = "/theme.smdh";
     int folderPathLen = strlen(themesPath);

@@ -22,6 +22,8 @@ extern "C" {
     extern bool showAppBackgrounds;
     extern bool wrapScrolling;
     
+    extern bool randomTheme;
+    
     extern buttonList themeButtons;
     
 #define configTypeMain 10
@@ -45,6 +47,7 @@ extern "C" {
     void handleSettingsMenuSelection(menu_s *m);
     void addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * showTick, menu_s *m,  void (*callback)(), void *callbackObject1, void *callbackObject2);
     
+    void buildThemesList();
     void setTheme(char * themeName);
     
 //    void drawThemesList();

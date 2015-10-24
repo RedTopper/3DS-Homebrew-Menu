@@ -481,9 +481,24 @@ int main()
 	aptOpenSession();
 	APT_SetAppCpuTimeLimit(NULL, 0);
 	aptCloseSession();
-
-	initBackground();
-//	initErrors();
+    
+    // Moved this here as rand() is used for choosing a random theme
+    srand(svcGetSystemTick());
+    
+    randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
+    
+    if (randomTheme) {
+        buildThemesList();
+        int minimum_number = 2;
+        int max_number = themesMenu.numEntries - 1;
+        int r = rand() % (max_number + 1 - minimum_number) + minimum_number;
+        menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
+        setTheme(randomEntry->name);
+    }
+    
+    initBackground();
+    //	initErrors();
+    
 	initMenu(&menu);
 	initTitleBrowser(&titleBrowser, NULL);
 
@@ -496,7 +511,7 @@ int main()
 
 	sdmcPrevious = sdmcCurrent;
 	nextSdCheck = osGetTime()+250;
-	srand(svcGetSystemTick());
+//	srand(svcGetSystemTick());
     
     gamecardWasIn = regionFreeGamecardIn;
     
@@ -700,13 +715,20 @@ int main()
             }
             else if (menuStatus == menuStatusThemeSelect) {
                 if (updateGrid(&themesMenu)) {
-                    menuEntry_s* me = getMenuEntry(&themesMenu, themesMenu.selectedEntry);
-                    
-                    if (me->showTick == NULL) {
-                        setTheme(me->name);
-                        char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
-                        updateMenuTicks(&themesMenu, currentThemeName);
+                    if (themesMenu.selectedEntry == 0) {
+                        randomTheme = !randomTheme;
+                        updateMenuTicks(&themesMenu, NULL);
                     }
+                    else {
+                        if (me->showTick == NULL) {
+                            randomTheme = false;
+                            menuEntry_s* me = getMenuEntry(&themesMenu, themesMenu.selectedEntry);
+                            setTheme(me->name);
+                            char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
+                            updateMenuTicks(&themesMenu, currentThemeName);
+                        }
+                    }
+                    
                 }
             }
             else if (menuStatus == menuStatusHelp) {

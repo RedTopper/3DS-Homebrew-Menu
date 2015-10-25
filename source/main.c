@@ -335,6 +335,9 @@ void renderFrame()
                 drawGrid(&foldersMenu);
                 drawBottomStatusBar("Select folder");
             }
+            else if (menuStatus == menuStatusTitleFiltering) {
+                putTitleMenu("Tap titles to show or hide them");
+            }
             else if (menuStatus == menuStatusSettings) {
                 drawGrid(&settingsMenu);
                 drawBottomStatusBar("Settings");
@@ -406,11 +409,17 @@ void __appExit()
 {
 }
 
-void showTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, int newMenuStatus) {
+void showTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, int newMenuStatus, bool filter, bool forceHideRegionFree) {
     if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles");
+        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", filter, forceHideRegionFree);
         titleMenuInitialLoadDone = true;
     }
+    
+//    if (forceHideRegionFree) {
+//        menuEntry_s *first = getMenuEntry(aTitleMenu, 0);
+//        strcpy(first->name, "foo");
+//        first->hidden = true;
+//    }
     
     updateMenuIconPositions(aTitleMenu);
     gotoFirstIcon(aTitleMenu);
@@ -420,21 +429,26 @@ void showTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, int newM
 
 void showSVDTTitleSelect() {
     if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles");
+        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", true, false);
         titleMenuInitialLoadDone = true;
     }
     
-    showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleBrowser);
+    showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleBrowser, true, false);
     hbmenu_state = HBMENU_TITLESELECT;
 }
 
 void showHomeMenuTitleSelect() {
-    showTitleMenu(&titleBrowser, &titleMenu, menuStatusHomeMenuApps);
+    showTitleMenu(&titleBrowser, &titleMenu, menuStatusHomeMenuApps, true, false);
+}
+
+void showFilterTitleSelect() {
+    titleMenuInitialLoadDone = false;
+    showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleFiltering, false, true);
+    updateFilterTicks(&titleMenu);
 }
 
 void closeTitleBrowser() {
     setMenuStatus(menuStatusIcons);
-//    updateMenuIconPositions(&menu);
     checkReturnToGrid(&menu);
     hbmenu_state = HBMENU_DEFAULT;
 }
@@ -448,7 +462,7 @@ void threadMain(void *arg) {
         svcWaitSynchronization(threadRequest, U64_MAX);
         svcClearEvent(threadRequest);
         
-        updateTitleMenu(&titleBrowser, &titleMenu, NULL);
+        updateTitleMenu(&titleBrowser, &titleMenu, NULL, true, false);
         
         titleMenuInitialLoadDone = true;
         
@@ -554,6 +568,9 @@ int main()
         
         if (menuStatus == menuStatusOpenHomeMenuApps) {
             showHomeMenuTitleSelect();
+        }
+        else if (menuStatus == menuStatusOpenTitleFiltering) {
+            showFilterTitleSelect();
         }
         
 		if (nextSdCheck < osGetTime()) {
@@ -683,6 +700,12 @@ int main()
                     launchTitleFromTitleMenu();
                 }
             }
+            else if (menuStatus == menuStatusTitleFiltering) {
+                if (updateGrid(&titleMenu)) {
+                    menuEntry_s* me = getMenuEntry(&titleMenu, titleMenu.selectedEntry);
+                    toggleTitleFilter(me, &titleMenu);
+                }
+            }
             else if (menuStatus == menuStatusFolders) {
                 if (updateGrid(&foldersMenu)) {
                     menuEntry_s* me = getMenuEntry(&foldersMenu, foldersMenu.selectedEntry);
@@ -786,7 +809,7 @@ int main()
                             //If the title menu has not been loaded yet
                             if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
                                 //Force an updatae to the title menu and then break out of the main loop to boot the title
-                                updateTitleMenu(&titleBrowser, &titleMenu, "Preparing title");
+                                updateTitleMenu(&titleBrowser, &titleMenu, "Preparing title", true, false);
                                 titleMenuInitialLoadDone = true;
                                 menuForceReturnTrue = true;
 //                                break;

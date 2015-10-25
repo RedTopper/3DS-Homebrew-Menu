@@ -11,6 +11,7 @@
 #include "MAGFX.h"
 
 extern int debugValues[100];
+
 menu_s titleMenu;
 titleBrowser_s titleBrowser;
 
@@ -233,11 +234,11 @@ void refreshTitleBrowser(titleBrowser_s* tb) {
     }
 }
 
-void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb) {
+void getIgnoredTitleIDs() {
     if (!ignoreTitleIDsLoaded) {
         ignoreTitleIDsLoaded = true;
         numIgnoreTitleIDs = 0;
-        int maxTextSize = 9 * maxIgnoreTitleIDs;
+        int maxTextSize = 20 * maxIgnoreTitleIDs;
         char ignoreText[maxTextSize];
         
         FILE *fp = fopen(ignoredTitlesPath, "r");
@@ -255,27 +256,87 @@ void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb) {
         }
         fclose(fp);
     }
+}
+
+void saveIgnoredTitleIDs() {
+    int n = 0;
     
-    if (!titleMenu) {
+    menuEntry_s * me = titleMenu.entries;
+    while (me) {
+        if (!me->showTick) {
+            n++;
+        }
+        
+        me = me->next;
+    }
+    
+    char ignored[n*20];
+    strcpy(ignored, "");
+    
+    int c=0;
+    
+    me = titleMenu.entries;
+    while (me) {
+        if (!me->showTick) {
+            char sTitleId[17];
+            sprintf(sTitleId, "%llu", me->title_id);
+            strcat(ignored, sTitleId);
+            
+            if (c < n-1) {
+                strcat(ignored, ",");
+            }
+            
+            c++;
+        }
+        
+        me = me->next;
+    }
+    
+    FILE* fSave = fopen(ignoredTitlesPath, "w" );
+    if (fSave != NULL) {
+        fputs(ignored, fSave);
+    }
+    fclose(fSave);
+    
+    ignoreTitleIDsLoaded = false;
+    getIgnoredTitleIDs();
+}
+
+bool titleIgnored(u64 titleID) {
+    char sTitleId[17];
+    sprintf(sTitleId, "%llu", titleID);
+    
+    int iIgnoreTitleID;
+    for (iIgnoreTitleID=0; iIgnoreTitleID<numIgnoreTitleIDs; iIgnoreTitleID++) {
+        if (strcmp(sTitleId, ignoreTitleIDs[iIgnoreTitleID]) == 0) {
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree) {
+    getIgnoredTitleIDs();
+    
+    if (!aTitleMenu) {
         return;
     }
     
-    titleMenu->entries=NULL;
-    titleMenu->numEntries=0;
-    titleMenu->selectedEntry=0;
-    titleMenu->scrollLocation=0;
-    titleMenu->scrollVelocity=0;
-    titleMenu->scrollBarSize=0;
-    titleMenu->scrollBarPos=0;
-    titleMenu->scrollTarget=0;
-    titleMenu->atEquilibrium=false;
+    aTitleMenu->entries=NULL;
+    aTitleMenu->numEntries=0;
+    aTitleMenu->selectedEntry=0;
+    aTitleMenu->scrollLocation=0;
+    aTitleMenu->scrollVelocity=0;
+    aTitleMenu->scrollBarSize=0;
+    aTitleMenu->scrollBarPos=0;
+    aTitleMenu->scrollTarget=0;
+    aTitleMenu->atEquilibrium=false;
     
-//    int numEntries = 0;
-    
-    addMenuEntryCopy(titleMenu, &regionfreeEntry);
-//    titleMenu->numEntries = titleMenu->numEntries + 1;
-    updateMenuIconPositions(titleMenu);
-//    numEntries++;
+    if (!forceHideRegionFree) {
+        addMenuEntryCopy(aTitleMenu, &regionfreeEntry);
+        updateMenuIconPositions(aTitleMenu);
+    }
     
     u64 cartTitleId = 0;
     
@@ -296,21 +357,13 @@ void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb) {
                 cartTitleId = aTitle.title_id;
             }
             else {
-                char sTitleId[17];
-                sprintf(sTitleId, "%llu", aTitle.title_id);
-                bool titleIgnored = false;
-                
-                int iIgnoreTitleID;
-                for (iIgnoreTitleID=0; iIgnoreTitleID<numIgnoreTitleIDs; iIgnoreTitleID++) {
-                    if (strcmp(sTitleId, ignoreTitleIDs[iIgnoreTitleID]) == 0) {
-                        titleIgnored = true;
-                        break;
-                    }
-                }
-                
-                if (titleIgnored) {
+                if (filter && titleIgnored(aTitle.title_id)) {
                     continue;
                 }
+                
+//                if (titleIgnored) {
+//                    continue;
+//                }
                 
                 if (!aTitle.icon) {
                     loadTitleInfoIcon(&aTitle);
@@ -335,19 +388,20 @@ void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb) {
                     strcpy(me.description, "System Transfer");
                 }
                 
-                addMenuEntryCopy(titleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
 //                titleMenu->numEntries = titleMenu->numEntries + 1;
-                updateMenuIconPositions(titleMenu);
+                updateMenuIconPositions(aTitleMenu);
             }
         }
     }
     
-    menuEntry_s * rf = &titleMenu->entries[0];
-    rf->title_id = cartTitleId;
-    rf->hidden = false;
-    updateMenuIconPositions(titleMenu);
+    if (!forceHideRegionFree) {
+        menuEntry_s * rf = &aTitleMenu->entries[0];
+        rf->title_id = cartTitleId;
+        rf->hidden = false;
+    }
     
-//    titleMenu->numEntries = numEntries;
+    updateMenuIconPositions(aTitleMenu);
 }
 
 titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid) {
@@ -371,7 +425,7 @@ titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid) {
     return NULL;
 }
 
-void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText) {
+void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText, bool filter, bool forceHideRegionFree) {
     titlemenuIsUpdating = true;
     
     if (!preloadTitles) {
@@ -398,7 +452,37 @@ void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char *
     
     refreshTitleBrowser(aTitleBrowser);
     clearMenuEntries(aTitleMenu);
-    populateTitleMenu(aTitleMenu, aTitleBrowser);
+    populateTitleMenu(aTitleMenu, aTitleBrowser, filter, forceHideRegionFree);
     
     titlemenuIsUpdating = false;
 }
+
+//bool trueBool = true;
+
+void updateFilterTicks(menu_s * aTitleMenu) {
+    menuEntry_s * me = aTitleMenu->entries;
+    while (me) {
+        if (titleIgnored(me->title_id)) {
+            me->showTick = NULL;
+        }
+        else {
+            me->showTick = &trueBool;
+        }
+        
+        me = me->next;
+    }
+}
+
+void toggleTitleFilter(menuEntry_s *me, menu_s * m) {
+    if (me->showTick == NULL) {
+        me->showTick = &trueBool;
+    }
+    else {
+        me->showTick = NULL;
+    }
+}
+
+
+
+
+

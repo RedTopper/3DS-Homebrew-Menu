@@ -54,13 +54,19 @@ void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter);
 //void drawTitleBrowser(titleBrowser_s* tb);
 titleInfo_s* findTitleBrowser(titleBrowser_s* tb, u8 mediatype, u64 tid);
 
-void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb);
+void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree);
 //void drawTitleMenu(menuEntry_s* titleMenu);
 
 titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid);
 
 void refreshTitleBrowser(titleBrowser_s* tb);
 
-void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText);
+void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText, bool filter, bool forceHideRegionFree);
+
+void updateFilterTicks(menu_s * aTitleMenu);
+
+void toggleTitleFilter(menuEntry_s *me, menu_s * m);
+
+void saveIgnoredTitleIDs();
 
 #endif

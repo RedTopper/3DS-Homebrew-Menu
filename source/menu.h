@@ -26,6 +26,8 @@ extern int menuStatusThemeSelect;
 extern int menuStatusWaterSettings;
 extern int menuStatusThemeSettings;
 extern int menuStatusGridSettings;
+extern int menuStatusOpenTitleFiltering;
+extern int menuStatusTitleFiltering;
 
 //Checked by main.c so that the menu can force the title browser to close
 extern bool killTitleBrowser;
@@ -41,6 +43,8 @@ extern bool menuReloadRequired;
 extern bool dPadNavigation;
 
 extern bool menuForceReturnTrue;
+
+extern bool trueBool;
 
 extern int translucencyTopBar;
 extern int translucencyBottomBar;

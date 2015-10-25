@@ -67,13 +67,13 @@ void initHelpMenu() {
     helpMenu.atEquilibrium=false;
     
     //addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * showTick, menu_s *m,  void (*callback)(), void *callbackObject);
-    addSettingsMenuEntry("About", "Details of the Homebrew Launcher and the Grid Launcher.", (u8*)helpIconAbout_bin, false, &helpMenu, &showHelpDetails, "Homebrew Grid Launcher beta 55", "Original homebrew launcher by smealum.\nhttp://smealum.github.io/3ds/\n\nThis grid layout version by mashers.\nhttps://gbatemp.net/members/mashers.366855/");
+    addSettingsMenuEntry("About", "Details of the Homebrew Launcher and the Grid Launcher.", (u8*)helpIconAbout_bin, false, &helpMenu, &showHelpDetails, "Homebrew Grid Launcher beta 58", "Original homebrew launcher by smealum.\nhttp://smealum.github.io/3ds/\n\nThis grid layout version by mashers.\nhttps://gbatemp.net/members/mashers.366855/");
     
     addSettingsMenuEntry("Folders", "How to set up subfolders in the launcher.", (u8*)helpIconFolders_bin, false, &helpMenu, &showHelpDetails, foldersHelpTitle, foldersHelpBody);
     
     addSettingsMenuEntry("Themes", "How to set up themes in the launcher.", (u8*)settingsIconTheme_bin, false, &helpMenu, &showHelpDetails, themesHelpTitle, themesHelpBody);
     
-    addSettingsMenuEntry("Ignoring titles", "How to exclude titles from the title launcher.", (u8*)helpIconIgnoredTitles_bin, false, &helpMenu, &showHelpDetails, "Ignoring titles", "Launch the title you want to exclude, then check bootlog.txt in the root of the SD card to get the title ID. Create a text file at /gridlauncher/ignoredtitles.txt and add the title ID, separating the titles with commas and making sure there are no spaces or returns. For example:\n\n1125969163342080,1125968626499840,...");
+    addSettingsMenuEntry("Ignoring titles", "How to exclude titles from the title launcher.", (u8*)helpIconIgnoredTitles_bin, false, &helpMenu, &showHelpDetails, "Ignoring titles", "Select 'Title filtering' from the settings. Select a title and press A or touch it again to toggle its visibility in the title launcher and save manager.");
 }
 
 void showHelpCommon() {

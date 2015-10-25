@@ -31,6 +31,7 @@
 #include "settingsIconGrid_bin.h"
 #include "settingsIconRandomTheme_bin.h"
 #include "settingsIconShowTitleID_bin.h"
+#include "helpIconIgnoredTitles_bin.h"
 
 #include "titles.h"
 #include "themegfx.h"
@@ -51,8 +52,6 @@ bool wrapScrolling = true;
 bool randomTheme = false;
 
 bool themesLoaded = false;
-//#warning Remove all references to this
-//buttonList themeButtons;
 
 void loadConfigWithType(int configType);
 
@@ -345,6 +344,11 @@ void settingsSetMenuStatus(int * status) {
         updateMenuIconPositions(&gridSettingsMenu);
         gotoFirstIcon(&gridSettingsMenu);
     }
+//    else if (*status == menuStatusTitleFiltering) {
+//        getIgnoredTitleIDs();
+//        updateMenuIconPositions(&titleMenu);
+//        gotoFirstIcon(&titleMenu);
+//    }
     
     setMenuStatus(*status);
 }
@@ -377,6 +381,8 @@ void initConfigMenu() {
     addSettingsMenuEntry("Theme settings", "Configure the theme for the launcher", (u8*)settingsIconTheme_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSettings, NULL);
     
     addSettingsMenuEntry("Display title ID", "Displays the title ID for the selected item in the title menu. The ID is shown in the bottom left corner of the top screen.", (u8*)settingsIconShowTitleID_bin, &displayTitleID, &settingsMenu, &settingsToggleBool, &displayTitleID, NULL);
+    
+    addSettingsMenuEntry("Title filtering", "Show or hide system titles from the title launcher and save manager", (u8*)helpIconIgnoredTitles_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusOpenTitleFiltering, NULL);
 }
 
 void handleSettingsMenuSelection(menu_s *m) {

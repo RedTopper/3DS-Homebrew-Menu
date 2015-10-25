@@ -65,6 +65,8 @@ int menuStatusThemeSelect = 14;
 int menuStatusWaterSettings = 15;
 int menuStatusThemeSettings = 16;
 int menuStatusGridSettings = 17;
+int menuStatusOpenTitleFiltering = 18;
+int menuStatusTitleFiltering = 19;
 
 bool killTitleBrowser = false;
 //bool thirdRowVisible = false;
@@ -185,6 +187,11 @@ void handleMenuTopLeftActions(int source) {
 
         setMenuStatus(menuStatusIcons);
     }
+    else if (menuStatus == menuStatusTitleFiltering) {
+        titleMenuInitialLoadDone = false;
+        saveIgnoredTitleIDs();
+        setMenuStatus(menuStatusSettings);
+    }
     else if (menuStatus == menuStatusColourAdjust) {
         saveColour(settingsColour);
         setMenuStatus(menuStatusColourSettings);
@@ -223,7 +230,7 @@ void toolbarTopRightAction() {
 void toolbarBottomLeftAction() {
     if (menuStatus == menuStatusIcons) {
         if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-            updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles");
+            updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", true, false);
             titleMenuInitialLoadDone = true;
             showHomeMenuApps();
         }
@@ -419,7 +426,7 @@ void drawBottomStatusBar(char* title) {
         buttonIconLeft = btnButtonIconBackArrow;
         buttonIconRight = btnButtonIconQuestionMark;
     }
-    else if (menuStatus == menuStatusColourSettings || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusWaterSettings || menuStatus == menuStatusThemeSettings || menuStatus == menuStatusGridSettings) {
+    else if (menuStatus == menuStatusColourSettings || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusWaterSettings || menuStatus == menuStatusThemeSettings || menuStatus == menuStatusGridSettings || menuStatus == menuStatusTitleFiltering) {
         buttonIconLeft = btnButtonIconBackArrow;
     }
 

@@ -32,10 +32,12 @@ extern bool killTitleBrowser;
 
 extern int menuStatus;
 
+extern int totalRows;
+
 extern bool alphaImagesDrawn;
 extern bool pageControlPanelsDrawn;
 extern bool menuReloadRequired;
-extern bool thirdRowVisible;
+//extern bool thirdRowVisible;
 extern bool dPadNavigation;
 
 extern bool menuForceReturnTrue;
@@ -147,7 +149,7 @@ void scanMenuEntry(menuEntry_s* me);
 
 void setMenuStatus(int status);
 void menuRegionFreeToggled();
-void toggleThirdRow();
+//void toggleThirdRow();
 void toggleTranslucency();
 void loadThemeConfig();
 

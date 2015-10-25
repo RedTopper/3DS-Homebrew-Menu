@@ -67,7 +67,7 @@ int menuStatusThemeSettings = 16;
 int menuStatusGridSettings = 17;
 
 bool killTitleBrowser = false;
-bool thirdRowVisible = false;
+//bool thirdRowVisible = false;
 bool dPadNavigation = true;
 
 int translucencyTopBar = 255;
@@ -131,11 +131,11 @@ void menuRegionFreeToggled() {
 
 bool menuReloadRequired = false;
 
-void toggleThirdRow() {
-    totalRows = (totalRows == 3) ? 2 : 3;
-    thirdRowVisible = (totalRows == 3);
-    updateMenuIconPositions(&settingsMenu);
-}
+//void toggleThirdRow() {
+//    totalRows = (totalRows == 3) ? 2 : 3;
+//    thirdRowVisible = (totalRows == 3);
+//    updateMenuIconPositions(&settingsMenu);
+//}
 
 void addToolbarButton(int buttonType, void (*callback)(), int tag) {
     button aButton;
@@ -326,7 +326,7 @@ void initMenu(menu_s* m)
     loadThemeConfig();
     
     //Used for ticking the icon in settings
-    thirdRowVisible = (totalRows == 3);
+//    thirdRowVisible = (totalRows == 3);
     
     /*
      Menu init
@@ -442,6 +442,9 @@ int * coordsForMenuEntry(int row, int col, menu_s *m) {
     
     if (totalRows == 3) {
         xOffset += 31;
+    }
+    else if (totalRows == 1) {
+        xOffset -= 41;
     }
     
     int x = xOffset - ( row * ENTRY_ICON_HEIGHT ) - (row * gap);

@@ -246,6 +246,20 @@ void initWaterMenu() {
     addSettingsMenuEntry("Keys excite water", "Pressing D-Pad keys makes the water excite", (u8*)settingsIconKeysExciteWater_bin, &keysExciteWater, &waterMenu, &settingsToggleBool, &keysExciteWater, NULL);
 }
 
+void cycleRows() {
+    int maxRows = 3;
+    int minRows = 1;
+    
+    totalRows++;
+    
+    if (totalRows > maxRows) {
+        totalRows = minRows;
+    }
+    
+    updateMenuIconPositions(&gridSettingsMenu);
+    updateMenuIconPositions(&settingsMenu);
+}
+
 bool gridSettingsMenuNeedsInit = true;
 
 void initGridSettingsMenu() {
@@ -265,7 +279,7 @@ void initGridSettingsMenu() {
     gridSettingsMenu.scrollTarget=0;
     gridSettingsMenu.atEquilibrium=false;
     
-    addSettingsMenuEntry("Third row of icons", "Display a third row of icons in the menu grids", (u8*)settingsIconThirdRow_bin, &thirdRowVisible, &gridSettingsMenu, &toggleThirdRow, NULL, NULL);
+    addSettingsMenuEntry("Rows", "Select the number of rows to be shown on the launcher grids", (u8*)settingsIconThirdRow_bin, NULL, &gridSettingsMenu, &cycleRows, NULL, NULL);
     
     addSettingsMenuEntry("Empty icon backgrounds", "Choose whether empty icon positions should show a background", (u8*)settingsIconAppBackgrounds_bin, &showAppBackgrounds, &gridSettingsMenu, &settingsToggleBool, &showAppBackgrounds, NULL);
     
@@ -314,6 +328,7 @@ void settingsSetMenuStatus(int * status) {
         char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
         updateMenuTicks(&themesMenu, currentThemeName);
         checkReturnToGrid(&themesMenu);
+        updateMenuIconPositions(&themesMenu);
     }
     else if (*status == menuStatusWaterSettings) {
         initWaterMenu();

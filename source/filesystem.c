@@ -78,7 +78,7 @@ bool fileExists(char* path, FS_archive* archive)
 	return true;
 }
 
-extern int debugValues[4];
+extern int debugValues[100];
 
 void addFileToMenu(menu_s* m, char* execPath)
 {

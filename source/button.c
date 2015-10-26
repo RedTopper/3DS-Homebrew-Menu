@@ -30,7 +30,7 @@
 #include "buttoncornerbottomleft_bin.h"
 #include "buttoncornerbottomright_bin.h"
 
-#include "buttontickalphamask_bin.h"
+#include "tick_bin.h"
 
 #include "menu.h"
 
@@ -306,10 +306,8 @@ void btnDrawButton(button * aButton) {
     
     rgbColour * dark = darkTextColour();
     
-    if (aButton->selected) {
-        u8 tick[40*40*4];
-        MAGFXImageWithRGBAndAlphaMask(dark->r, dark->g, dark->b, (u8*)buttontickalphamask_bin, tick, 40, 40);
-        gfxDrawSpriteAlphaBlend(aButton->screen, aButton->side, tick, 40, 40, aButton->x, aButton->y+aButton->h-40);
+    if (aButton->selected) {        
+        gfxDrawSpriteAlphaBlend(aButton->screen, aButton->side, (u8*)tick_bin, 48, 48, aButton->x, aButton->y);
     }
     
     if (aButton->buttonIcon == btnButtonIconBackArrow) {

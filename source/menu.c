@@ -32,7 +32,7 @@
 #include "alert.h"
 #include "MAGFX.h"
 
-#include "tickalphamask_bin.h"
+#include "tick_bin.h"
 
 #include "touchblock.h"
 
@@ -469,7 +469,7 @@ u8 pageUnselected[13*13*4];
 u8 cartBackground[59*59*4];
 u8 cartBackgroundSelected[59*59*4];
 u8 appBackgroundSelected[56*56*4];
-u8 tick [48*48*4];
+//u8 tick [48*48*4];
 bool alphaImagesDrawn = false;
 
 u8 pageControlPanelLeft[81*36*4];
@@ -487,7 +487,6 @@ void drawGrid(menu_s* m) {
         MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)cartbackgroundalphamask_bin, cartBackgroundSelected, 59, 59);
         MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)cartbackgroundalphamask_bin, cartBackground, 59, 59);
         MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)appbackgroundalphamask_bin, appBackgroundSelected, 56, 56);
-        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)tickalphamask_bin, tick, 48, 48);
         
         alphaImagesDrawn = true;
     }
@@ -1539,7 +1538,8 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m)
      Draw a tick on the icon if it is ticked (e.g. for settings)
      */
     if (me->showTick != NULL && *(me->showTick)) {
-        gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, tick, 48, 48, x+7, y+8);
+        gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)tick_bin, 48, 48, x+7, y+8);
+//        gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, tick, 48, 48, x+7, y+8);
     }
     
     /*

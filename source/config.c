@@ -32,6 +32,7 @@
 #include "settingsIconRandomTheme_bin.h"
 #include "settingsIconShowTitleID_bin.h"
 #include "helpIconIgnoredTitles_bin.h"
+#include "settingsIconAnimation_bin.h"
 
 #include "titles.h"
 #include "themegfx.h"
@@ -285,6 +286,8 @@ void initGridSettingsMenu() {
     addSettingsMenuEntry("Wraparound scrolling", "Choose whether page scrolling should wrap around at the beginning and of the grid", (u8*)settingsIconWrapScrolling_bin, &wrapScrolling, &gridSettingsMenu, &settingsToggleBool, &wrapScrolling, NULL);
     
     addSettingsMenuEntry("D-Pad Navigation", "Allows the use of the corner icons on the bottom screen using the D-Pad", (u8*)settingsIconDPadControls_bin, &dPadNavigation, &gridSettingsMenu, &settingsToggleBool, &dPadNavigation, NULL);
+    
+    addSettingsMenuEntry("Grid animation", "Choose whether moving between pages in grids should be animated", (u8*)settingsIconAnimation_bin, &animatedGrids, &gridSettingsMenu, &settingsToggleBool, &animatedGrids, NULL);
 }
 
 bool themeSettingsMenuNeedsInit = true;

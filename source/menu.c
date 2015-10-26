@@ -71,6 +71,7 @@ int menuStatusTitleFiltering = 19;
 bool killTitleBrowser = false;
 //bool thirdRowVisible = false;
 bool dPadNavigation = true;
+bool animatedGrids = true;
 
 int translucencyTopBar = 255;
 int translucencyBottomBar = 255;
@@ -329,6 +330,7 @@ void initMenu(menu_s* m)
     keysExciteWater = getConfigBoolForKey("keysExciteWater", true, configTypeMain);
     dPadNavigation = getConfigBoolForKey("dPadNavigation", true, configTypeMain);
     displayTitleID = getConfigBoolForKey("displayTitleID", false, configTypeMain);
+    animatedGrids = getConfigBoolForKey("animatedGrids", true, configTypeMain);
     
     loadThemeConfig();
     
@@ -476,60 +478,7 @@ u8 pageControlPanelLeft[81*36*4];
 u8 pageControlPanelRight[81*36*4];
 bool pageControlPanelsDrawn = false;
 
-void drawGrid(menu_s* m) {
-    rgbColour * inactiveCol = inactiveColour();
-    rgbColour * tintCol = tintColour();
-    
-    if (!alphaImagesDrawn) {
-        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)appbackgroundalphamask_bin, appBackground, 56, 56);
-        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageiconalphamask_bin, pageUnselected, 13, 13);
-        MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)pageiconalphamask_bin, pageSelected, 13, 13);
-        MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)cartbackgroundalphamask_bin, cartBackgroundSelected, 59, 59);
-        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)cartbackgroundalphamask_bin, cartBackground, 59, 59);
-        MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)appbackgroundalphamask_bin, appBackgroundSelected, 56, 56);
-        
-        alphaImagesDrawn = true;
-    }
-    
-    if (!pageControlPanelsDrawn) {
-        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelLeftAlphaMask_bin, pageControlPanelLeft, 81, 36);
-        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelRightAlphaMask_bin, pageControlPanelRight, 81, 36);
-        
-        pageControlPanelsDrawn = true;
-    }
-    
-    MAGFXDrawPanel(GFX_TOP);
-    
-    if (m->totalPages > 1) {
-        if (m->pagePosition > 0 || wrapScrolling) {
-            gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)pageControlPanelLeft, 81, 36, 80, 0, panelAlphaBottom);
-            btnDrawButton(&pageArrowLeft);
-        }
-        
-        if (m->pagePosition < (m->totalPages - 1) || wrapScrolling) {
-            gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)pageControlPanelRight, 81, 36, 80, 284, panelAlphaBottom);
-            btnDrawButton(&pageArrowRight);
-        }
-        
-        int totalIndicatorWidth = 13 * m->totalPages;
-        int pageIndicatorX = 5;
-        int pageIndicatorY = (320-totalIndicatorWidth)/2;
-        
-        int count;
-        
-        for (count=0; count < m->pagePosition; count++) {
-            gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, pageUnselected, 13, 13, pageIndicatorX, pageIndicatorY, translucencyPageControls);
-            pageIndicatorY += 13;
-        }
-        
-        gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, pageSelected, 13, 13, pageIndicatorX, pageIndicatorY);
-        pageIndicatorY += 13;
-        
-        for (count=0; count<(m->totalPages - m->pagePosition - 1); count++) {
-            gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, pageUnselected, 13, 13, pageIndicatorX, pageIndicatorY, translucencyPageControls);
-            pageIndicatorY += 13;
-        }
-    }
+void drawGridWithPage(menu_s* m, int page, int pageXOffset, bool gridOnly) {
     
     int totalDrawn = 0;
     
@@ -537,8 +486,8 @@ void drawGrid(menu_s* m) {
     int i=0;
     int h=0;
     while(me) {
-        if (!me->hidden && me->page == m->pagePosition) {
-            h+=drawMenuEntry(me, GFX_BOTTOM, (i==m->selectedEntry && m->rowPosition>-1), m);
+        if (!me->hidden && me->page == page) {
+            h+=drawMenuEntry(me, GFX_BOTTOM, (i==m->selectedEntry && m->rowPosition>-1), m, pageXOffset);
             totalDrawn++;
         }
         
@@ -547,10 +496,9 @@ void drawGrid(menu_s* m) {
     }
     
     if (showAppBackgrounds) {
-//        int totalRows = m->totalRows;
         int totalSpaces = totalRows * totalCols;
         int numPadding = totalSpaces - totalDrawn;
-
+        
         int i;
         int r = totalRows-1;
         int c = totalCols-1;
@@ -559,13 +507,15 @@ void drawGrid(menu_s* m) {
             int x = coords[0];
             int y = coords[1];
             
+            y += pageXOffset;
+            
             if (themeHasAppBackgroundImage) {
                 drawThemeImage(themeImageAppBackground, GFX_BOTTOM, x+3, y+4);
             }
             else {
                 gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, appBackground, 56, 56, x+3, y+4, translucencyAppBackgrounds);
             }
-
+            
             c--;
             if (c < 0) {
                 c = totalCols-1;
@@ -577,6 +527,86 @@ void drawGrid(menu_s* m) {
             }
             
         }
+    }
+    
+    
+    if (!gridOnly) {
+        rgbColour * inactiveCol = inactiveColour();
+        rgbColour * tintCol = tintColour();
+        
+        if (!alphaImagesDrawn) {
+            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)appbackgroundalphamask_bin, appBackground, 56, 56);
+            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageiconalphamask_bin, pageUnselected, 13, 13);
+            MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)pageiconalphamask_bin, pageSelected, 13, 13);
+            MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)cartbackgroundalphamask_bin, cartBackgroundSelected, 59, 59);
+            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)cartbackgroundalphamask_bin, cartBackground, 59, 59);
+            MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)appbackgroundalphamask_bin, appBackgroundSelected, 56, 56);
+            
+            alphaImagesDrawn = true;
+        }
+        
+        if (!pageControlPanelsDrawn) {
+            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelLeftAlphaMask_bin, pageControlPanelLeft, 81, 36);
+            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelRightAlphaMask_bin, pageControlPanelRight, 81, 36);
+            
+            pageControlPanelsDrawn = true;
+        }
+        
+        MAGFXDrawPanel(GFX_TOP);
+        
+        if (m->totalPages > 1) {
+            if (page > 0 || wrapScrolling) {
+                gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)pageControlPanelLeft, 81, 36, 80, 0, panelAlphaBottom);
+                btnDrawButton(&pageArrowLeft);
+            }
+            
+            if (page < (m->totalPages - 1) || wrapScrolling) {
+                gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)pageControlPanelRight, 81, 36, 80, 284, panelAlphaBottom);
+                btnDrawButton(&pageArrowRight);
+            }
+            
+            int totalIndicatorWidth = 13 * m->totalPages;
+            int pageIndicatorX = 5;
+            int pageIndicatorY = (320-totalIndicatorWidth)/2;
+            
+            int count;
+            
+            for (count=0; count < page; count++) {
+                gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, pageUnselected, 13, 13, pageIndicatorX, pageIndicatorY, translucencyPageControls);
+                pageIndicatorY += 13;
+            }
+            
+            gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, pageSelected, 13, 13, pageIndicatorX, pageIndicatorY);
+            pageIndicatorY += 13;
+            
+            for (count=0; count<(m->totalPages - page - 1); count++) {
+                gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, pageUnselected, 13, 13, pageIndicatorX, pageIndicatorY, translucencyPageControls);
+                pageIndicatorY += 13;
+            }
+        }
+    }
+}
+
+int transitionFromPage = -1;
+int transitionOutPixel;
+int transitionInPixel;
+int transitionSpeed;
+
+void drawGrid(menu_s* m) {
+    
+    if (transitionFromPage > -1) {
+        drawGridWithPage(m, transitionFromPage, transitionOutPixel, true);
+        drawGridWithPage(m, m->pagePosition, transitionInPixel, false);
+        
+        transitionOutPixel -= transitionSpeed;
+        transitionInPixel -= transitionSpeed;
+        
+        if (transitionInPixel == 0) {
+            transitionFromPage = -1;
+        }
+    }
+    else {
+        drawGridWithPage(m, m->pagePosition, 0, false);
     }
 }
 
@@ -751,7 +781,32 @@ int indexOfMenuEntryAtPageRowColInMenu(int page, int row, int col, menu_s* m) {
 
 int indexOfFirstVisibleMenuEntryOnPage(int page, menu_s* m);
 
+#define transitionDirectionLeft 10
+#define transitionDirectionRight 20
+
+void startTransition(int direction, int fromPage) {
+    transitionOutPixel = 0;
+    int absTransitionSpeed = 64;
+    
+    if (direction == transitionDirectionLeft) {
+        transitionInPixel = 320;
+        transitionSpeed = absTransitionSpeed;
+    }
+    else if (direction == transitionDirectionRight) {
+        transitionInPixel = -320;
+        transitionSpeed = -absTransitionSpeed;
+    }
+    
+    transitionFromPage = fromPage;
+}
+
 void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
+    if (m->totalPages < 2) {
+        return;
+    }
+    
+    int previousPage = m->pagePosition;
+    
     m->pagePosition = m->pagePosition + 1;
     bool pageChanged = false;
     
@@ -770,6 +825,10 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     }
     
     if (pageChanged) {
+        if (animatedGrids) {
+            startTransition(transitionDirectionLeft, previousPage);
+        }
+        
         btnListUnHighlight(&toolbarButtons);
         dPadSelectedToolbarButton = -1;
         
@@ -796,6 +855,12 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
 }
 
 void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
+    if (m->totalPages < 2) {
+        return;
+    }
+    
+    int previousPage = m->pagePosition;
+    
     m->pagePosition = m->pagePosition - 1;
     bool pageChanged = false;
     
@@ -814,6 +879,10 @@ void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     }
     
     if (pageChanged) {
+        if (animatedGrids) {
+            startTransition(transitionDirectionRight, previousPage);
+        }
+        
         btnListUnHighlight(&toolbarButtons);
         dPadSelectedToolbarButton = -1;
         
@@ -915,6 +984,7 @@ void quitSettings(menu_s* m) {
     setConfigBool("dPadNavigation", dPadNavigation, configTypeMain);
     setConfigBool("randomTheme", randomTheme, configTypeMain);
     setConfigBool("displayTitleID", displayTitleID, configTypeMain);
+    setConfigBool("animatedGrids", animatedGrids, configTypeMain);
     
     setConfigBool("waterEnabled", waterEnabled, configTypeTheme);
     setConfigBool("showLogo", showLogo, configTypeTheme);
@@ -1075,6 +1145,10 @@ void setPositionsToCurrentMenuSelection(menu_s* m) {
 }
 
 bool updateGrid(menu_s* m) {
+    if (transitionFromPage > -1) {
+        return false;
+    }
+    
     if(!m) {
         return false;
     }
@@ -1486,7 +1560,7 @@ void initMenuEntry(menuEntry_s* me, char* execPath, char* name, char* descriptio
     me->title_id = 0;
 }
 
-int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m) {
+int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m, int pageXOffset) {
     if(!me) {
         return 0;
     }
@@ -1496,6 +1570,8 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m)
     int * coords = coordsForMenuEntry(me->row, me->col, m);
     int x = coords[0];
     int y = coords[1];
+    
+    y += pageXOffset;
     
     me->iconX = x;
     me->iconY = y;

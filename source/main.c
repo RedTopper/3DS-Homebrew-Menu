@@ -307,7 +307,7 @@ void renderFrame()
         }else if(hbmenu_state == HBMENU_REGIONFREE){
             if(regionFreeGamecardIn)
             {
-                drawMenuEntry(&gamecardMenuEntry, GFX_BOTTOM, true, &menu);
+                drawMenuEntry(&gamecardMenuEntry, GFX_BOTTOM, true, &menu, 0);
                 
                 drawAlert("Region free launcher", "The region free launcher is ready to run your out-of-region gamecard !\n\nA : Play\nB : Cancel", NULL, 0, NULL);
             }else{

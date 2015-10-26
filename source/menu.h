@@ -41,6 +41,7 @@ extern bool pageControlPanelsDrawn;
 extern bool menuReloadRequired;
 //extern bool thirdRowVisible;
 extern bool dPadNavigation;
+extern bool animatedGrids;
 
 extern bool menuForceReturnTrue;
 
@@ -147,7 +148,7 @@ void drawBottomStatusBar(char* title);
 //menu entry stuff
 void initEmptyMenuEntry(menuEntry_s* me);
 void initMenuEntry(menuEntry_s* me, char* execPath, char* name, char* description, char* author, u8* iconData);
-int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m);
+int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m, int pageXOffset);
 
 void scanMenuEntry(menuEntry_s* me);
 

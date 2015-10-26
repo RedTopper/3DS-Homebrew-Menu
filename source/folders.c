@@ -57,15 +57,15 @@ char * folderPathForFolderName(char * folderName) {
 void setFolder(char * folderName) {
     char * folderPath = folderPathForFolderName(folderName);
 
-//    char * currentFolder = getConfigStringForKey("currentfolder", "/3ds/", configTypeMain);
-
-//    if (strcmp(folderPath, currentFolder) != 0) {
-        setConfigString("currentfolder", folderPath, configTypeMain);
-        saveConfigWithType(configTypeMain);
-        setMenuStatus(menuStatusFolderChanged);
-//    }
+    setConfigString("currentfolder", folderPath, configTypeMain);
+    saveConfigWithType(configTypeMain);
+    setMenuStatus(menuStatusFolderChanged);
     
     free(folderPath);
+    
+    if (animatedGrids) {
+        startTransition(transitionDirectionUp, foldersMenu.pagePosition, &foldersMenu);
+    }
 }
 
 void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int folderPathLen) {

@@ -82,6 +82,11 @@ extern bool displayTitleID;
 #define fptToInt(v) ((v)>>10)
 #define intToFpt(v) ((v)<<10)
 
+#define transitionDirectionLeft 10
+#define transitionDirectionRight 20
+#define transitionDirectionUp 30
+#define transitionDirectionDown 40
+
 typedef struct menuEntry_s
 {
 	char executablePath[ENTRY_PATHLENGTH+1];
@@ -148,7 +153,7 @@ void drawBottomStatusBar(char* title);
 //menu entry stuff
 void initEmptyMenuEntry(menuEntry_s* me);
 void initMenuEntry(menuEntry_s* me, char* execPath, char* name, char* description, char* author, u8* iconData);
-int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m, int pageXOffset);
+int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m, int pageYOffset, int pageXOffset, bool drawTopScreenInfo);
 
 void scanMenuEntry(menuEntry_s* me);
 
@@ -163,5 +168,6 @@ void handleNonGridToolbarNavigation();
 void checkReturnToGrid(menu_s* m);
 
 void updateMenuTicks(menu_s* m, char * selectedString);
+void startTransition(int direction, int fromPage, menu_s* fromMenu);
 
 

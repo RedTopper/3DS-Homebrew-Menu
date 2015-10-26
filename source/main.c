@@ -307,7 +307,7 @@ void renderFrame()
         }else if(hbmenu_state == HBMENU_REGIONFREE){
             if(regionFreeGamecardIn)
             {
-                drawMenuEntry(&gamecardMenuEntry, GFX_BOTTOM, true, &menu, 0);
+                drawMenuEntry(&gamecardMenuEntry, GFX_BOTTOM, true, &menu, 0, 0, false);
                 
                 drawAlert("Region free launcher", "The region free launcher is ready to run your out-of-region gamecard !\n\nA : Play\nB : Cancel", NULL, 0, NULL);
             }else{
@@ -435,22 +435,37 @@ void showSVDTTitleSelect() {
     
     showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleBrowser, true, false);
     hbmenu_state = HBMENU_TITLESELECT;
+    
+    if (animatedGrids) {
+        startTransition(transitionDirectionUp, menu.pagePosition, &menu);
+    }
 }
 
 void showHomeMenuTitleSelect() {
     showTitleMenu(&titleBrowser, &titleMenu, menuStatusHomeMenuApps, true, false);
+    
+    if (animatedGrids) {
+        startTransition(transitionDirectionUp, menu.pagePosition, &menu);
+    }
 }
 
 void showFilterTitleSelect() {
     titleMenuInitialLoadDone = false;
     showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleFiltering, false, true);
     updateFilterTicks(&titleMenu);
+    if (animatedGrids) {
+        startTransition(transitionDirectionDown, settingsMenu.pagePosition, &settingsMenu);
+    }
 }
 
 void closeTitleBrowser() {
     setMenuStatus(menuStatusIcons);
     checkReturnToGrid(&menu);
     hbmenu_state = HBMENU_DEFAULT;
+    
+    if (animatedGrids) {
+        startTransition(transitionDirectionDown, titleMenu.pagePosition, &titleMenu);
+    }
 }
 
 bool gamecardWasIn;

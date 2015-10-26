@@ -160,6 +160,10 @@ void showSettings() {
     updateMenuIconPositions(&settingsMenu);
     gotoFirstIcon(&settingsMenu);
     setMenuStatus(menuStatusSettings);
+    
+    if (animatedGrids) {
+        startTransition(transitionDirectionDown, menu.pagePosition, &menu);
+    }
 }
 
 void checkReturnToGrid(menu_s* m) {
@@ -187,11 +191,19 @@ void handleMenuTopLeftActions(int source) {
         }
 
         setMenuStatus(menuStatusIcons);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionUp, foldersMenu.pagePosition, &foldersMenu);
+        }
     }
     else if (menuStatus == menuStatusTitleFiltering) {
         titleMenuInitialLoadDone = false;
         saveIgnoredTitleIDs();
         setMenuStatus(menuStatusSettings);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionUp, titleMenu.pagePosition, &titleMenu);
+        }
     }
     else if (menuStatus == menuStatusColourAdjust) {
         saveColour(settingsColour);
@@ -200,15 +212,44 @@ void handleMenuTopLeftActions(int source) {
     else if (menuStatus == menuStatusColourSettings) {
         alphaImagesDrawn = false;
         setMenuStatus(menuStatusThemeSettings);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionUp, colourSelectMenu.pagePosition, &colourSelectMenu);
+        }
     }
     else if (menuStatus == menuStatusHelp) {
         handleHelpBackButton();
     }
-    else if (menuStatus == menuStatusThemeSettings || menuStatus == menuStatusGridSettings) {
+    else if (menuStatus == menuStatusGridSettings) {
         setMenuStatus(menuStatusSettings);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionUp, gridSettingsMenu.pagePosition, &gridSettingsMenu);
+        }
     }
-    else if (menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusThemeSelect || menuStatus == menuStatusWaterSettings) {
+    else if (menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings) {
         setMenuStatus(menuStatusThemeSettings);
+    }
+    else if (menuStatus == menuStatusThemeSelect) {
+        setMenuStatus(menuStatusThemeSettings);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionUp, themesMenu.pagePosition, &themesMenu);
+        }
+    }
+    else if (menuStatus == menuStatusThemeSettings) {
+        setMenuStatus(menuStatusSettings);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionUp, themeSettingsMenu.pagePosition, &themeSettingsMenu);
+        }
+    }
+    else if (menuStatus == menuStatusWaterSettings) {
+        setMenuStatus(menuStatusThemeSettings);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionUp, waterMenu.pagePosition, &waterMenu);
+        }
     }
 }
 
@@ -478,7 +519,7 @@ u8 pageControlPanelLeft[81*36*4];
 u8 pageControlPanelRight[81*36*4];
 bool pageControlPanelsDrawn = false;
 
-void drawGridWithPage(menu_s* m, int page, int pageXOffset, bool gridOnly) {
+void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, bool gridOnly) {
     
     int totalDrawn = 0;
     
@@ -487,7 +528,7 @@ void drawGridWithPage(menu_s* m, int page, int pageXOffset, bool gridOnly) {
     int h=0;
     while(me) {
         if (!me->hidden && me->page == page) {
-            h+=drawMenuEntry(me, GFX_BOTTOM, (i==m->selectedEntry && m->rowPosition>-1), m, pageXOffset);
+            h+=drawMenuEntry(me, GFX_BOTTOM, (i==m->selectedEntry && m->rowPosition>-1), m, pageYOffset, pageXOffset, !gridOnly);
             totalDrawn++;
         }
         
@@ -507,7 +548,8 @@ void drawGridWithPage(menu_s* m, int page, int pageXOffset, bool gridOnly) {
             int x = coords[0];
             int y = coords[1];
             
-            y += pageXOffset;
+            x += pageXOffset;
+            y += pageYOffset;
             
             if (themeHasAppBackgroundImage) {
                 drawThemeImage(themeImageAppBackground, GFX_BOTTOM, x+3, y+4);
@@ -591,12 +633,33 @@ int transitionFromPage = -1;
 int transitionOutPixel;
 int transitionInPixel;
 int transitionSpeed;
+int transitionDirection;
+menu_s * transitionFromMenu;
 
 void drawGrid(menu_s* m) {
-    
     if (transitionFromPage > -1) {
-        drawGridWithPage(m, transitionFromPage, transitionOutPixel, true);
-        drawGridWithPage(m, m->pagePosition, transitionInPixel, false);
+        int transitionOutPixelX = 0;
+        int transitionOutPixelY = 0;
+        
+        int transitionInPixelX = 0;
+        int transitionInPixelY = 0;
+        
+        if (transitionDirection == transitionDirectionLeft || transitionDirection == transitionDirectionRight) {
+            transitionOutPixelY = transitionOutPixel;
+            transitionInPixelY = transitionInPixel;
+        }
+        else if (transitionDirection == transitionDirectionUp || transitionDirection == transitionDirectionDown) {
+            transitionOutPixelX = transitionOutPixel;
+            transitionInPixelX = transitionInPixel;
+        }
+        
+        if (transitionFromMenu) {
+            drawGridWithPage(transitionFromMenu, transitionFromPage, transitionOutPixelY, transitionOutPixelX, true);
+        }
+        
+        if (m) {
+            drawGridWithPage(m, m->pagePosition, transitionInPixelY, transitionInPixelX, false);
+        }
         
         transitionOutPixel -= transitionSpeed;
         transitionInPixel -= transitionSpeed;
@@ -606,7 +669,7 @@ void drawGrid(menu_s* m) {
         }
     }
     else {
-        drawGridWithPage(m, m->pagePosition, 0, false);
+        drawGridWithPage(m, m->pagePosition, 0, 0, false);
     }
 }
 
@@ -622,22 +685,26 @@ void drawMenu(menu_s* m)
 
     
     if (menuStatusIcons == menuStatusIcons) {
+        if (m->numEntries == 1) {
+            char * emptyFolderText = "Empty folder";
+            int len = MATextWidthInPixels(emptyFolderText, &MAFontRobotoRegular16);
+            rgbColour * dark = darkTextColour();
+            MADrawText(GFX_BOTTOM, GFX_LEFT, 110, (320/2)-(len/2), emptyFolderText, &MAFontRobotoRegular16, dark->r, dark->g, dark->b);
+            
+            if (transitionFromPage > -1) {
+                drawGrid(NULL);
+            }
+        }
+        else {
+            drawGrid(m);
+        }
+        
         char * cfn = currentFolderName();
         char title[strlen(cfn) + strlen("Folder: ")];
         strcpy(title, "Folder: ");
         strcat(title, cfn);
         drawBottomStatusBar(title);
         free(cfn);
-        
-        if (m->numEntries == 1) {
-            char * emptyFolderText = "Empty folder";
-            int len = MATextWidthInPixels(emptyFolderText, &MAFontRobotoRegular16);
-            rgbColour * dark = darkTextColour();
-            MADrawText(GFX_BOTTOM, GFX_LEFT, 110, (320/2)-(len/2), emptyFolderText, &MAFontRobotoRegular16, dark->r, dark->g, dark->b);
-        }
-        else {
-            drawGrid(m);
-        }
 	}
 }
 
@@ -781,12 +848,8 @@ int indexOfMenuEntryAtPageRowColInMenu(int page, int row, int col, menu_s* m) {
 
 int indexOfFirstVisibleMenuEntryOnPage(int page, menu_s* m);
 
-#define transitionDirectionLeft 10
-#define transitionDirectionRight 20
-
-void startTransition(int direction, int fromPage) {
-    transitionOutPixel = 0;
-    int absTransitionSpeed = 64;
+void startTransition(int direction, int fromPage, menu_s* fromMenu) {
+    int absTransitionSpeed = 80;
     
     if (direction == transitionDirectionLeft) {
         transitionInPixel = 320;
@@ -796,8 +859,19 @@ void startTransition(int direction, int fromPage) {
         transitionInPixel = -320;
         transitionSpeed = -absTransitionSpeed;
     }
+    else if (direction == transitionDirectionDown) {
+        transitionInPixel = 240;
+        transitionSpeed = absTransitionSpeed;
+    }
+    else if (direction == transitionDirectionUp) {
+        transitionInPixel = -240;
+        transitionSpeed = -absTransitionSpeed;
+    }
     
+    transitionDirection = direction;
     transitionFromPage = fromPage;
+    transitionOutPixel = 0;
+    transitionFromMenu = fromMenu;
 }
 
 void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
@@ -826,7 +900,7 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     
     if (pageChanged) {
         if (animatedGrids) {
-            startTransition(transitionDirectionLeft, previousPage);
+            startTransition(transitionDirectionLeft, previousPage, m);
         }
         
         btnListUnHighlight(&toolbarButtons);
@@ -880,7 +954,7 @@ void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     
     if (pageChanged) {
         if (animatedGrids) {
-            startTransition(transitionDirectionRight, previousPage);
+            startTransition(transitionDirectionRight, previousPage, m);
         }
         
         btnListUnHighlight(&toolbarButtons);
@@ -1014,6 +1088,10 @@ void quitSettings(menu_s* m) {
     updateMenuIconPositions(m);
     setMenuStatus(menuStatusIcons);
     checkReturnToGrid(m);
+    
+    if (animatedGrids) {
+        startTransition(transitionDirectionUp, settingsMenu.pagePosition, &settingsMenu);
+    }
 }
 
 bool trueBool = true;
@@ -1062,6 +1140,15 @@ void showFolders() {
     free(cfn);
     checkReturnToGrid(&foldersMenu);
     setMenuStatus(menuStatusFolders);
+    
+    if (animatedGrids) {
+        if (menu.numEntries > 1) {
+            startTransition(transitionDirectionDown, menu.pagePosition, &menu);
+        }
+        else {
+            startTransition(transitionDirectionDown, 0, NULL);
+        }
+    }
 }
 
 void showHomeMenuApps() {
@@ -1560,7 +1647,7 @@ void initMenuEntry(menuEntry_s* me, char* execPath, char* name, char* descriptio
     me->title_id = 0;
 }
 
-int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m, int pageXOffset) {
+int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m, int pageYOffset, int pageXOffset, bool drawTopScreenInfo) {
     if(!me) {
         return 0;
     }
@@ -1571,7 +1658,8 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
     int x = coords[0];
     int y = coords[1];
     
-    y += pageXOffset;
+    x += pageXOffset;
+    y += pageYOffset;
     
     me->iconX = x;
     me->iconY = y;
@@ -1663,7 +1751,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
     /*
      Top screen stuff for the selected item
      */
-    if (selected) {
+    if (selected && drawTopScreenInfo) {
         rgbColour * dark = darkTextColour();
         
         int top = 240-50-18;

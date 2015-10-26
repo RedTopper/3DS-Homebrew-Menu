@@ -216,6 +216,10 @@ void settingsShowColours() {
     updateMenuIconPositions(&colourSelectMenu);
     gotoFirstIcon(&colourSelectMenu);
     setMenuStatus(menuStatusColourSettings);
+    
+    if (animatedGrids) {
+        startTransition(transitionDirectionDown, themeSettingsMenu.pagePosition, &themeSettingsMenu);
+    }
 }
 
 void settingsSetMenuStatus(int * status);
@@ -331,27 +335,38 @@ void settingsSetMenuStatus(int * status) {
         updateMenuTicks(&themesMenu, currentThemeName);
         checkReturnToGrid(&themesMenu);
         updateMenuIconPositions(&themesMenu);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionDown, themeSettingsMenu.pagePosition, &themeSettingsMenu);
+        }
     }
     else if (*status == menuStatusWaterSettings) {
         initWaterMenu();
         updateMenuIconPositions(&waterMenu);
         gotoFirstIcon(&waterMenu);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionDown, settingsMenu.pagePosition, &settingsMenu);
+        }
     }
     else if (*status == menuStatusThemeSettings) {
         initThemeSettingsMenu();
         updateMenuIconPositions(&themeSettingsMenu);
         gotoFirstIcon(&themeSettingsMenu);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionDown, settingsMenu.pagePosition, &settingsMenu);
+        }
     }
     else if (*status == menuStatusGridSettings) {
         initGridSettingsMenu();
         updateMenuIconPositions(&gridSettingsMenu);
         gotoFirstIcon(&gridSettingsMenu);
+        
+        if (animatedGrids) {
+            startTransition(transitionDirectionDown, settingsMenu.pagePosition, &settingsMenu);
+        }
     }
-//    else if (*status == menuStatusTitleFiltering) {
-//        getIgnoredTitleIDs();
-//        updateMenuIconPositions(&titleMenu);
-//        gotoFirstIcon(&titleMenu);
-//    }
     
     setMenuStatus(*status);
 }

@@ -429,23 +429,6 @@ void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char *
     titlemenuIsUpdating = true;
     
     if (!preloadTitles) {
-        u8 dimmer[4];
-        dimmer[0] = 128;
-        dimmer[1] = 128;
-        dimmer[2] = 128;
-        dimmer[3] = 200;
-
-        int x, y;
-        
-        int totalWidth = 240;
-        int totalHeight = 320;
-        
-        for (y = 0; y < totalHeight; y++) {
-            for (x = 0; x < totalWidth; x++) {
-                gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, dimmer, 1, 1, x, y);
-            }
-        }
-        
         drawDisk(titleText);
         gfxFlip();
     }

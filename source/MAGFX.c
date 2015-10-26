@@ -117,6 +117,23 @@ u8 disk[64*64*4];
 bool diskDrawn = false;
 
 void drawDisk(char * text) {
+    u8 dimmer[4];
+    dimmer[0] = 128;
+    dimmer[1] = 128;
+    dimmer[2] = 128;
+    dimmer[3] = 200;
+    
+    int x, y;
+    
+    int totalWidth = 240;
+    int totalHeight = 320;
+    
+    for (y = 0; y < totalHeight; y++) {
+        for (x = 0; x < totalWidth; x++) {
+            gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, dimmer, 1, 1, x, y);
+        }
+    }
+    
     int diskX = (240-64)/2;
     
     if (!diskDrawn) {

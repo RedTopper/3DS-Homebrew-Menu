@@ -1603,6 +1603,8 @@ bool updateMenu(menu_s* m) {
     else if (menuStatus == menuStatusFolderChanged) {
 //        logText("Reloading main menu");
         
+        drawDisk("Loading folder");
+        gfxFlip();
         reloadMenu(m);
         gotoFirstIcon(m);
         setMenuStatus(menuStatusIcons);

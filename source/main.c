@@ -93,12 +93,6 @@ void logBoot(u64 title_id) {
 }
 
 void launchSVDTFromTitleMenu() {
-    /*
-     THANK YOU to Suloku from GBATemp for the solution
-     to passing the selected title to the save manager
-     (writing the title_id to tid.bin on the SD card)
-     */
-    
     menuEntry_s* me = getMenuEntry(&titleMenu, titleMenu.selectedEntry);
     
     if (me) {
@@ -107,29 +101,10 @@ void launchSVDTFromTitleMenu() {
                 
                 titleInfo_s* ret = NULL;
                 ret = getTitleWithID(&titleBrowser, me->title_id);
-                
-                if (ret) {
-                    FILE * pFile;
-                    mkdir("sdmc:/svdt", S_IRWXO);
-                    pFile = fopen ("sdmc:/svdt/tid.bin", "wb");
-                    if (pFile != NULL){
-                        logBoot(me->title_id);
-                        
-                        targetProcessId = -2;
-                        fwrite (&me->title_id , sizeof(char), sizeof(me->title_id), pFile);
-                        target_title = *ret;
-                        die = true;
-                    }
-                    else {
-                        //Could not write the tid.bin file. Show an error here
-                        logText("Could not write tid.bin");
-                    }
-                    fclose (pFile);
-                }
-                else {
-                    //Could not find title. Show an error here
-                    logText("Could not match title");
-                }
+                logBoot(me->title_id);
+                targetProcessId = -2;
+                target_title = *ret;
+                die = true;
             }
             else {
                 logText("Invalid title ID for menu entry");
@@ -176,29 +151,6 @@ void launchTitleFromTitleMenu() {
                     logBoot(me->title_id);
                     exitServices();
                     regionFreeRun2(ret->title_id & 0xffffffff, (ret->title_id >> 32) & 0xffffffff, ret->mediatype, 0x1);
-                    
-                    /*
-                    
-                    FILE * pFile;
-                    mkdir("sdmc:/svdt", S_IRWXO);
-                    pFile = fopen ("sdmc:/svdt/tid.bin", "wb");
-                    if (pFile != NULL){
-                        char titleIDString[128];
-                        sprintf(titleIDString, "Booting title ID: %llu", me->title_id);
-                        logText(titleIDString);
-                        
-                        targetProcessId = -2;
-                        fwrite (&me->title_id , sizeof(char), sizeof(me->title_id), pFile);
-                        target_title = *ret;
-                        die = true;
-                    }
-                    else {
-                        //Could not write the tid.bin file. Show an error here
-                        logText("Could not write tid.bin");
-                    }
-                    fclose (pFile);
-                     
-                     */
                 }
                 else {
                     //Could not find title. Show an error here
@@ -484,6 +436,8 @@ void threadMain(void *arg) {
     }
 }
 
+#include "logText.h"
+
 int main()
 {
 	srvInit();
@@ -499,13 +453,13 @@ int main()
 	netloader_init();
 
 	osSetSpeedupEnable(true);
-
+    
     mkdir(rootPath, 777);
     mkdir(themesPath, 777);
     mkdir(foldersPath, 777);
     mkdir(defaultThemePath, 777);
     mkdir("/gridlauncher/screenshots/", 777);
-
+    
 	// offset potential issues caused by homebrew that just ran
 	aptOpenSession();
 	APT_SetAppCpuTimeLimit(NULL, 0);
@@ -669,24 +623,6 @@ int main()
 			if(hidKeysDown()&KEY_A && titleBrowser.selected)
 			{
                 launchSVDTFromTitleMenu();
-                
-////                logText("SVDT Exit B");
-//				targetProcessId = -2;
-//				target_title = *titleBrowser.selected;
-//                /* "A very bad way to pass tid to svdt"
-//                        By Suloku @ GBATemp - thank you Soluku!
-//                 */
-//                menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
-//                if(strcmp(me->name, "svdt") == 0){
-//                    FILE * pFile;
-//                    mkdir("sdmc:/svdt", S_IRWXO);
-//                    pFile = fopen ("sdmc:/svdt/tid.bin", "wb");
-//                    if (pFile != NULL){
-//                        fwrite (&target_title.title_id , sizeof(char), sizeof(target_title.title_id), pFile);
-//                    }
-//                    fclose (pFile);
-//                }
-//				break;
 			}
             else if(hidKeysDown()&KEY_B) {
                 closeTitleBrowser();

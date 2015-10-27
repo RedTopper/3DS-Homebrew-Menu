@@ -521,6 +521,38 @@ bool pageControlPanelsDrawn = false;
 
 void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, bool gridOnly) {
     
+    rgbColour * inactiveCol = inactiveColour();
+    rgbColour * tintCol = tintColour();
+    
+    /*
+     Prepare translucent images for drawing
+     */
+    if (!alphaImagesDrawn) {
+        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)appbackgroundalphamask_bin, appBackground, 56, 56);
+        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageiconalphamask_bin, pageUnselected, 13, 13);
+        MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)pageiconalphamask_bin, pageSelected, 13, 13);
+        MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)cartbackgroundalphamask_bin, cartBackgroundSelected, 59, 59);
+        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)cartbackgroundalphamask_bin, cartBackground, 59, 59);
+        MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)appbackgroundalphamask_bin, appBackgroundSelected, 56, 56);
+        
+        alphaImagesDrawn = true;
+    }
+    
+    /*
+     Prepare page controls for drawing
+     */
+    if (!pageControlPanelsDrawn) {
+        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelLeftAlphaMask_bin, pageControlPanelLeft, 81, 36);
+        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelRightAlphaMask_bin, pageControlPanelRight, 81, 36);
+        
+        pageControlPanelsDrawn = true;
+    }
+    
+    if (!gridOnly) {   
+        //Draw top screen translucent panel
+        MAGFXDrawPanel(GFX_TOP);
+    }
+    
     int totalDrawn = 0;
     
     menuEntry_s* me=m->entries;
@@ -573,29 +605,10 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
     
     
     if (!gridOnly) {
-        rgbColour * inactiveCol = inactiveColour();
-        rgbColour * tintCol = tintColour();
         
-        if (!alphaImagesDrawn) {
-            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)appbackgroundalphamask_bin, appBackground, 56, 56);
-            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageiconalphamask_bin, pageUnselected, 13, 13);
-            MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)pageiconalphamask_bin, pageSelected, 13, 13);
-            MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)cartbackgroundalphamask_bin, cartBackgroundSelected, 59, 59);
-            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)cartbackgroundalphamask_bin, cartBackground, 59, 59);
-            MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)appbackgroundalphamask_bin, appBackgroundSelected, 56, 56);
-            
-            alphaImagesDrawn = true;
-        }
-        
-        if (!pageControlPanelsDrawn) {
-            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelLeftAlphaMask_bin, pageControlPanelLeft, 81, 36);
-            MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelRightAlphaMask_bin, pageControlPanelRight, 81, 36);
-            
-            pageControlPanelsDrawn = true;
-        }
-        
-        MAGFXDrawPanel(GFX_TOP);
-        
+        /*
+         Draw bottom screen paging arrows and page indicators
+         */
         if (m->totalPages > 1) {
             if (page > 0 || wrapScrolling) {
                 gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)pageControlPanelLeft, 81, 36, 80, 0, panelAlphaBottom);

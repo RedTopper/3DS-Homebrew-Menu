@@ -135,15 +135,12 @@ void exitServices() {
     srvExit();
 }
 
-void launchTitleFromTitleMenu() {
-    menuEntry_s* me = getMenuEntry(&titleMenu, titleMenu.selectedEntry);
+void launchTitleFromMenu(menu_s* m) {
+    menuEntry_s* me = getMenuEntry(m, m->selectedEntry);
     
     if (me) {
         if (me->title_id) {
             if (me->title_id > 0) {
-                
-                
-                
                 titleInfo_s* ret = NULL;
                 ret = getTitleWithID(&titleBrowser, me->title_id);
                 
@@ -163,7 +160,9 @@ void launchTitleFromTitleMenu() {
         }
         else {
             //No title ID found. Show an error here
-            logText("No title ID for menu entry found");
+            logText("1 No title ID for menu entry found");
+            die = true;
+//            return bootApp(me->executablePath, &me->descriptor.executableMetadata);
         }
     }
     else {
@@ -648,7 +647,7 @@ int main()
             
             if (menuStatus == menuStatusHomeMenuApps) {
                 if (updateGrid(&titleMenu)) {
-                    launchTitleFromTitleMenu();
+                    launchTitleFromMenu(&titleMenu);
                 }
             }
             else if (menuStatus == menuStatusTitleFiltering) {
@@ -738,7 +737,8 @@ int main()
                         titleInfo_s* ret = NULL;
                         for(i=0; i<me->descriptor.numTargetTitles; i++)
                         {
-                            launchSVDTFromTitleMenu();
+//                            launchSVDTFromTitleMenu();
+                            launchTitleFromMenu(&menu);
                         }
                         
                         if(ret)
@@ -812,14 +812,20 @@ int main()
         releaseTouchThread();
     }
 
+    if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
+        logText("Region free boot");
+    }
+    else {
+        logText(me->executablePath);
+    }
+    
     exitServices();
     
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
-//        return regionFreeRun();
         return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
     }
     
 	regionFreeExit();
     
-	return bootApp(me->executablePath, &me->descriptor.executableMetadata);
+	return bootApp(me->executablePath, &me->descriptor.executableMetadata, NULL);
 }

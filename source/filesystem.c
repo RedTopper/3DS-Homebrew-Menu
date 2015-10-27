@@ -99,6 +99,7 @@ void addFileToMenu(menu_s* m, char* execPath)
 	xmlPath[l-2] = 'l';
 	xmlPath[l-3] = 'm';
 	xmlPath[l-4] = 'x';
+    
 	if(fileExists(xmlPath, &sdmcArchive)) loadDescriptor(&tmpEntry.descriptor, xmlPath);
 
 	addMenuEntryCopy(m, &tmpEntry);
@@ -142,6 +143,7 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	if(ret)initMenuEntry(&tmpEntry, execPath, &path[l+1], execPath, "", (u8*)installerIcon_bin);
 
 	snprintf(xmlPath, 128, "%s/descriptor.xml", path);
+    
 	if(!fileExists(xmlPath, &sdmcArchive))snprintf(xmlPath, 128, "%s/%s.xml", path, &path[l+1]);
 	loadDescriptor(&tmpEntry.descriptor, xmlPath);
 

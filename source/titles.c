@@ -333,13 +333,6 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
     aTitleMenu->scrollTarget=0;
     aTitleMenu->atEquilibrium=false;
     
-    if (!forceHideRegionFree) {
-        addMenuEntryCopy(aTitleMenu, &regionfreeEntry);
-        updateMenuIconPositions(aTitleMenu);
-    }
-    
-    u64 cartTitleId = 0;
-    
     int i;
     
     for(i=0; i<3; i++) {
@@ -353,53 +346,48 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             
             titleInfo_s aTitle = titles[titleNum];
             
-            if (i == 2 && titleNum == count-1) {
-                cartTitleId = aTitle.title_id;
+            if (i==0 && titleNum == 0 && forceHideRegionFree) {
+                continue;
             }
-            else {
-                if (filter && titleIgnored(aTitle.title_id)) {
-                    continue;
-                }
-                
-//                if (titleIgnored) {
-//                    continue;
-//                }
-                
-                if (!aTitle.icon) {
-                    loadTitleInfoIcon(&aTitle);
-                }
-                
-                if (!aTitle.icon) {
-                    continue;
-                }
-                
-                static menuEntry_s me;
-                
-                me.hidden = false;
-                me.isTitleEntry = false;
-                me.isRegionFreeEntry = false;
-                
-                extractSmdhData(aTitle.icon, me.name, me.description, me.author, me.iconData);
-                
-                me.title_id = aTitle.title_id;
-                
-                if (me.title_id == 1125968626461184) {
-                    strcpy(me.name, "System Transfer");
-                    strcpy(me.description, "System Transfer");
-                }
-                
-                addMenuEntryCopy(aTitleMenu, &me);
+            
+            if (filter && titleIgnored(aTitle.title_id)) {
+                continue;
+            }
+        
+            
+            if (!aTitle.icon) {
+                loadTitleInfoIcon(&aTitle);
+            }
+            
+            if (!aTitle.icon) {
+                continue;
+            }
+            
+            static menuEntry_s me;
+            
+            me.hidden = false;
+            me.isTitleEntry = false;
+            me.isRegionFreeEntry = false;
+        
+            if (i==0 && titleNum == 0) {
+                me.isRegionFreeEntry = true;
+            }
+            
+            extractSmdhData(aTitle.icon, me.name, me.description, me.author, me.iconData);
+            
+            me.title_id = aTitle.title_id;
+            
+            if (me.title_id == 1125968626461184) {
+                strcpy(me.name, "System Transfer");
+                strcpy(me.description, "System Transfer");
+            }
+            
+            addMenuEntryCopy(aTitleMenu, &me);
 //                titleMenu->numEntries = titleMenu->numEntries + 1;
-                updateMenuIconPositions(aTitleMenu);
-            }
+            updateMenuIconPositions(aTitleMenu);
         }
     }
     
-    if (!forceHideRegionFree) {
-        menuEntry_s * rf = &aTitleMenu->entries[0];
-        rf->title_id = cartTitleId;
-        rf->hidden = false;
-    }
     
     updateMenuIconPositions(aTitleMenu);
 }

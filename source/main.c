@@ -78,6 +78,25 @@ extern void doReboot() {
     aptCloseSession();
 }
 
+/*
+ Shutdown code contributed by daxtsu from gbatemp
+ */
+void shutdown3DS()
+{
+    Handle ptmSysmHandle = 0;
+    Result result = srvGetServiceHandle(&ptmSysmHandle, "ns:s");
+    if (result != 0)
+        return;
+    
+    // http://3dbrew.org/wiki/NSS:ShutdownAsync
+    
+    u32 *commandBuffer = getThreadCommandBuffer();
+    commandBuffer[0] = 0x000E0000;
+    
+    svcSendSyncRequest(ptmSysmHandle);
+    svcCloseHandle(ptmSysmHandle);
+}
+
 void logBoot(u64 title_id) {
     char titleIDString[128];
     sprintf(titleIDString, "Booting title ID: %llu", title_id);
@@ -217,11 +236,11 @@ void renderFrame()
             else {
                 strcpy(buttonTitles[0], "Reboot");
             }
+
+            strcpy(buttonTitles[1], "Power off");
+            strcpy(buttonTitles[2], "Back");
             
-//            strcpy(buttonTitles[0], "Reboot");
-            strcpy(buttonTitles[1], "Back");
-            
-            int alertResult = drawAlert("Reboot", "You're about to reboot your console into the Home Menu.", NULL, 2, buttonTitles);
+            int alertResult = drawAlert("Reboot", "You're about to reboot your console into the Home Menu.", NULL, 3, buttonTitles);
             
             if (startRebootProcess) {
                 doReboot();
@@ -230,7 +249,10 @@ void renderFrame()
                 if (alertResult == 0) {
                     startRebootProcess = true;
                 }
-                else if (alertResult == 1 || alertResult == alertButtonKeyB) {
+                else if (alertResult == 1) {
+                    shutdown3DS();
+                }
+                else if (alertResult == 2 || alertResult == alertButtonKeyB) {
                     closeReboot();
                 }
             }

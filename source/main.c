@@ -737,8 +737,8 @@ int main()
                         titleInfo_s* ret = NULL;
                         for(i=0; i<me->descriptor.numTargetTitles; i++)
                         {
-//                            launchSVDTFromTitleMenu();
-                            launchTitleFromMenu(&menu);
+                            launchSVDTFromTitleMenu();
+//                            launchTitleFromMenu(&menu);
                         }
                         
                         if(ret)
@@ -822,7 +822,8 @@ int main()
     exitServices();
     
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
-        return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
+        return regionFreeRun();
+//        return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
     }
     
 	regionFreeExit();

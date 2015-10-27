@@ -729,16 +729,21 @@ int main()
                     }
                 }else
                 {
+                    
+                    
                     // if appropriate, look for specified titles in list
                     if(me->descriptor.numTargetTitles)
                     {
+                        // first refresh list (for sd/gamecard)
+//                        updateTitleBrowser(&titleBrowser);
+                        
                         // go through target title list in order so that first ones on list have priority
                         int i;
                         titleInfo_s* ret = NULL;
                         for(i=0; i<me->descriptor.numTargetTitles; i++)
                         {
-                            launchSVDTFromTitleMenu();
-//                            launchTitleFromMenu(&menu);
+                            ret = findTitleBrowser(&titleBrowser, me->descriptor.targetTitles[i].mediatype, me->descriptor.targetTitles[i].tid);
+                            if(ret)break;
                         }
                         
                         if(ret)
@@ -750,28 +755,11 @@ int main()
                         
                         // if we get here, we aint found shit
                         // if appropriate, let user select target title
-                        if(me->descriptor.selectTargetProcess){
-                            showSVDTTitleSelect();
-                        }
-                        else {
-                            /*
-                             XML titles
-                             */
-                            //If the title menu has not been loaded yet
-                            if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-                                //Force an updatae to the title menu and then break out of the main loop to boot the title
-                                updateTitleMenu(&titleBrowser, &titleMenu, "Preparing title", true, false);
-                                titleMenuInitialLoadDone = true;
-                                menuForceReturnTrue = true;
-//                                break;
-                            }
-                            //The title menu has been populated but there is still no matching title
-                            //Show an error
-                            else {
-                                hbmenu_state = HBMENU_TITLETARGET_ERROR;
-                            }
-                        }
-                    }else
+                        if(me->descriptor.selectTargetProcess) hbmenu_state = HBMENU_TITLESELECT;
+                        else hbmenu_state = HBMENU_TITLETARGET_ERROR;
+                    }
+                    
+                    else
                     {
                         if(me->descriptor.selectTargetProcess) {
                             showSVDTTitleSelect();

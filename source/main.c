@@ -815,7 +815,8 @@ int main()
     exitServices();
     
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
-        return regionFreeRun();
+//        return regionFreeRun();
+        return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
     }
     
 	regionFreeExit();

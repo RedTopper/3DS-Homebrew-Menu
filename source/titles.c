@@ -320,6 +320,7 @@ bool titleIgnored(u64 titleID) {
 }
 
 #include "logText.h"
+//#include "MAFontRobotoRegular.h"
 
 void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
     getIgnoredTitleIDs();
@@ -348,13 +349,19 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
         int count = tl->num;
         
         for (titleNum = 0; titleNum < count; titleNum++) {
+//            MADrawText(GFX_TOP, GFX_LEFT, 0, 0, "Loading", &MAFontRobotoRegular10, 255, 255, 255);
+            
             while (titleLoadPaused) {
+//                MADrawText(GFX_TOP, GFX_LEFT, 15, 0, "Paused", &MAFontRobotoRegular10, 255, 255, 255);
+                svcSleepThread(1000000000ULL);
+                
                 if (titleLoadCancelled) {
                     return;
                 }
             }
             
             if (titleLoadCancelled) {
+                logText("Received cancel signal within for loop");
                 return;
             }
             
@@ -409,8 +416,28 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             }
             
             addMenuEntryCopy(aTitleMenu, &me);
+            
+            if (0) {
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+                addMenuEntryCopy(aTitleMenu, &me);
+            }
+            
+            
 //                titleMenu->numEntries = titleMenu->numEntries + 1;
             updateMenuIconPositions(aTitleMenu);
+            
+            if (titleLoadCancelled) {
+                logText("Received cancel signal within for loop");
+                return;
+            }
         }
     }
     
@@ -465,6 +492,7 @@ void cancelTitleLoading() {
     titleLoadPaused = false;
     titleMenuInitialLoadDone = false;
     titlemenuIsUpdating = false;
+    svcSignalEvent(titleLoadThreadRequest);
 }
 
 void titleLoadFunction() {
@@ -473,9 +501,10 @@ void titleLoadFunction() {
     populateTitleMenu(reloadTitleMenu, reloadTitleBrowser, filterTitlesWhenLoading, forceHideRegionFreeWhenLoading, populateFilterTicksWhenLoading);
     
     if (titleLoadCancelled) {
-        titleLoadCancelled = false;
+//        logText("Returned from cancelled populate function");
     }
     else {
+//        logText("Title load completed");
         titlemenuIsUpdating = false;
         titleMenuInitialLoadDone = true;
     }
@@ -488,8 +517,14 @@ void titleLoadThreadFunction(void *arg) {
         
         titleLoadFunction();
         
+//        logText("Returned from titleLoadFunction");
+        
+        if (titleLoadCancelled) {
+            titleLoadCancelled = false;
+//            logText("Cancelled");
+        }
+        
         svcExitThread();
-
     }
 }
 
@@ -544,20 +579,6 @@ void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char *
         titleLoadFunction();
     }
 }
-
-//void updateFilterTicks(menu_s * aTitleMenu) {
-//    menuEntry_s * me = aTitleMenu->entries;
-//    while (me) {
-//        if (titleIgnored(me->title_id)) {
-//            me->showTick = NULL;
-//        }
-//        else {
-//            me->showTick = &trueBool;
-//        }
-//        
-//        me = me->next;
-//    }
-//}
 
 void toggleTitleFilter(menuEntry_s *me, menu_s * m) {
     if (me->showTick == NULL) {

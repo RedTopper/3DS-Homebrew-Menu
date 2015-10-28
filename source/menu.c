@@ -200,10 +200,7 @@ void handleMenuTopLeftActions(int source) {
         }
     }
     else if (menuStatus == menuStatusTitleFiltering) {
-        titleMenuInitialLoadDone = false;
-        if (titleLoadPaused) {
-            cancelTitleLoading();
-        }
+        cancelTitleLoading();
         saveIgnoredTitleIDs();
         setMenuStatus(menuStatusSettings);
         

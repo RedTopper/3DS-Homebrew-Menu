@@ -39,6 +39,7 @@ extern bool titlemenuIsUpdating;
 extern bool titleMenuInitialLoadDone;
 extern bool preloadTitles;
 extern bool titleThreadNeedsRelease;
+extern bool titleLoadCancelled;
 
 void titlesInit();
 void titlesExit();

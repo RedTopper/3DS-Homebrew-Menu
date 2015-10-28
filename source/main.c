@@ -813,6 +813,14 @@ int main()
         releaseTouchThread();
     }
     
+    if (titlemenuIsUpdating) {
+//        logText("Cancel loading");
+        cancelTitleLoading();
+        
+        //Wait a little bit (two seconds) longer to allow the thread to actually terminate
+        svcSleepThread(2000000000ULL);
+    }
+    
     if (titleThreadNeedsRelease) {
         releaseTitleThread();
     }

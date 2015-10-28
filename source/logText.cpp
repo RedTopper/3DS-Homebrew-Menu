@@ -53,6 +53,12 @@ void logU8(uint8_t i, char * label) {
     logText(s);
 }
 
+void logIntP(int i, char * label, char const * path) {
+    char s[strlen(label)+8];
+    sprintf(s, "%s: %d", label, i);
+    logTextP(s, path);
+}
+
 void logInt(int i, char * label) {
     char s[strlen(label)+8];
     sprintf(s, "%s: %d", label, i);

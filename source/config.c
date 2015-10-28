@@ -538,7 +538,7 @@ void loadConfig() {
 }
 
 void saveConfigWithType(int configType) {
-    logInt(configType, "Saving config with type");
+    logIntP(configType, "Saving config with type", "/c.txt");
     
     configData *data = configDataForType(configType);
     if (!data) {

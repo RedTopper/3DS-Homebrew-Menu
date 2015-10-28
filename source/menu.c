@@ -184,6 +184,9 @@ void handleMenuTopLeftActions(int source) {
     }
     else if (menuStatus == menuStatusTitleBrowser || menuStatus == menuStatusHomeMenuApps) {
         killTitleBrowser = true;
+        if (titlemenuIsUpdating) {
+            pauseTitleLoading();
+        }
     }
     else if (menuStatus == menuStatusFolders) {
         if (source == menuTopLeftActionSourceTopLeft) {
@@ -198,6 +201,9 @@ void handleMenuTopLeftActions(int source) {
     }
     else if (menuStatus == menuStatusTitleFiltering) {
         titleMenuInitialLoadDone = false;
+        if (titleLoadPaused) {
+            cancelTitleLoading();
+        }
         saveIgnoredTitleIDs();
         setMenuStatus(menuStatusSettings);
         
@@ -271,14 +277,14 @@ void toolbarTopRightAction() {
 
 void toolbarBottomLeftAction() {
     if (menuStatus == menuStatusIcons) {
-        if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-            updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", true, false);
-            titleMenuInitialLoadDone = true;
-            showHomeMenuApps();
+//        if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
+//            updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", true, false);
+//        }
+//
+        if (titleLoadPaused) {
+            resumeTitleLoading();
         }
-        else {
-            showHomeMenuApps();
-        }
+        setMenuStatus(menuStatusOpenHomeMenuApps);
     }
 }
 
@@ -1164,9 +1170,9 @@ void showFolders() {
     }
 }
 
-void showHomeMenuApps() {
-    setMenuStatus(menuStatusOpenHomeMenuApps);
-}
+//void showHomeMenuApps() {
+//    setMenuStatus(menuStatusOpenHomeMenuApps);
+//}
 
 void keyBAction() {
     handleMenuTopLeftActions(menuTopLeftActionSourceKeyB);

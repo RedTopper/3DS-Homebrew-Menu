@@ -19,8 +19,6 @@ void initDescriptor(descriptor_s* d)
 	initMetadata(&d->executableMetadata);
 }
 
-#include "logText.h"
-
 // TODO : error checking
 void loadDescriptor(descriptor_s* d, char* path)
 {

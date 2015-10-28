@@ -36,8 +36,6 @@ char * currentFolderName() {
     }
 }
 
-#include "logText.h"
-
 char * folderPathForFolderName(char * folderName) {
     if (strcmp(folderName, "3ds") == 0) {
         char * folderPath = malloc(strlen("/3ds/"));
@@ -73,8 +71,6 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
     me->isTitleEntry = false;
     me->isRegionFreeEntry = false;
     me->showTick = NULL;
-    
-//    logText(fullPath);
     
     char smdhPath[strlen(fullPath) + strlen(smdhName) + 1];
     strcpy(smdhPath, fullPath);

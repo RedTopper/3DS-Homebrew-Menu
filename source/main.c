@@ -42,8 +42,8 @@ bool die = false;
 bool showRebootMenu = false;
 bool startRebootProcess = false;
 
-Handle threadHandle, threadRequest;
-#define STACKSIZE (4 * 1024)
+//Handle threadHandle, threadRequest;
+//#define STACKSIZE (4 * 1024)
 
 static enum
 {
@@ -291,7 +291,7 @@ void renderFrame()
                 launchSVDTFromTitleMenu();
             }
             else {
-                putTitleMenu("Select Title to Manage Saves");
+                putTitleMenu("Select Title");
             }
         }else if(hbmenu_state == HBMENU_TITLETARGET_ERROR){
             drawAlert("Missing target title", "The application you are trying to run requested a specific target title.\nPlease make sure you have that title !\n\nB : Back\n", NULL, 0, NULL);
@@ -381,10 +381,11 @@ void __appExit()
 {
 }
 
-void showTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, int newMenuStatus, bool filter, bool forceHideRegionFree) {
+void showTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, int newMenuStatus, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
     if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", filter, forceHideRegionFree);
-        titleMenuInitialLoadDone = true;
+    
+        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", filter, forceHideRegionFree, setFilterTicks);
+//        titleMenuInitialLoadDone = true;
     }
     
 //    if (forceHideRegionFree) {
@@ -392,20 +393,20 @@ void showTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, int newM
 //        strcpy(first->name, "foo");
 //        first->hidden = true;
 //    }
+    //    updateMenuIconPositions(aTitleMenu);
+    //    gotoFirstIcon(aTitleMenu);
     
-    updateMenuIconPositions(aTitleMenu);
-    gotoFirstIcon(aTitleMenu);
     
     setMenuStatus(newMenuStatus);
 }
 
 void showSVDTTitleSelect() {
-    if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", true, false);
-        titleMenuInitialLoadDone = true;
-    }
-    
-    showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleBrowser, true, false);
+//    if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
+//        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", true, false, false);
+//        titleMenuInitialLoadDone = true;
+//    }
+//    
+    showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleBrowser, true, false, false);
     hbmenu_state = HBMENU_TITLESELECT;
     
     if (animatedGrids) {
@@ -414,7 +415,7 @@ void showSVDTTitleSelect() {
 }
 
 void showHomeMenuTitleSelect() {
-    showTitleMenu(&titleBrowser, &titleMenu, menuStatusHomeMenuApps, true, false);
+    showTitleMenu(&titleBrowser, &titleMenu, menuStatusHomeMenuApps, true, false, false);
     
     if (animatedGrids) {
         startTransition(transitionDirectionUp, menu.pagePosition, &menu);
@@ -423,8 +424,7 @@ void showHomeMenuTitleSelect() {
 
 void showFilterTitleSelect() {
     titleMenuInitialLoadDone = false;
-    showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleFiltering, false, true);
-    updateFilterTicks(&titleMenu);
+    showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleFiltering, false, true, true);
     if (animatedGrids) {
         startTransition(transitionDirectionDown, settingsMenu.pagePosition, &settingsMenu);
     }
@@ -443,19 +443,19 @@ void closeTitleBrowser() {
 bool gamecardWasIn;
 bool gamecardStatusChanged;
 
-void threadMain(void *arg) {
-    
-    while(1) {
-        svcWaitSynchronization(threadRequest, U64_MAX);
-        svcClearEvent(threadRequest);
-        
-        updateTitleMenu(&titleBrowser, &titleMenu, NULL, true, false);
-        
-        titleMenuInitialLoadDone = true;
-        
-        svcExitThread();
-    }
-}
+//void threadMain(void *arg) {
+//    
+//    while(1) {
+//        svcWaitSynchronization(threadRequest, U64_MAX);
+//        svcClearEvent(threadRequest);
+//        
+//        updateTitleMenu(&titleBrowser, &titleMenu, NULL, true, false);
+//        
+//        titleMenuInitialLoadDone = true;
+//        
+//        svcExitThread();
+//    }
+//}
 
 #include "logText.h"
 
@@ -520,25 +520,15 @@ int main()
     gamecardWasIn = regionFreeGamecardIn;
     
     initThemeImages();
-
-    u32 *threadStack;
-    
-    preloadTitles = getConfigBoolForKey("preloadTitles", true, configTypeMain);
-    
-    if (preloadTitles) {
-        svcCreateEvent(&threadRequest,0);
-        threadStack = memalign(32, STACKSIZE);
-        Result ret = svcCreateThread(&threadHandle, threadMain, 0, &threadStack[STACKSIZE/4], 0x3f, 0);
-    }
     
 	while(aptMainLoop()) {
         if (die) {
             break;
         }
         
-        if (preloadTitles && !titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-            svcSignalEvent(threadRequest);
-        }
+//        if (preloadTitles && !titleMenuInitialLoadDone && !titlemenuIsUpdating) {
+//            svcSignalEvent(threadRequest);
+//        }
         
         if (titleMenuInitialLoadDone && gamecardWasIn != regionFreeGamecardIn) {
             gamecardWasIn = regionFreeGamecardIn;
@@ -559,7 +549,8 @@ int main()
         if (menuStatus == menuStatusOpenHomeMenuApps) {
             showHomeMenuTitleSelect();
         }
-        else if (menuStatus == menuStatusOpenTitleFiltering) {
+        else
+        if (menuStatus == menuStatusOpenTitleFiltering) {
             showFilterTitleSelect();
         }
         
@@ -812,21 +803,18 @@ int main()
     
 	scanMenuEntry(me);
     
-    if (preloadTitles) {
-        svcCloseHandle(threadRequest);
-        svcCloseHandle(threadHandle);
-        free(threadStack);
-    }
+//    if (preloadTitles) {
+//        svcCloseHandle(threadRequest);
+//        svcCloseHandle(threadHandle);
+//        free(threadStack);
+//    }
     
     if (touchThreadNeedsRelease) {
         releaseTouchThread();
     }
-
-    if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
-        logText("Region free boot");
-    }
-    else {
-        logText(me->executablePath);
+    
+    if (titleThreadNeedsRelease) {
+        releaseTitleThread();
     }
     
     exitServices();

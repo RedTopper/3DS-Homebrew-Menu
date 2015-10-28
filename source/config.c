@@ -367,6 +367,11 @@ void settingsSetMenuStatus(int * status) {
             startTransition(transitionDirectionDown, settingsMenu.pagePosition, &settingsMenu);
         }
     }
+    else if (*status == menuStatusOpenTitleFiltering) {
+        if (titleLoadPaused) {
+            cancelTitleLoading();
+        }
+    }
     
     setMenuStatus(*status);
 }
@@ -394,7 +399,7 @@ void initConfigMenu() {
     
     addSettingsMenuEntry("24 hour clock", "Displays the clock in 24 hour format", (u8*)settingsIconClock24_bin, &clock24, &settingsMenu, &settingsToggleBool, &clock24, NULL);
     
-    addSettingsMenuEntry("Preload titles", "Load entries for the titles menu in the background when the launcher boots. May be unstable on devices with many titles", (u8*)settingsIconPreloadTitles_bin, &preloadTitles, &settingsMenu, &settingsToggleBool, &preloadTitles, NULL);
+    addSettingsMenuEntry("Background title loading", "Load title menu entries in the background. Loading begins when the title menu is opened. May be unstable with many titles", (u8*)settingsIconPreloadTitles_bin, &preloadTitles, &settingsMenu, &settingsToggleBool, &preloadTitles, NULL);
     
     addSettingsMenuEntry("Theme settings", "Configure the theme for the launcher", (u8*)settingsIconTheme_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSettings, NULL);
     

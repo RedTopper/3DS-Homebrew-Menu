@@ -9,6 +9,7 @@
 #include "menu.h"
 #include "filesystem.h"
 #include "MAGFX.h"
+#include "config.h"
 
 extern int debugValues[100];
 
@@ -23,6 +24,8 @@ int numIgnoreTitleIDs;
 bool titlemenuIsUpdating = false;
 bool titleMenuInitialLoadDone = false;
 bool preloadTitles = true;
+bool titleLoadPaused = false;
+bool titleLoadCancelled = false;
 
 void titlesInit()
 {
@@ -316,7 +319,9 @@ bool titleIgnored(u64 titleID) {
     return false;
 }
 
-void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree) {
+#include "logText.h"
+
+void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
     getIgnoredTitleIDs();
     
     if (!aTitleMenu) {
@@ -343,6 +348,15 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
         int count = tl->num;
         
         for (titleNum = 0; titleNum < count; titleNum++) {
+            while (titleLoadPaused) {
+                if (titleLoadCancelled) {
+                    return;
+                }
+            }
+            
+            if (titleLoadCancelled) {
+                return;
+            }
             
             titleInfo_s aTitle = titles[titleNum];
             
@@ -382,6 +396,18 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
                 strcpy(me.description, "System Transfer");
             }
             
+            if (setFilterTicks) {
+                if (titleIgnored(aTitle.title_id)) {
+                    me.showTick = NULL;
+                }
+                else {
+                    me.showTick = &trueBool;
+                }
+            }
+            else {
+                me.showTick = NULL;
+            }
+            
             addMenuEntryCopy(aTitleMenu, &me);
 //                titleMenu->numEntries = titleMenu->numEntries + 1;
             updateMenuIconPositions(aTitleMenu);
@@ -413,36 +439,125 @@ titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid) {
     return NULL;
 }
 
-void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText, bool filter, bool forceHideRegionFree) {
-    titlemenuIsUpdating = true;
-    
-    if (!preloadTitles) {
-        drawDisk(titleText);
-        gfxFlip();
-    }
-    
-    refreshTitleBrowser(aTitleBrowser);
-    clearMenuEntries(aTitleMenu);
-    populateTitleMenu(aTitleMenu, aTitleBrowser, filter, forceHideRegionFree);
-    
+Handle titleLoadThreadHandle, titleLoadThreadRequest;
+u32 *titleLoadThreadStack;
+#define STACKSIZE (4 * 1024)
+
+#include <malloc.h>
+
+titleBrowser_s * reloadTitleBrowser;
+menu_s * reloadTitleMenu;
+bool filterTitlesWhenLoading;
+bool forceHideRegionFreeWhenLoading;
+bool titleThreadNeedsRelease = false;
+bool populateFilterTicksWhenLoading;
+
+void resumeTitleLoading() {
+    titleLoadPaused = false;
+}
+
+void pauseTitleLoading() {
+    titleLoadPaused = true;
+}
+
+void cancelTitleLoading() {
+    titleLoadCancelled = true;
+    titleLoadPaused = false;
+    titleMenuInitialLoadDone = false;
     titlemenuIsUpdating = false;
 }
 
-//bool trueBool = true;
-
-void updateFilterTicks(menu_s * aTitleMenu) {
-    menuEntry_s * me = aTitleMenu->entries;
-    while (me) {
-        if (titleIgnored(me->title_id)) {
-            me->showTick = NULL;
-        }
-        else {
-            me->showTick = &trueBool;
-        }
-        
-        me = me->next;
+void titleLoadFunction() {
+    refreshTitleBrowser(reloadTitleBrowser);
+    clearMenuEntries(reloadTitleMenu);
+    populateTitleMenu(reloadTitleMenu, reloadTitleBrowser, filterTitlesWhenLoading, forceHideRegionFreeWhenLoading, populateFilterTicksWhenLoading);
+    
+    if (titleLoadCancelled) {
+        titleLoadCancelled = false;
+    }
+    else {
+        titlemenuIsUpdating = false;
+        titleMenuInitialLoadDone = true;
     }
 }
+
+void titleLoadThreadFunction(void *arg) {
+    while (1) {
+        svcWaitSynchronization(titleLoadThreadRequest, U64_MAX);
+        svcClearEvent(titleLoadThreadRequest);
+        
+        titleLoadFunction();
+        
+        svcExitThread();
+
+    }
+}
+
+void releaseTitleThread() {
+    svcCloseHandle(titleLoadThreadRequest);
+    svcCloseHandle(titleLoadThreadHandle);
+    free(titleLoadThreadStack);
+    titleThreadNeedsRelease = false;
+}
+
+void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
+    if (titlemenuIsUpdating) {
+        return;
+    }
+        
+    titlemenuIsUpdating = true;
+    titleMenuInitialLoadDone = false;
+    
+    if (titleThreadNeedsRelease) {
+        releaseTitleThread();
+    }
+    
+    reloadTitleMenu = aTitleMenu;
+    reloadTitleBrowser = aTitleBrowser;
+    filterTitlesWhenLoading = filter;
+    forceHideRegionFreeWhenLoading = forceHideRegionFree;
+    populateFilterTicksWhenLoading = setFilterTicks;
+    
+    preloadTitles = getConfigBoolForKey("preloadTitles", true, configTypeMain);
+    
+    if (aTitleMenu->numEntries > 0) {
+        gotoFirstIcon(aTitleMenu);
+    }
+    
+    if (preloadTitles) {
+        titleThreadNeedsRelease = true;
+        
+        svcCreateEvent(&titleLoadThreadRequest,0);
+        titleLoadThreadStack = memalign(32, STACKSIZE);
+        Result ret = svcCreateThread(&titleLoadThreadHandle, titleLoadThreadFunction, 0, &titleLoadThreadStack[STACKSIZE/4], 0x3f, 0);
+        
+        if (ret == 0) {
+            svcSignalEvent(titleLoadThreadRequest);
+        }
+        else {
+            titleLoadFunction();
+        }
+    }
+    else {
+        drawDisk("Loading titles");
+        gfxFlip();
+        titleLoadFunction();
+    }
+}
+
+//void updateFilterTicks(menu_s * aTitleMenu) {
+//    menuEntry_s * me = aTitleMenu->entries;
+//    while (me) {
+//        if (titleIgnored(me->title_id)) {
+//            me->showTick = NULL;
+//        }
+//        else {
+//            me->showTick = &trueBool;
+//        }
+//        
+//        me = me->next;
+//    }
+//}
 
 void toggleTitleFilter(menuEntry_s *me, menu_s * m) {
     if (me->showTick == NULL) {

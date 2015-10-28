@@ -224,7 +224,12 @@ void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter)
 	tb->selected = NULL;
 }
 
+bool titleBrowserRefreshed = false;
+
 void refreshTitleBrowser(titleBrowser_s* tb) {
+    if (titleBrowserRefreshed) return;
+    titleBrowserRefreshed = true;
+    
     tb->total = 0;
     tb->selectedId = 0;
     
@@ -492,7 +497,7 @@ void cancelTitleLoading() {
     titleLoadPaused = false;
     titleMenuInitialLoadDone = false;
     titlemenuIsUpdating = false;
-    svcSignalEvent(titleLoadThreadRequest);
+//    svcSignalEvent(titleLoadThreadRequest);
 }
 
 void titleLoadFunction() {
@@ -542,6 +547,7 @@ void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char *
         
     titlemenuIsUpdating = true;
     titleMenuInitialLoadDone = false;
+    titleLoadCancelled = false;
     
     if (titleThreadNeedsRelease) {
         releaseTitleThread();

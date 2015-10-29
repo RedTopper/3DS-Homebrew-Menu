@@ -415,6 +415,8 @@ void showSVDTTitleSelect() {
 }
 
 void showHomeMenuTitleSelect() {
+    checkReturnToGrid(&titleMenu);
+    
     showTitleMenu(&titleBrowser, &titleMenu, menuStatusHomeMenuApps, true, false, false);
     
     if (animatedGrids) {

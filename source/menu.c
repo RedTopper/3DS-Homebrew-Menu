@@ -113,7 +113,7 @@ button pageArrowRight;
 buttonList toolbarButtons;
 
 int indexOfFirstVisibleMenuEntry(menu_s *m) {
-    if (!showRegionFree) {
+    if (!showRegionFree && menuStatus == menuStatusIcons) {
         return 1;
     }
     return 0;
@@ -189,9 +189,9 @@ void handleMenuTopLeftActions(int source) {
         }
     }
     else if (menuStatus == menuStatusFolders) {
-        if (source == menuTopLeftActionSourceTopLeft) {
+//        if (source == menuTopLeftActionSourceTopLeft) {
             checkReturnToGrid(&menu);
-        }
+//        }
 
         setMenuStatus(menuStatusIcons);
         
@@ -281,6 +281,7 @@ void toolbarBottomLeftAction() {
         if (titleLoadPaused) {
             resumeTitleLoading();
         }
+        
         setMenuStatus(menuStatusOpenHomeMenuApps);
     }
 }
@@ -1210,7 +1211,7 @@ void handleDPadToolbarActions(menu_s* m) {
 int indexOfFirstVisibleMenuEntryOnPage(int page, menu_s* m) {
     int first = totalRows * totalCols * page;
     
-    if (!showRegionFree) {
+    if (!showRegionFree && menuStatus == menuStatusIcons) {
         first++;
     }
     

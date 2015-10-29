@@ -9,6 +9,7 @@
 #include "helpIconFolders_bin.h"
 #include "helpIconIgnoredTitles_bin.h"
 #include "touchblock.h"
+#include "folders.h"
 
 bool showingDetails = false;
 bool skipHelpMenu = false;
@@ -36,6 +37,12 @@ void handleHelpBackButton() {
             if (animatedGrids) {
                 startTransition(transitionDirectionUp, helpMenu.pagePosition, &helpMenu);
             }
+        }
+        else if (previousMenuStatus == menuStatusFolders) {
+            checkReturnToGrid(&foldersMenu);
+        }
+        else if (previousMenuStatus == menuStatusThemeSelect) {
+            checkReturnToGrid(&themesMenu);
         }
     }
     

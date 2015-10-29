@@ -11,6 +11,36 @@
 #include "appbackgroundalphamask_bin.h"
 #include "cartbackgroundalphamask_bin.h"
 
+//typedef struct themeImage {
+//    themeImageID imageID;
+//    u8 * spriteData;
+//    
+//    char executablePath[ENTRY_PATHLENGTH+1];
+//    char name[ENTRY_NAMELENGTH+1];
+//    char description[ENTRY_DESCLENGTH+1];
+//    char author[ENTRY_AUTHORLENGTH+1];
+//    u8 iconData[ENTRY_ICONSIZE];
+//    descriptor_s descriptor;
+//    struct menuEntry_s* next;
+//    int page;
+//    int row;
+//    int col;
+//    int iconX;
+//    int iconY;
+//    int iconW;
+//    int iconH;
+//    bool hidden;
+//    bool isRegionFreeEntry;
+//    bool isTitleEntry;
+//    u64 title_id;
+//    bool * showTick;
+//    void (*callback)();
+//    void *callbackObject1;
+//    void *callbackObject2;
+//    bool drawFirstLetterOfName;
+//    bool drawFullTitle;
+//} themeImage;
+
 u8 appBackgroundImage[56*56*4];
 bool themeHasAppBackgroundImage = false;
 
@@ -30,6 +60,10 @@ bool topWallpaperHasAlpha;
 u8 bottomWallpaper[320*240*4];
 bool themeHasBottomWallpaper = false;
 bool bottomWallpaperHasAlpha;
+
+//u8 topWallpaperInfo[400*240*4];
+//bool themeHasTopWallpaperInfo = false;
+//bool topWallpaperInfoHasAlpha;
 
 u8 buttonTopLeft[36*36*4];
 bool themeHasTopLeftButton = false;
@@ -163,6 +197,10 @@ void initThemeImages() {
     sprintf(path, "%swallpaperbottom.png", themePath);
     loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, (u8*)bottomWallpaper, &themeHasBottomWallpaper);
     bottomWallpaperHasAlpha = (bytesPerPixel == 4);
+    
+//    sprintf(path, "%swallpapertopinfo.png", themePath);
+//    loadThemeImage(path, "Top info wallpaper", 400, 240, NULL, (u8*)topWallpaperInfo, &themeHasTopWallpaperInfo);
+//    topWallpaperInfoHasAlpha = (bytesPerPixel == 4);
     
     
     
@@ -316,6 +354,10 @@ void drawThemeImage(themeImageID imageID, gfxScreen_t screen, int x, int y) {
         case themeImageBottomWallpaper:
             drawThemeImageCheckAlpha(bottomWallpaper, screen, x, y, 240, 320, bottomWallpaperHasAlpha);
             break;
+            
+//        case themeImageTopWallpaperInfo:
+//            drawThemeImageCheckAlpha(topWallpaperInfo, screen, x, y, 240, 400, topWallpaperInfoHasAlpha);
+//            break;
             
             
             

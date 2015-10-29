@@ -7,8 +7,6 @@ extern char * foldersHelpBody;
 extern char * themesHelpTitle;
 extern char * themesHelpBody;
 
-extern bool showingHelpDetails;
-
 void showHelp();
 void drawHelp();
 void updateHelp();

@@ -34,8 +34,8 @@ int drawAlert(char * title, char * body, u8 * image, int numButtons,  char butto
         }
     }
     
-    MAGFXDrawPanel(GFX_TOP, true);
-    MAGFXDrawPanel(GFX_BOTTOM, false);
+    MAGFXDrawPanel(GFX_TOP);
+    MAGFXDrawPanel(GFX_BOTTOM);
     
     MAFont font = MAFontRobotoRegular16;
     int leftOffset = 30;

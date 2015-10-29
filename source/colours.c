@@ -270,7 +270,7 @@ void drawColourAdjuster() {
         strcpy(defaultButton.longText, "Default");
     }
     
-    MAGFXDrawPanel(GFX_TOP, true);
+    MAGFXDrawPanel(GFX_TOP);
     
     rgbColour *tint = titleTextColour();
     rgbColour *dark = darkTextColour();
@@ -487,8 +487,8 @@ void drawPanelTranslucencyAdjust() {
         addSlider(80, "Top screen panel edge offset", &panelTranslucencySliders);
     }
     
-    MAGFXDrawPanel(GFX_TOP, true);
-    MAGFXDrawPanel(GFX_BOTTOM, false);
+    MAGFXDrawPanel(GFX_TOP);
+    MAGFXDrawPanel(GFX_BOTTOM);
     
     button * topSlider = panelTranslucencySliders.buttons[0];
     button * bottomSlider = panelTranslucencySliders.buttons[1];

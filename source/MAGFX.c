@@ -64,7 +64,7 @@ int panelWidthBottom = 200;
 u8 panelPixel[4]; // 360 * 182 * 4
 //u8 panelBottom[203840]; // 280 * 182 * 4
 
-void MAGFXDrawPanel(gfxScreen_t screen, bool forceZeroLeftOffset) {
+void MAGFXDrawPanel(gfxScreen_t screen) {
     if (!panelsDrawn) {
 //        panelLeftOffsetTop = getConfigIntForKey("panelLeftOffsetTop", 0, configTypeTheme);
         
@@ -92,10 +92,7 @@ void MAGFXDrawPanel(gfxScreen_t screen, bool forceZeroLeftOffset) {
     if (screen == GFX_TOP) {
         drawWidth = panelWidthTop;
         drawHeight = panelHeightTop;
-        
-        if (!forceZeroLeftOffset) {
-            leftOffset = panelLeftOffsetTop;
-        }
+        leftOffset = panelLeftOffsetTop;
     }
     else {
         drawWidth = panelWidthBottom;

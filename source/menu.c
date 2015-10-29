@@ -561,7 +561,7 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
     
     if (!gridOnly) {   
         //Draw top screen translucent panel
-        MAGFXDrawPanel(GFX_TOP, false);
+        MAGFXDrawPanel(GFX_TOP);
     }
     
     int totalDrawn = 0;

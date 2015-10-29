@@ -207,12 +207,7 @@ void renderFrame()
     gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
     
     //Wallpaper
-//    if (((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust ) && themeHasTopWallpaperInfo) {
-//        drawThemeImage(themeImageTopWallpaperInfo, GFX_TOP, 0, 0);
-//    }
-//    
-//    else
-        if (themeHasTopWallpaper) {
+    if (themeHasTopWallpaper) {
         drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
     }
     

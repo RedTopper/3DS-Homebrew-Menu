@@ -11,7 +11,7 @@
 #include "touchblock.h"
 #include "folders.h"
 
-bool showingHelpDetails = false;
+bool showingDetails = false;
 bool skipHelpMenu = false;
 
 menu_s helpMenu;
@@ -27,7 +27,7 @@ char * themesHelpBody = "Create theme folders in /gridlauncher/themes/ on your S
 int previousMenuStatus = 0;
 
 void handleHelpBackButton() {
-    if (skipHelpMenu || !showingHelpDetails) {
+    if (skipHelpMenu || !showingDetails) {
         hideWaves = false;
         setMenuStatus(previousMenuStatus);
         
@@ -47,7 +47,7 @@ void handleHelpBackButton() {
     }
     
     else {
-        showingHelpDetails = false;
+        showingDetails = false;
     }
 }
 
@@ -55,7 +55,7 @@ void showHelpDetails(char * title, char * body) {
     startBlockingTouches();
     helpTitleText = title;
     helpBodyText = body;
-    showingHelpDetails = true;
+    showingDetails = true;
 }
 
 bool helpNeedsInit = true;
@@ -100,7 +100,7 @@ void showHelpCommon() {
 void showHelp() {
     showHelpCommon();
     skipHelpMenu = false;
-    showingHelpDetails = false;
+    showingDetails = false;
     updateMenuIconPositions(&helpMenu);
     gotoFirstIcon(&helpMenu);
     
@@ -112,13 +112,13 @@ void showHelp() {
 void showHelpWithForcedText(char * title, char * body) {
     showHelpCommon();
     skipHelpMenu = true;
-    showingHelpDetails = true;
+    showingDetails = true;
     helpTitleText = title;
     helpBodyText = body;
 }
 
 void drawHelp() {
-    if (showingHelpDetails) {
+    if (showingDetails) {
         int alertResult = drawAlert(helpTitleText, helpBodyText, NULL, 1, helpButtonTitles);
         if (alertResult == 0 || alertResult == alertButtonKeyB) {
             handleHelpBackButton();
@@ -137,7 +137,7 @@ void handleHelpMenuSelection() {
 }
 
 void updateHelp() {
-    if (showingHelpDetails) {
+    if (showingDetails) {
         
     }
     else {

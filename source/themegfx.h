@@ -12,7 +12,6 @@ typedef enum
     
     themeImageTopWallpaper,
     themeImageBottomWallpaper,
-//    themeImageTopWallpaperInfo,
     
     themeImageTopLeftButton,
     themeImageTopRightButton,
@@ -30,12 +29,12 @@ typedef enum
     themeImageSettingsSymbol,
     themeImageFoldersSymbol,
     
-//    themeImageProgressWheel1,
-//    themeImageProgressWheel2,
-//    themeImageProgressWheel3,
-//    themeImageProgressWheel4,
-//    themeImageProgressWheel5,
-//    themeImageProgressWheel6,
+    themeImageProgressWheel1,
+    themeImageProgressWheel2,
+    themeImageProgressWheel3,
+    themeImageProgressWheel4,
+    themeImageProgressWheel5,
+    themeImageProgressWheel6,
 } themeImageID;
 
 extern bool     themeHasAppBackgroundImage,
@@ -46,7 +45,6 @@ extern bool     themeHasAppBackgroundImage,
 
                 themeHasTopWallpaper,
                 themeHasBottomWallpaper,
-//                themeHasTopWallpaperInfo,
 
                 themeHasTopLeftButton,
                 themeHasTopRightButton,
@@ -62,8 +60,8 @@ extern bool     themeHasAppBackgroundImage,
                 themeHasBackSymbol,
                 themeHasHomeSymbol,
                 themeHasSettingsSymbol,
-                themeHasFoldersSymbol;
-//                themeHasProgressWheel;
+                themeHasFoldersSymbol,
+                themeHasProgressWheel;
 
 void initThemeImages();
 

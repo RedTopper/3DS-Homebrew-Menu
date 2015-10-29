@@ -195,8 +195,6 @@ void putTitleMenu(char * barTitle) {
     drawBottomStatusBar(barTitle);
 }
 
-#include "progresswheel.h"
-
 void renderFrame()
 {
 	// background stuff
@@ -294,10 +292,6 @@ void renderFrame()
             }
             else {
                 putTitleMenu("Select Title");
-                
-                if (titlemenuIsUpdating) {
-                    drawProgressWheel(GFX_BOTTOM, GFX_LEFT, 0, 0);
-                }
             }
         }else if(hbmenu_state == HBMENU_TITLETARGET_ERROR){
             drawAlert("Missing target title", "The application you are trying to run requested a specific target title.\nPlease make sure you have that title !\n\nB : Back\n", NULL, 0, NULL);
@@ -308,10 +302,6 @@ void renderFrame()
             
             if (menuStatus == menuStatusHomeMenuApps) {
                 putTitleMenu("Select Title to Launch");
-                
-                if (titlemenuIsUpdating) {
-                    drawProgressWheel(GFX_BOTTOM, GFX_LEFT, 0, 0);
-                }
             }
             else if (menuStatus == menuStatusFolders) {
                 drawGrid(&foldersMenu);
@@ -319,10 +309,6 @@ void renderFrame()
             }
             else if (menuStatus == menuStatusTitleFiltering) {
                 putTitleMenu("Tap titles to show or hide them");
-                
-                if (titlemenuIsUpdating) {
-                    drawProgressWheel(GFX_BOTTOM, GFX_LEFT, 0, 0);
-                }
             }
             else if (menuStatus == menuStatusSettings) {
                 drawGrid(&settingsMenu);

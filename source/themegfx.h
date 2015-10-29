@@ -28,13 +28,6 @@ typedef enum
     themeImageHomeSymbol,
     themeImageSettingsSymbol,
     themeImageFoldersSymbol,
-    
-    themeImageProgressWheel1,
-    themeImageProgressWheel2,
-    themeImageProgressWheel3,
-    themeImageProgressWheel4,
-    themeImageProgressWheel5,
-    themeImageProgressWheel6,
 } themeImageID;
 
 extern bool     themeHasAppBackgroundImage,
@@ -60,8 +53,7 @@ extern bool     themeHasAppBackgroundImage,
                 themeHasBackSymbol,
                 themeHasHomeSymbol,
                 themeHasSettingsSymbol,
-                themeHasFoldersSymbol,
-                themeHasProgressWheel;
+                themeHasFoldersSymbol;
 
 void initThemeImages();
 

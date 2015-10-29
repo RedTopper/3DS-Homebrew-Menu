@@ -83,15 +83,6 @@ u8 foldersSymbol[36*36*4];
 bool themeHasFoldersSymbol = false;
 bool foldersSymbolHasAlpha;
 
-//u8 progressWheel1[36*36*4];
-//u8 progressWheel2[36*36*4];
-//u8 progressWheel3[36*36*4];
-//u8 progressWheel4[36*36*4];
-//u8 progressWheel5[36*36*4];
-//u8 progressWheel6[36*36*4];
-//bool themeHasProgressWheel = false;
-//bool progressWheelHasAlpha;
-
 void loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, u8 * dest, bool * hasImageBool) {
     *hasImageBool = false;
     
@@ -236,32 +227,7 @@ void initThemeImages() {
     
     
     
-
-//    sprintf(path, "%sprogressWheelFrame1.png", themePath);
-//    loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel1, &themeHasProgressWheel);
-//    if (themeHasProgressWheel) {
-//        sprintf(path, "%sprogressWheelFrame2.png", themePath);
-//        loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel2, &themeHasProgressWheel);
-//        if (themeHasProgressWheel) {
-//            sprintf(path, "%sprogressWheelFrame3.png", themePath);
-//            loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel3, &themeHasProgressWheel);
-//            if (themeHasProgressWheel) {
-//                sprintf(path, "%sprogressWheelFrame4.png", themePath);
-//                loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel4, &themeHasProgressWheel);
-//                if (themeHasProgressWheel) {
-//                    sprintf(path, "%sprogressWheelFrame5.png", themePath);
-//                    loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel5, &themeHasProgressWheel);
-//                    if (themeHasProgressWheel) {
-//                        sprintf(path, "%sprogressWheelFrame6.png", themePath);
-//                        loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel6, &themeHasProgressWheel);
-//                        if (themeHasProgressWheel) {
-//                            progressWheelHasAlpha = true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
+    
     
     
     

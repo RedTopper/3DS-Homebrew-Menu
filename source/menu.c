@@ -458,15 +458,22 @@ void drawBottomStatusBar(char* title) {
     else if (menuStatus == menuStatusFolders || menuStatus == menuStatusThemeSelect) {
         rightToolbarButton->visible = true;
     }
+    else if (menuStatus == menuStatusHomeMenuApps || menuStatus == menuStatusTitleBrowser || menuStatus == menuStatusTitleFiltering) {
+        if (titlemenuIsUpdating) {
+            bottomLeftButton->visible = true;
+        }
+    }
     
     int buttonIconLeft = 0;
     int buttonIconRight = 0;
+    int buttonIconBottomLeft = 0;
     
     if (menuStatus == menuStatusIcons) {
         buttonIconLeft = btnButtonIconSpanner;
         buttonIconRight = btnButtonIconQuestionMark;
+        buttonIconBottomLeft = btnButtonIconHome;
     }
-    else if (menuStatus == menuStatusHelp || menuStatus == menuStatusSettings || menuStatus == menuStatusTitleBrowser || menuStatus == menuStatusHomeMenuApps) { //|| menuStatus == menuStatusFoldersHelp
+    else if (menuStatus == menuStatusHelp || menuStatus == menuStatusSettings || menuStatus == menuStatusTitleBrowser || menuStatus == menuStatusHomeMenuApps) {
         buttonIconLeft = btnButtonIconBackArrow;
     }
     else if (menuStatus == menuStatusFolders || menuStatus == menuStatusThemeSelect) {
@@ -480,7 +487,7 @@ void drawBottomStatusBar(char* title) {
     leftToolbarButton->buttonIcon = buttonIconLeft;
     rightToolbarButton->buttonIcon = buttonIconRight;
     
-    bottomLeftButton->buttonIcon = btnButtonIconHome;
+    bottomLeftButton->buttonIcon = buttonIconBottomLeft;
     bottomRightButton->buttonIcon = btnButtonIconFolder;
     
     btnDrawButtonList(&toolbarButtons);

@@ -91,6 +91,10 @@ void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int fold
     
     bool iconNeedsToBeGenerated = true;
     
+    strcpy(me->name, "");
+    strcpy(me->description, "");
+    strcpy(me->author, "");
+    
     if(fileExists(smdhPath, &sdmcArchive)) {
         static smdh_s tmpSmdh;
         int ret = loadFile(smdhPath, &tmpSmdh, &sdmcArchive, sizeof(smdh_s));
@@ -107,15 +111,22 @@ void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int fold
         memcpy(me->iconData, settingsIconTheme_bin, 48*48*3);
     }
     
-    if (strcmp(fullPath, "/3ds/") == 0) {
-        strcpy(me->name, "3ds");
-    }
-    else {
-        strcpy(me->name, fullPath+folderPathLen);
+    if (strlen(me->name) == 0) {
+        if (strcmp(fullPath, "/3ds/") == 0) {
+            strcpy(me->name, "3ds");
+        }
+        else {
+            strcpy(me->name, fullPath+folderPathLen);
+        }
     }
     
-    strcpy(me->description, "");
-    strcpy(me->author, "");
+    if (strlen(me->description) == 0) {
+        strcpy(me->description, "");
+    }
+    
+    if (strlen(me->author) == 0) {
+        strcpy(me->author, "");
+    }
     
     me->drawFirstLetterOfName = iconNeedsToBeGenerated;
     me->drawFullTitle = true;

@@ -18,7 +18,6 @@ int themeImageCartBackground = 2;
 int themeImageCartBackgroundSelected = 3;
 
 int themeImageTopWallpaper = 4;
-int themeImageTopWallpaperInfo = 19;
 int themeImageBottomWallpaper = 5;
 
 int themeImageTopLeftButton = 6;
@@ -37,6 +36,17 @@ int themeImageHomeSymbol = 16;
 int themeImageSettingsSymbol = 17;
 int themeImageFoldersSymbol = 18;
 
+int themeImageTopWallpaperInfo = 19;
+
+int themeImageProgressWheelFrame1 = 20;
+int themeImageProgressWheelFrame2 = 21;
+int themeImageProgressWheelFrame3 = 22;
+int themeImageProgressWheelFrame4 = 23;
+int themeImageProgressWheelFrame5 = 24;
+int themeImageProgressWheelFrame6 = 25;
+
+bool themeHasProgressWheel = false;
+
 typedef struct themeImage {
     u8 * spriteData;
     bool exists;
@@ -44,9 +54,9 @@ typedef struct themeImage {
     int w, h;
 } themeImage;
 
-themeImage themeImages[20];
+themeImage themeImages[26];
 
-void loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID) {
+bool loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID) {
     themeImage * aThemeImage = &(themeImages[imageID]);
     aThemeImage->exists = false;
     
@@ -57,7 +67,6 @@ void loadThemeImage(char * path, char * description, int expectedWidth, int expe
             char error[256];
             sprintf(error, "%s must be %dx%d pixels", description, expectedWidth, expectedHeight);
             logText(error);
-//            return;
         }
         else {
             u8 * out = process_png_file();
@@ -82,6 +91,8 @@ void loadThemeImage(char * path, char * description, int expectedWidth, int expe
             }
         }
     }
+    
+    return aThemeImage->exists;
 }
 
 void initThemeImages() {
@@ -169,6 +180,44 @@ void initThemeImages() {
     
     
     
+    sprintf(path, "%sprogressWheelFrame1.png", themePath);
+    themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 1", 36, 36, NULL, themeImageProgressWheelFrame1);
+    if (themeHasProgressWheel) {
+        
+        sprintf(path, "%sprogressWheelFrame2.png", themePath);
+        themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 2", 36, 36, NULL, themeImageProgressWheelFrame2);
+        if (themeHasProgressWheel) {
+            
+            sprintf(path, "%sprogressWheelFrame3.png", themePath);
+            themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 3", 36, 36, NULL, themeImageProgressWheelFrame3);
+            if (themeHasProgressWheel) {
+                
+                sprintf(path, "%sprogressWheelFrame4.png", themePath);
+                themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 4", 36, 36, NULL, themeImageProgressWheelFrame4);
+                if (themeHasProgressWheel) {
+                    
+                    sprintf(path, "%sprogressWheelFrame5.png", themePath);
+                    themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 5", 36, 36, NULL, themeImageProgressWheelFrame5);
+                    if (themeHasProgressWheel) {
+                        
+                        sprintf(path, "%sprogressWheelFrame6.png", themePath);
+                        themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 6", 36, 36, NULL, themeImageProgressWheelFrame6);
+                        
+                    }
+                    
+                }
+                
+            }
+            
+        }
+        
+    }
+    
+    
+    
+    
+    
+    
 
 //    sprintf(path, "%sprogressWheelFrame1.png", themePath);
 //    loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel1, &themeHasProgressWheel);
@@ -217,7 +266,7 @@ void drawThemeImage(int imageID, gfxScreen_t screen, int x, int y) {
     }
 }
 
-bool themeImageExists(int imageID) {
+bool themeImageExists(int imageID) {    
     themeImage aThemeImage = themeImages[imageID];
     return aThemeImage.exists;
 }

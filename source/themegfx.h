@@ -9,7 +9,6 @@ extern int themeImageCartBackground;
 extern int themeImageCartBackgroundSelected;
     
 extern int themeImageTopWallpaper;
-extern int themeImageTopWallpaperInfo;
 extern int themeImageBottomWallpaper;
     
 extern int themeImageTopLeftButton;
@@ -27,6 +26,17 @@ extern int themeImageBackSymbol;
 extern int themeImageHomeSymbol;
 extern int themeImageSettingsSymbol;
 extern int themeImageFoldersSymbol;
+
+extern int themeImageTopWallpaperInfo;
+
+extern int themeImageProgressWheelFrame1;
+extern int themeImageProgressWheelFrame2;
+extern int themeImageProgressWheelFrame3;
+extern int themeImageProgressWheelFrame4;
+extern int themeImageProgressWheelFrame5;
+extern int themeImageProgressWheelFrame6;
+
+extern bool themeHasProgressWheel;
 
 void initThemeImages();
 

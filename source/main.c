@@ -726,15 +726,15 @@ int main()
                 if (updateGrid(&themesMenu)) {
                     if (themesMenu.selectedEntry == 0) {
                         randomTheme = !randomTheme;
-                        updateMenuTicks(&themesMenu, NULL);
+                        updateMenuTicks(&themesMenu, NULL, true);
                     }
                     else {
                         if (me->showTick == NULL) {
                             randomTheme = false;
                             menuEntry_s* me = getMenuEntry(&themesMenu, themesMenu.selectedEntry);
-                            setTheme(me->name);
+                            setTheme(me->executablePath);
                             char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
-                            updateMenuTicks(&themesMenu, currentThemeName);
+                            updateMenuTicks(&themesMenu, currentThemeName, true);
                         }
                     }
                     

@@ -131,6 +131,8 @@ void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int fold
     me->drawFirstLetterOfName = iconNeedsToBeGenerated;
     me->drawFullTitle = true;
     
+    strcpy(me->executablePath, fullPath+folderPathLen);
+    
     addMenuEntryCopy(&themesMenu, me);
 //    themesMenu.numEntries = themesMenu.numEntries + 1;
 }
@@ -343,7 +345,7 @@ void settingsSetMenuStatus(int * status) {
     if (*status == menuStatusThemeSelect) {
         buildThemesList();
         char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
-        updateMenuTicks(&themesMenu, currentThemeName);
+        updateMenuTicks(&themesMenu, currentThemeName, true);
         checkReturnToGrid(&themesMenu);
         updateMenuIconPositions(&themesMenu);
         

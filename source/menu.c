@@ -1120,7 +1120,7 @@ void quitSettings(menu_s* m) {
 
 bool trueBool = true;
 
-void updateMenuTicks(menu_s* m, char * selectedString) {
+void updateMenuTicks(menu_s* m, char * selectedString, bool useExeecutablePath) {
     menuEntry_s* me = m->entries;
     
     if (m == &themesMenu && randomTheme) {
@@ -1141,7 +1141,7 @@ void updateMenuTicks(menu_s* m, char * selectedString) {
         
         
         while(me) {
-            if (strcmp(me->name, selectedString) == 0) {
+            if ((!useExeecutablePath &&  strcmp(me->name, selectedString) == 0) || (useExeecutablePath &&  strcmp(me->executablePath, selectedString) == 0)) {
                 me->showTick = &trueBool;
             }
             else {
@@ -1160,7 +1160,7 @@ void updateMenuTicks(menu_s* m, char * selectedString) {
 void showFolders() {
     buildFoldersList();
     char * cfn = currentFolderName();
-    updateMenuTicks(&foldersMenu, cfn);
+    updateMenuTicks(&foldersMenu, cfn, false);
     free(cfn);
     checkReturnToGrid(&foldersMenu);
     setMenuStatus(menuStatusFolders);

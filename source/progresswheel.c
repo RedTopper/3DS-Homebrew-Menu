@@ -18,35 +18,37 @@ void drawProgressWheel(gfxScreen_t screen, gfx3dSide_t side, int x, int y) {
 //    gfxDrawSpriteAlphaBlend(screen, side, dest, 40, 40, x, y);
     
     if (themeHasProgressWheel) {
-        switch (currentFrame) {
-            case 0:
-                drawThemeImage(themeImageProgressWheelFrame1, screen, x, y);
-                break;
-                
-            case 1:
-                drawThemeImage(themeImageProgressWheelFrame2, screen, x, y);
-                break;
-                
-            case 2:
-                drawThemeImage(themeImageProgressWheelFrame3, screen, x, y);
-                break;
-                
-            case 3:
-                drawThemeImage(themeImageProgressWheelFrame4, screen, x, y);
-                break;
-                
-            case 4:
-                drawThemeImage(themeImageProgressWheelFrame5, screen, x, y);
-                break;
-                
-            case 5:
-                drawThemeImage(themeImageProgressWheelFrame6, screen, x, y);
-                break;
-                
-            default:
-                drawThemeImage(themeImageProgressWheelFrame1, screen, x, y);
-                break;
-        }
+        drawProgressWheelImage(currentFrame, screen, x, y);
+        
+//        switch (currentFrame) {
+//            case 0:
+//                drawThemeImage(themeImageProgressWheelFrame1, screen, x, y);
+//                break;
+//                
+//            case 1:
+//                drawThemeImage(themeImageProgressWheelFrame2, screen, x, y);
+//                break;
+//                
+//            case 2:
+//                drawThemeImage(themeImageProgressWheelFrame3, screen, x, y);
+//                break;
+//                
+//            case 3:
+//                drawThemeImage(themeImageProgressWheelFrame4, screen, x, y);
+//                break;
+//                
+//            case 4:
+//                drawThemeImage(themeImageProgressWheelFrame5, screen, x, y);
+//                break;
+//                
+//            case 5:
+//                drawThemeImage(themeImageProgressWheelFrame6, screen, x, y);
+//                break;
+//                
+//            default:
+//                drawThemeImage(themeImageProgressWheelFrame1, screen, x, y);
+//                break;
+//        }
     }
     else {
         u8 * progressWheelFrame;
@@ -86,7 +88,7 @@ void drawProgressWheel(gfxScreen_t screen, gfx3dSide_t side, int x, int y) {
     
     
     currentFrame++;// = aProgressWheel->frame + 1;
-    if (currentFrame >= 6) {
+    if ((themeHasProgressWheel && currentFrame >= numProgressWheelImages) || (!themeHasProgressWheel && currentFrame >= 6)) {
         currentFrame = 0;
     }
 }

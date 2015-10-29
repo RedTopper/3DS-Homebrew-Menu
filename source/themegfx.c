@@ -57,10 +57,17 @@ typedef struct themeImage {
 } themeImage;
 
 themeImage themeImages[27];
+#define maxProgressWheelImages 16
+themeImage progressWheelImages[maxProgressWheelImages];
+int numProgressWheelImages = 0;
 
-bool loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID) {
-    themeImage * aThemeImage = &(themeImages[imageID]);
+bool loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID, themeImage images[]) {
+    themeImage * aThemeImage = &(images[imageID]);
     aThemeImage->exists = false;
+    
+    if (!fileExists(path, &sdmcArchive)) {
+        return false;
+    }
     
     bool success = read_png_file(path);
     
@@ -69,6 +76,7 @@ bool loadThemeImage(char * path, char * description, int expectedWidth, int expe
             char error[256];
             sprintf(error, "%s must be %dx%d pixels", description, expectedWidth, expectedHeight);
             logText(error);
+            return false;
         }
         else {
             u8 * out = process_png_file();
@@ -90,12 +98,20 @@ bool loadThemeImage(char * path, char * description, int expectedWidth, int expe
                 aThemeImage->exists = true;
                 aThemeImage->w = expectedWidth;
                 aThemeImage->h = expectedHeight;
+                
+                return true;
+            }
+            else {
+                return false;
             }
         }
     }
-    
-    return aThemeImage->exists;
+    else {
+        return false;
+    }
 }
+
+#include "logText.h"
 
 void initThemeImages() {
     char * themePath = currentThemePath();
@@ -103,65 +119,65 @@ void initThemeImages() {
     
     
     sprintf(path, "%sappbackground.png", themePath);
-    loadThemeImage(path, "App background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackground);
+    loadThemeImage(path, "App background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackground, themeImages);
 
     sprintf(path, "%sappbackgroundselected.png", themePath);
-    loadThemeImage(path, "Selected app background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackgroundSelected);
+    loadThemeImage(path, "Selected app background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackgroundSelected, themeImages);
 
 
     
     
     sprintf(path, "%scartbackground.png", themePath);
-    loadThemeImage(path, "Cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackground);
+    loadThemeImage(path, "Cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackground, themeImages);
 
     sprintf(path, "%scartbackgroundselected.png", themePath);
-    loadThemeImage(path, "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackgroundSelected);
+    loadThemeImage(path, "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackgroundSelected, themeImages);
 
     
     
     sprintf(path, "%swallpapertop.png", themePath);
-    loadThemeImage(path, "Top wallpaper", 400, 240, NULL, themeImageTopWallpaper);
+    loadThemeImage(path, "Top wallpaper", 400, 240, NULL, themeImageTopWallpaper, themeImages);
     
     sprintf(path, "%swallpapertopinfo.png", themePath);
-    loadThemeImage(path, "Top info wallpaper", 400, 240, NULL, themeImageTopWallpaperInfo);
+    loadThemeImage(path, "Top info wallpaper", 400, 240, NULL, themeImageTopWallpaperInfo, themeImages);
 
     sprintf(path, "%swallpaperbottom.png", themePath);
-    loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, themeImageBottomWallpaper);
+    loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, themeImageBottomWallpaper, themeImages);
     
     sprintf(path, "%swallpaperbottomnongrid.png", themePath);
-    loadThemeImage(path, "Bottom wallpaper (non grid)", 320, 240, NULL, themeImageBottomWallpaperNonGrid);
+    loadThemeImage(path, "Bottom wallpaper (non grid)", 320, 240, NULL, themeImageBottomWallpaperNonGrid, themeImages);
 
     
     
 
 
     sprintf(path, "%sbuttontopleft.png", themePath);
-    loadThemeImage(path, "Top left button", 36, 36, NULL, themeImageTopLeftButton);
+    loadThemeImage(path, "Top left button", 36, 36, NULL, themeImageTopLeftButton, themeImages);
 
     sprintf(path, "%sbuttontopright.png", themePath);
-    loadThemeImage(path, "Top right button", 36, 36, NULL, themeImageTopRightButton);
+    loadThemeImage(path, "Top right button", 36, 36, NULL, themeImageTopRightButton, themeImages);
 
     sprintf(path, "%sbuttonbottomleft.png", themePath);
-    loadThemeImage(path, "Bottom left button", 36, 36, NULL, themeImageBottomLeftButton);
+    loadThemeImage(path, "Bottom left button", 36, 36, NULL, themeImageBottomLeftButton, themeImages);
 
     sprintf(path, "%sbuttonbottomright.png", themePath);
-    loadThemeImage(path, "Bottom right button", 36, 36, NULL, themeImageBottomRightButton);
+    loadThemeImage(path, "Bottom right button", 36, 36, NULL, themeImageBottomRightButton, themeImages);
     
 
     
     
     
     sprintf(path, "%sbuttontopleftselected.png", themePath);
-    loadThemeImage(path, "Top left selected button", 36, 36, NULL, themeImageTopLeftButtonSelected);
+    loadThemeImage(path, "Top left selected button", 36, 36, NULL, themeImageTopLeftButtonSelected, themeImages);
     
     sprintf(path, "%sbuttontoprightselected.png", themePath);
-    loadThemeImage(path, "Top right selected button", 36, 36, NULL, themeImageTopRightButtonSelected);
+    loadThemeImage(path, "Top right selected button", 36, 36, NULL, themeImageTopRightButtonSelected, themeImages);
     
     sprintf(path, "%sbuttonbottomleftselected.png", themePath);
-    loadThemeImage(path, "Bottom left selected button", 36, 36, NULL, themeImageBottomLeftButtonSelected);
+    loadThemeImage(path, "Bottom left selected button", 36, 36, NULL, themeImageBottomLeftButtonSelected, themeImages);
     
     sprintf(path, "%sbuttonbottomrightselected.png", themePath);
-    loadThemeImage(path, "Bottom right selected button", 36, 36, NULL, themeImageBottomRightButtonSelected);
+    loadThemeImage(path, "Bottom right selected button", 36, 36, NULL, themeImageBottomRightButtonSelected, themeImages);
     
     
     
@@ -169,88 +185,39 @@ void initThemeImages() {
     
     
     sprintf(path, "%shelpicon.png", themePath);
-    loadThemeImage(path, "Help icon", 36, 36, NULL, themeImageHelpSymbol);
+    loadThemeImage(path, "Help icon", 36, 36, NULL, themeImageHelpSymbol, themeImages);
     
     sprintf(path, "%sbackicon.png", themePath);
-    loadThemeImage(path, "Back icon", 36, 36, NULL, themeImageBackSymbol);
+    loadThemeImage(path, "Back icon", 36, 36, NULL, themeImageBackSymbol, themeImages);
 
     sprintf(path, "%shomeicon.png", themePath);
-    loadThemeImage(path, "Home icon", 36, 36, NULL, themeImageHomeSymbol);
+    loadThemeImage(path, "Home icon", 36, 36, NULL, themeImageHomeSymbol, themeImages);
     
     sprintf(path, "%ssettingsicon.png", themePath);
-    loadThemeImage(path, "Settings icon", 36, 36, NULL, themeImageSettingsSymbol);
+    loadThemeImage(path, "Settings icon", 36, 36, NULL, themeImageSettingsSymbol, themeImages);
     
     sprintf(path, "%sfoldersicon.png", themePath);
-    loadThemeImage(path, "Folders icon", 36, 36, NULL, themeImageFoldersSymbol);
+    loadThemeImage(path, "Folders icon", 36, 36, NULL, themeImageFoldersSymbol, themeImages);
     
     
+    numProgressWheelImages = 0;
     
-    sprintf(path, "%sprogressWheelFrame1.png", themePath);
-    themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 1", 36, 36, NULL, themeImageProgressWheelFrame1);
-    if (themeHasProgressWheel) {
+    int frame;
+    for (frame = 0; frame < maxProgressWheelImages; frame++) {
+        char progressWheelFrameFilename[128];
+        sprintf(progressWheelFrameFilename, "%sprogressWheelFrame%d.png", themePath, frame+1);
         
-        sprintf(path, "%sprogressWheelFrame2.png", themePath);
-        themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 2", 36, 36, NULL, themeImageProgressWheelFrame2);
-        if (themeHasProgressWheel) {
-            
-            sprintf(path, "%sprogressWheelFrame3.png", themePath);
-            themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 3", 36, 36, NULL, themeImageProgressWheelFrame3);
-            if (themeHasProgressWheel) {
-                
-                sprintf(path, "%sprogressWheelFrame4.png", themePath);
-                themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 4", 36, 36, NULL, themeImageProgressWheelFrame4);
-                if (themeHasProgressWheel) {
-                    
-                    sprintf(path, "%sprogressWheelFrame5.png", themePath);
-                    themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 5", 36, 36, NULL, themeImageProgressWheelFrame5);
-                    if (themeHasProgressWheel) {
-                        
-                        sprintf(path, "%sprogressWheelFrame6.png", themePath);
-                        themeHasProgressWheel = loadThemeImage(path, "Progress wheel frame 6", 36, 36, NULL, themeImageProgressWheelFrame6);
-                        
-                    }
-                    
-                }
-                
-            }
-            
+        bool loadSuccess = loadThemeImage(progressWheelFrameFilename, "Progress wheel frame", 36, 36, NULL, frame, progressWheelImages);
+        if (loadSuccess) {
+            numProgressWheelImages++;
         }
-        
+        else {
+            logText(progressWheelFrameFilename);
+            break;
+        }
     }
     
-    
-    
-    
-    
-    
-
-//    sprintf(path, "%sprogressWheelFrame1.png", themePath);
-//    loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel1, &themeHasProgressWheel);
-//    if (themeHasProgressWheel) {
-//        sprintf(path, "%sprogressWheelFrame2.png", themePath);
-//        loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel2, &themeHasProgressWheel);
-//        if (themeHasProgressWheel) {
-//            sprintf(path, "%sprogressWheelFrame3.png", themePath);
-//            loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel3, &themeHasProgressWheel);
-//            if (themeHasProgressWheel) {
-//                sprintf(path, "%sprogressWheelFrame4.png", themePath);
-//                loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel4, &themeHasProgressWheel);
-//                if (themeHasProgressWheel) {
-//                    sprintf(path, "%sprogressWheelFrame5.png", themePath);
-//                    loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel5, &themeHasProgressWheel);
-//                    if (themeHasProgressWheel) {
-//                        sprintf(path, "%sprogressWheelFrame6.png", themePath);
-//                        loadThemeImage(path, "Progress wheel", 36, 36, NULL, (u8*)progressWheel6, &themeHasProgressWheel);
-//                        if (themeHasProgressWheel) {
-//                            progressWheelHasAlpha = true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
-    
+    themeHasProgressWheel = (numProgressWheelImages > 0);
     
     free(themePath);
 }
@@ -268,6 +235,13 @@ void drawThemeImage(int imageID, gfxScreen_t screen, int x, int y) {
     themeImage aThemeImage = themeImages[imageID];
     if (aThemeImage.exists) {
         drawThemeImageCheckAlpha(aThemeImage.spriteData, screen, x, y, aThemeImage.h, aThemeImage.w, aThemeImage.hasAlpha);
+    }
+}
+
+void drawProgressWheelImage(int frame, gfxScreen_t screen, int x, int y) {
+    themeImage wheelFrameImage = progressWheelImages[frame];
+    if (wheelFrameImage.exists) {
+        drawThemeImageCheckAlpha(wheelFrameImage.spriteData, screen, x, y, wheelFrameImage.h, wheelFrameImage.w, wheelFrameImage.hasAlpha);
     }
 }
 

@@ -39,9 +39,11 @@ extern int themeImageProgressWheelFrame6;
 extern int themeImageBottomWallpaperNonGrid;
 
 extern bool themeHasProgressWheel;
+extern int numProgressWheelImages;
 
 void initThemeImages();
 
 void drawThemeImage(int imageID, gfxScreen_t screen, int x, int y);
+void drawProgressWheelImage(int frame, gfxScreen_t screen, int x, int y);
 
 bool themeImageExists(int imageID);

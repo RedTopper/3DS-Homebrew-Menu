@@ -236,8 +236,8 @@ void btnDrawButton(button * aButton) {
     
     
     if (aButton->buttonType == btnButtonTypeToolbarLeft) {
-        if (themeHasTopLeftButton) {
-            if (aButton->highlighted && themeHasTopLeftButtonSelected) {
+        if (themeImageExists(themeImageTopLeftButton)) {
+            if (aButton->highlighted && themeImageExists(themeImageTopLeftButtonSelected)) {
                 drawThemeImage(themeImageTopLeftButtonSelected, aButton->screen, aButton->x-(36-aButton->h), aButton->y);
             }
             else {
@@ -250,8 +250,8 @@ void btnDrawButton(button * aButton) {
         }
     }
     else if (aButton->buttonType == btnButtonTypeToolbarRight) {
-        if (themeHasTopRightButton) {
-            if (aButton->highlighted && themeHasTopRightButtonSelected) {
+        if (themeImageExists(themeImageTopRightButton)) {
+            if (aButton->highlighted && themeImageExists(themeImageTopRightButtonSelected)) {
                 drawThemeImage(themeImageTopRightButtonSelected, aButton->screen, aButton->x-(36-aButton->h), aButton->y-(36-aButton->w));
             }
             else {
@@ -264,8 +264,8 @@ void btnDrawButton(button * aButton) {
         }
     }
     else if (aButton->buttonType == btnButtonTypeToolbarBottomRight) {
-        if (themeHasBottomRightButton) {
-            if (aButton->highlighted && themeHasBottomRightButtonSelected) {
+        if (themeImageExists(themeImageBottomRightButton)) {
+            if (aButton->highlighted && themeImageExists(themeImageBottomRightButtonSelected)) {
                 drawThemeImage(themeImageBottomRightButtonSelected, aButton->screen, aButton->x, aButton->y-(36-aButton->w));
             }
             else {
@@ -278,8 +278,8 @@ void btnDrawButton(button * aButton) {
         }
     }
     else if (aButton->buttonType == btnButtonTypeToolbarBottomLeft) {
-        if (themeHasBottomLeftButton) {
-            if (aButton->highlighted && themeHasBottomLeftButtonSelected) {
+        if (themeImageExists(themeImageBottomLeftButton)) {
+            if (aButton->highlighted && themeImageExists(themeImageBottomLeftButtonSelected)) {
                 drawThemeImage(themeImageBottomLeftButtonSelected, aButton->screen, aButton->x, aButton->y);
             }
             else {
@@ -311,7 +311,7 @@ void btnDrawButton(button * aButton) {
     }
     
     if (aButton->buttonIcon == btnButtonIconBackArrow) {
-        if (themeHasBackSymbol) {
+        if (themeImageExists(themeImageBackSymbol)) {
             drawThemeImage(themeImageBackSymbol, aButton->screen, aButton->x, aButton->y);
         }
         else {
@@ -319,7 +319,7 @@ void btnDrawButton(button * aButton) {
         }
     }
     else if (aButton->buttonIcon == btnButtonIconSpanner) {
-        if (themeHasSettingsSymbol) {
+        if (themeImageExists(themeImageSettingsSymbol)) {
             drawThemeImage(themeImageSettingsSymbol, aButton->screen, aButton->x, aButton->y);
         }
         else {
@@ -327,7 +327,7 @@ void btnDrawButton(button * aButton) {
         }
     }
     else if (aButton->buttonIcon == btnButtonIconQuestionMark) {
-        if (themeHasHelpSymbol) {
+        if (themeImageExists(themeImageHelpSymbol)) {
             drawThemeImage(themeImageHelpSymbol, aButton->screen, aButton->x, aButton->y);
         }
         else {
@@ -335,7 +335,7 @@ void btnDrawButton(button * aButton) {
         }
     }
     else if (aButton->buttonIcon == btnButtonIconFolder) {
-        if (themeHasFoldersSymbol) {
+        if (themeImageExists(themeImageFoldersSymbol)) {
             drawThemeImage(themeImageFoldersSymbol, aButton->screen, aButton->x, aButton->y);
         }
         else {
@@ -343,7 +343,7 @@ void btnDrawButton(button * aButton) {
         }
     }
     else if (aButton->buttonIcon == btnButtonIconHome) {
-        if (themeHasHomeSymbol) {
+        if (themeImageExists(themeImageHomeSymbol)) {
             drawThemeImage(themeImageHomeSymbol, aButton->screen, aButton->x, aButton->y);
         }
         else {

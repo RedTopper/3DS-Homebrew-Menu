@@ -2,67 +2,34 @@
 #include <3ds.h>
 #include "gfx.h"
 
-typedef enum
-{
-    themeImageAppBackground,
-    themeImageAppBackgroundSelected,
+extern int themeImageAppBackground;
+extern int themeImageAppBackgroundSelected;
     
-    themeImageCartBackground,
-    themeImageCartBackgroundSelected,
+extern int themeImageCartBackground;
+extern int themeImageCartBackgroundSelected;
     
-    themeImageTopWallpaper,
-    themeImageBottomWallpaper,
+extern int themeImageTopWallpaper;
+extern int themeImageTopWallpaperInfo;
+extern int themeImageBottomWallpaper;
     
-    themeImageTopLeftButton,
-    themeImageTopRightButton,
-    themeImageBottomLeftButton,
-    themeImageBottomRightButton,
+extern int themeImageTopLeftButton;
+extern int themeImageTopRightButton;
+extern int themeImageBottomLeftButton;
+extern int themeImageBottomRightButton;
     
-    themeImageTopLeftButtonSelected,
-    themeImageTopRightButtonSelected,
-    themeImageBottomLeftButtonSelected,
-    themeImageBottomRightButtonSelected,
+extern int themeImageTopLeftButtonSelected;
+extern int themeImageTopRightButtonSelected;
+extern int themeImageBottomLeftButtonSelected;
+extern int themeImageBottomRightButtonSelected;
     
-    themeImageHelpSymbol,
-    themeImageBackSymbol,
-    themeImageHomeSymbol,
-    themeImageSettingsSymbol,
-    themeImageFoldersSymbol,
-    
-    themeImageProgressWheel1,
-    themeImageProgressWheel2,
-    themeImageProgressWheel3,
-    themeImageProgressWheel4,
-    themeImageProgressWheel5,
-    themeImageProgressWheel6,
-} themeImageID;
-
-extern bool     themeHasAppBackgroundImage,
-                themeHasAppBackgroundImageSelected,
-
-                themeHasCartBackgroundImage,
-                themeHasCartBackgroundImageSelected,
-
-                themeHasTopWallpaper,
-                themeHasBottomWallpaper,
-
-                themeHasTopLeftButton,
-                themeHasTopRightButton,
-                themeHasBottomLeftButton,
-                themeHasBottomRightButton,
-
-                themeHasTopLeftButtonSelected,
-                themeHasTopRightButtonSelected,
-                themeHasBottomLeftButtonSelected,
-                themeHasBottomRightButtonSelected,
-
-                themeHasHelpSymbol,
-                themeHasBackSymbol,
-                themeHasHomeSymbol,
-                themeHasSettingsSymbol,
-                themeHasFoldersSymbol,
-                themeHasProgressWheel;
+extern int themeImageHelpSymbol;
+extern int themeImageBackSymbol;
+extern int themeImageHomeSymbol;
+extern int themeImageSettingsSymbol;
+extern int themeImageFoldersSymbol;
 
 void initThemeImages();
 
-void drawThemeImage(themeImageID imageID, gfxScreen_t screen, int x, int y);
+void drawThemeImage(int imageID, gfxScreen_t screen, int x, int y);
+
+bool themeImageExists(int imageID);

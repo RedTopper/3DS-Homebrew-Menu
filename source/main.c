@@ -207,11 +207,14 @@ void renderFrame()
     gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
     
     //Wallpaper
-    if (themeHasTopWallpaper) {
+    if (themeImageExists(themeImageTopWallpaperInfo) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings)) {
+        drawThemeImage(themeImageTopWallpaperInfo, GFX_TOP, 0, 0);
+    }
+    else if (themeImageExists(themeImageTopWallpaper)) {
         drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
     }
     
-    if (themeHasBottomWallpaper) {
+    if (themeImageExists(themeImageBottomWallpaper)) {
         drawThemeImage(themeImageBottomWallpaper, GFX_BOTTOM, 0, 0);
     }
     

@@ -11,89 +11,44 @@
 #include "appbackgroundalphamask_bin.h"
 #include "cartbackgroundalphamask_bin.h"
 
-u8 appBackgroundImage[56*56*4];
-bool themeHasAppBackgroundImage = false;
+int themeImageAppBackground = 0;
+int themeImageAppBackgroundSelected = 1;
 
-u8 appBackgroundImageSelected[56*56*4];
-bool themeHasAppBackgroundImageSelected = false;
+int themeImageCartBackground = 2;
+int themeImageCartBackgroundSelected = 3;
 
-u8 cartBackgroundImage[59*59*4];
-bool themeHasCartBackgroundImage = false;
+int themeImageTopWallpaper = 4;
+int themeImageTopWallpaperInfo = 19;
+int themeImageBottomWallpaper = 5;
 
-u8 cartBackgroundImageSelected[59*59*4];
-bool themeHasCartBackgroundImageSelected = false;
+int themeImageTopLeftButton = 6;
+int themeImageTopRightButton = 7;
+int themeImageBottomLeftButton = 8;
+int themeImageBottomRightButton = 9;
 
-u8 topWallpaper[400*240*4];
-bool themeHasTopWallpaper = false;
-bool topWallpaperHasAlpha;
+int themeImageTopLeftButtonSelected = 10;
+int themeImageTopRightButtonSelected = 11;
+int themeImageBottomLeftButtonSelected = 12;
+int themeImageBottomRightButtonSelected = 13;
 
-u8 bottomWallpaper[320*240*4];
-bool themeHasBottomWallpaper = false;
-bool bottomWallpaperHasAlpha;
+int themeImageHelpSymbol = 14;
+int themeImageBackSymbol = 15;
+int themeImageHomeSymbol = 16;
+int themeImageSettingsSymbol = 17;
+int themeImageFoldersSymbol = 18;
 
-u8 buttonTopLeft[36*36*4];
-bool themeHasTopLeftButton = false;
-bool topLeftButtonHasAlpha;
+typedef struct themeImage {
+    u8 * spriteData;
+    bool exists;
+    bool hasAlpha;
+    int w, h;
+} themeImage;
 
-u8 buttonTopRight[36*36*4];
-bool themeHasTopRightButton = false;
-bool topRightButtonHasAlpha;
+themeImage themeImages[20];
 
-u8 buttonBottomLeft[36*36*4];
-bool themeHasBottomLeftButton = false;
-bool bottomLeftButtonHasAlpha;
-
-u8 buttonBottomRight[36*36*4];
-bool themeHasBottomRightButton = false;
-bool bottomRightButtonHasAlpha;
-
-u8 buttonTopLeftSelected[36*36*4];
-bool themeHasTopLeftButtonSelected = false;
-bool topLeftSelectedButtonHasAlpha;
-
-u8 buttonTopRightSelected[36*36*4];
-bool themeHasTopRightButtonSelected = false;
-bool topRightSelectedButtonHasAlpha;
-
-u8 buttonBottomLeftSelected[36*36*4];
-bool themeHasBottomLeftButtonSelected = false;
-bool bottomLeftSelectedButtonHasAlpha;
-
-u8 buttonBottomRightSelected[36*36*4];
-bool themeHasBottomRightButtonSelected = false;
-bool bottomRightSelectedButtonHasAlpha;
-
-u8 helpSymbol[36*36*4];
-bool themeHasHelpSymbol = false;
-bool helpSymbolHasAlpha;
-
-u8 backSymbol[36*36*4];
-bool themeHasBackSymbol = false;
-bool backSymbolHasAlpha;
-
-u8 homeSymbol[36*36*4];
-bool themeHasHomeSymbol = false;
-bool homeSymbolHasAlpha;
-
-u8 settingsSymbol[36*36*4];
-bool themeHasSettingsSymbol = false;
-bool settingsSymbolHasAlpha;
-
-u8 foldersSymbol[36*36*4];
-bool themeHasFoldersSymbol = false;
-bool foldersSymbolHasAlpha;
-
-//u8 progressWheel1[36*36*4];
-//u8 progressWheel2[36*36*4];
-//u8 progressWheel3[36*36*4];
-//u8 progressWheel4[36*36*4];
-//u8 progressWheel5[36*36*4];
-//u8 progressWheel6[36*36*4];
-//bool themeHasProgressWheel = false;
-//bool progressWheelHasAlpha;
-
-void loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, u8 * dest, bool * hasImageBool) {
-    *hasImageBool = false;
+void loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID) {
+    themeImage * aThemeImage = &(themeImages[imageID]);
+    aThemeImage->exists = false;
     
     bool success = read_png_file(path);
     
@@ -102,23 +57,30 @@ void loadThemeImage(char * path, char * description, int expectedWidth, int expe
             char error[256];
             sprintf(error, "%s must be %dx%d pixels", description, expectedWidth, expectedHeight);
             logText(error);
-            return;
+//            return;
         }
-        
-        u8 * out = process_png_file();
-        
-        if (out) {
-            if (alphaMask) {
-                MAGFXApplyAlphaMask(out, alphaMask, dest, expectedWidth, expectedHeight, (bytesPerPixel==4));
-            }
-            else {
-                memcpy(dest, out, (expectedWidth*expectedHeight*bytesPerPixel));
-            }
+        else {
+            u8 * out = process_png_file();
             
-            *hasImageBool = true;
+            if (out) {
+                if (alphaMask) {
+                    u8 * masked = malloc(expectedWidth*expectedHeight*4);
+                    MAGFXApplyAlphaMask(out, alphaMask, masked, expectedWidth, expectedHeight, (bytesPerPixel==4));
+                    aThemeImage->spriteData = masked;
+                    free(out);
+                    aThemeImage->hasAlpha = true;
+                }
+                else {
+                    aThemeImage->spriteData = out;
+                    aThemeImage->hasAlpha = (bytesPerPixel==4);
+                }
+                
+                
+                aThemeImage->exists = true;
+                aThemeImage->w = expectedWidth;
+                aThemeImage->h = expectedHeight;
+            }
         }
-        
-        free(out);
     }
 }
 
@@ -128,86 +90,62 @@ void initThemeImages() {
     
     
     sprintf(path, "%sappbackground.png", themePath);
-    loadThemeImage(path, "App background", 56, 56, (u8*)appbackgroundalphamask_bin, (u8*)appBackgroundImage, &themeHasAppBackgroundImage);
-    
-    
-    sprintf(path, "%sappbackgroundselected.png", themePath);
-    loadThemeImage(path, "Selected app background", 56, 56, (u8*)appbackgroundalphamask_bin, (u8*)appBackgroundImageSelected, &themeHasAppBackgroundImageSelected);
-    
-    
-    
-    
-    
-    
-    
-    
+    loadThemeImage(path, "App background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackground);
 
+    sprintf(path, "%sappbackgroundselected.png", themePath);
+    loadThemeImage(path, "Selected app background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackgroundSelected);
+
+
+    
+    
     sprintf(path, "%scartbackground.png", themePath);
-    loadThemeImage(path, "Cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, (u8*)cartBackgroundImage, &themeHasCartBackgroundImage);
+    loadThemeImage(path, "Cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackground);
 
     sprintf(path, "%scartbackgroundselected.png", themePath);
-    loadThemeImage(path, "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, (u8*)cartBackgroundImageSelected, &themeHasCartBackgroundImageSelected);
-    
-    
-    
-    
-    
-    
-    
+    loadThemeImage(path, "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackgroundSelected);
+
     
     
     sprintf(path, "%swallpapertop.png", themePath);
-    loadThemeImage(path, "Top wallpaper", 400, 240, NULL, (u8*)topWallpaper, &themeHasTopWallpaper);
-    topWallpaperHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Top wallpaper", 400, 240, NULL, themeImageTopWallpaper);
     
+    sprintf(path, "%swallpapertopinfo.png", themePath);
+    loadThemeImage(path, "Top wallpaper", 400, 240, NULL, themeImageTopWallpaperInfo);
+
     sprintf(path, "%swallpaperbottom.png", themePath);
-    loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, (u8*)bottomWallpaper, &themeHasBottomWallpaper);
-    bottomWallpaperHasAlpha = (bytesPerPixel == 4);
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    sprintf(path, "%sbuttontopleft.png", themePath);
-    loadThemeImage(path, "Top left button", 36, 36, NULL, (u8*)buttonTopLeft, &themeHasTopLeftButton);
-    topLeftButtonHasAlpha = (bytesPerPixel == 4);
-    
-    sprintf(path, "%sbuttontopright.png", themePath);
-    loadThemeImage(path, "Top right button", 36, 36, NULL, (u8*)buttonTopRight, &themeHasTopRightButton);
-    topRightButtonHasAlpha = (bytesPerPixel == 4);
-    
-    sprintf(path, "%sbuttonbottomleft.png", themePath);
-    loadThemeImage(path, "Bottom left button", 36, 36, NULL, (u8*)buttonBottomLeft, &themeHasBottomLeftButton);
-    bottomLeftButtonHasAlpha = (bytesPerPixel == 4);
-    
-    sprintf(path, "%sbuttonbottomright.png", themePath);
-    loadThemeImage(path, "Bottom right button", 36, 36, NULL, (u8*)buttonBottomRight, &themeHasBottomRightButton);
-    bottomRightButtonHasAlpha = (bytesPerPixel == 4);
-    
+    loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, themeImageBottomWallpaper);
 
     
+    
+
+
+    sprintf(path, "%sbuttontopleft.png", themePath);
+    loadThemeImage(path, "Top left button", 36, 36, NULL, themeImageTopLeftButton);
+
+    sprintf(path, "%sbuttontopright.png", themePath);
+    loadThemeImage(path, "Top right button", 36, 36, NULL, themeImageTopRightButton);
+
+    sprintf(path, "%sbuttonbottomleft.png", themePath);
+    loadThemeImage(path, "Bottom left button", 36, 36, NULL, themeImageBottomLeftButton);
+
+    sprintf(path, "%sbuttonbottomright.png", themePath);
+    loadThemeImage(path, "Bottom right button", 36, 36, NULL, themeImageBottomRightButton);
+    
+
     
     
     
     sprintf(path, "%sbuttontopleftselected.png", themePath);
-    loadThemeImage(path, "Top left selected button", 36, 36, NULL, (u8*)buttonTopLeftSelected, &themeHasTopLeftButtonSelected);
-    topLeftSelectedButtonHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Top left selected button", 36, 36, NULL, themeImageTopLeftButtonSelected);
     
     sprintf(path, "%sbuttontoprightselected.png", themePath);
-    loadThemeImage(path, "Top right selected button", 36, 36, NULL, (u8*)buttonTopRightSelected, &themeHasTopRightButtonSelected);
-    topRightSelectedButtonHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Top right selected button", 36, 36, NULL, themeImageTopRightButtonSelected);
     
     sprintf(path, "%sbuttonbottomleftselected.png", themePath);
-    loadThemeImage(path, "Bottom left selected button", 36, 36, NULL, (u8*)buttonBottomLeftSelected, &themeHasBottomLeftButtonSelected);
-    bottomLeftSelectedButtonHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Bottom left selected button", 36, 36, NULL, themeImageBottomLeftButtonSelected);
     
     sprintf(path, "%sbuttonbottomrightselected.png", themePath);
-    loadThemeImage(path, "Bottom right selected button", 36, 36, NULL, (u8*)buttonBottomRightSelected, &themeHasBottomRightButtonSelected);
-    bottomRightSelectedButtonHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Bottom right selected button", 36, 36, NULL, themeImageBottomRightButtonSelected);
     
     
     
@@ -215,24 +153,19 @@ void initThemeImages() {
     
     
     sprintf(path, "%shelpicon.png", themePath);
-    loadThemeImage(path, "Help icon", 36, 36, NULL, (u8*)helpSymbol, &themeHasHelpSymbol);
-    helpSymbolHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Help icon", 36, 36, NULL, themeImageHelpSymbol);
     
     sprintf(path, "%sbackicon.png", themePath);
-    loadThemeImage(path, "Back icon", 36, 36, NULL, (u8*)backSymbol, &themeHasBackSymbol);
-    backSymbolHasAlpha = (bytesPerPixel == 4);
-    
+    loadThemeImage(path, "Back icon", 36, 36, NULL, themeImageBackSymbol);
+
     sprintf(path, "%shomeicon.png", themePath);
-    loadThemeImage(path, "Home icon", 36, 36, NULL, (u8*)homeSymbol, &themeHasHomeSymbol);
-    homeSymbolHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Home icon", 36, 36, NULL, themeImageHomeSymbol);
     
     sprintf(path, "%ssettingsicon.png", themePath);
-    loadThemeImage(path, "Settings icon", 36, 36, NULL, (u8*)settingsSymbol, &themeHasSettingsSymbol);
-    settingsSymbolHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Settings icon", 36, 36, NULL, themeImageSettingsSymbol);
     
     sprintf(path, "%sfoldersicon.png", themePath);
-    loadThemeImage(path, "Folders icon", 36, 36, NULL, (u8*)foldersSymbol, &themeHasFoldersSymbol);
-    foldersSymbolHasAlpha = (bytesPerPixel == 4);
+    loadThemeImage(path, "Folders icon", 36, 36, NULL, themeImageFoldersSymbol);
     
     
     
@@ -277,123 +210,14 @@ void drawThemeImageCheckAlpha(u8 * image, gfxScreen_t screen, int x, int y, int 
     }
 }
 
-void drawThemeImage(themeImageID imageID, gfxScreen_t screen, int x, int y) {
-    switch (imageID) {
-        case themeImageAppBackground:
-            gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, appBackgroundImage, 56, 56, x, y);
-            break;
-            
-        case themeImageAppBackgroundSelected:
-            gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, appBackgroundImageSelected, 56, 56, x, y);
-            break;
-            
-            
-            
-            
-            
-            
-            
-            
-        case themeImageCartBackground:
-            gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, cartBackgroundImage, 59, 59, x, y);
-            break;
-            
-        case themeImageCartBackgroundSelected:
-            gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, cartBackgroundImageSelected, 59, 59, x, y);
-            break;
-            
-            
-            
-            
-            
-            
-            
-            
-        case themeImageTopWallpaper:
-            drawThemeImageCheckAlpha(topWallpaper, screen, x, y, 240, 400, topWallpaperHasAlpha);
-            break;
-            
-        case themeImageBottomWallpaper:
-            drawThemeImageCheckAlpha(bottomWallpaper, screen, x, y, 240, 320, bottomWallpaperHasAlpha);
-            break;
-            
-            
-            
-            
-            
-            
-            
-            
-        case themeImageTopLeftButton:
-            drawThemeImageCheckAlpha(buttonTopLeft, screen, x, y, 36, 36, topLeftButtonHasAlpha);
-            break;
-            
-        case themeImageTopRightButton:
-            drawThemeImageCheckAlpha(buttonTopRight, screen, x, y, 36, 36, topRightButtonHasAlpha);
-            break;
-            
-        case themeImageBottomLeftButton:
-            drawThemeImageCheckAlpha(buttonBottomLeft, screen, x, y, 36, 36, bottomLeftButtonHasAlpha);
-            break;
-            
-        case themeImageBottomRightButton:
-            drawThemeImageCheckAlpha(buttonBottomRight, screen, x, y, 36, 36, bottomRightButtonHasAlpha);
-            break;
-            
-            
-            
-            
-            
-            
-        case themeImageTopLeftButtonSelected:
-            drawThemeImageCheckAlpha(buttonTopLeftSelected, screen, x, y, 36, 36, topLeftSelectedButtonHasAlpha);
-            break;
-            
-        case themeImageTopRightButtonSelected:
-            drawThemeImageCheckAlpha(buttonTopRightSelected, screen, x, y, 36, 36, topRightSelectedButtonHasAlpha);
-            break;
-            
-        case themeImageBottomLeftButtonSelected:
-            drawThemeImageCheckAlpha(buttonBottomLeftSelected, screen, x, y, 36, 36, bottomLeftSelectedButtonHasAlpha);
-            break;
-            
-        case themeImageBottomRightButtonSelected:
-            drawThemeImageCheckAlpha(buttonBottomRightSelected, screen, x, y, 36, 36, bottomRightSelectedButtonHasAlpha);
-            break;
-            
-            
-            
-            
-            
-            
-        case themeImageHelpSymbol:
-            drawThemeImageCheckAlpha(helpSymbol, screen, x, y, 36, 36, helpSymbolHasAlpha);
-            break;
-            
-        case themeImageBackSymbol:
-            drawThemeImageCheckAlpha(backSymbol, screen, x, y, 36, 36, backSymbolHasAlpha);
-            break;
-            
-        case themeImageHomeSymbol:
-            drawThemeImageCheckAlpha(homeSymbol, screen, x, y, 36, 36, homeSymbolHasAlpha);
-            break;
-            
-        case themeImageSettingsSymbol:
-            drawThemeImageCheckAlpha(settingsSymbol, screen, x, y, 36, 36, settingsSymbolHasAlpha);
-            break;
-            
-        case themeImageFoldersSymbol:
-            drawThemeImageCheckAlpha(foldersSymbol, screen, x, y, 36, 36, foldersSymbolHasAlpha);
-            break;
-            
-            
-            
-            
-            
-            
-            
-            
-        default:
-            break;
+void drawThemeImage(int imageID, gfxScreen_t screen, int x, int y) {
+    themeImage aThemeImage = themeImages[imageID];
+    if (aThemeImage.exists) {
+        drawThemeImageCheckAlpha(aThemeImage.spriteData, screen, x, y, aThemeImage.h, aThemeImage.w, aThemeImage.hasAlpha);
     }
+}
+
+bool themeImageExists(int imageID) {
+    themeImage aThemeImage = themeImages[imageID];
+    return aThemeImage.exists;
 }

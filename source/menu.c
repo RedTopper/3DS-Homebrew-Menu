@@ -594,7 +594,7 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
             x += pageXOffset;
             y += pageYOffset;
             
-            if (themeHasAppBackgroundImage) {
+            if (themeImageExists(themeImageAppBackground)) {
                 drawThemeImage(themeImageAppBackground, GFX_BOTTOM, x+3, y+4);
             }
             else {
@@ -1702,7 +1702,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
     if (me != &gamecardMenuEntry && !me->isTitleEntry) {
         if (me->isRegionFreeEntry) {
             if (selected) {
-                if (themeHasCartBackgroundImageSelected) {
+                if (themeImageExists(themeImageCartBackgroundSelected)) {
                     drawThemeImage(themeImageCartBackgroundSelected, screen, x+3, y+4);
                 }
                 else {
@@ -1710,7 +1710,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
                 }
             }
             else {
-                if (themeHasCartBackgroundImage) {
+                if (themeImageExists(themeImageCartBackground)) {
                     drawThemeImage(themeImageCartBackground, screen, x+3, y+4);
                 }
                 else {
@@ -1720,7 +1720,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         }
         else {
             if (selected) {
-                if (themeHasAppBackgroundImageSelected) {
+                if (themeImageExists(themeImageAppBackgroundSelected)) {
                     drawThemeImage(themeImageAppBackgroundSelected, screen, x+3, y+4);
                 }
                 else {
@@ -1728,7 +1728,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
                 }
             }
             else {
-                if (themeHasAppBackgroundImage) {
+                if (themeImageExists(themeImageAppBackground)) {
                     drawThemeImage(themeImageAppBackground, screen, x+3, y+4);
                 }
                 else {

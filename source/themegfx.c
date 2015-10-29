@@ -65,6 +65,8 @@ bool loadThemeImage(char * path, char * description, int expectedWidth, int expe
     themeImage * aThemeImage = &(images[imageID]);
     aThemeImage->exists = false;
     
+//    free(aThemeImage->spriteData);
+    
     if (!fileExists(path, &sdmcArchive)) {
         return false;
     }

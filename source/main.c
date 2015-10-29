@@ -520,7 +520,7 @@ int main()
         int max_number = themesMenu.numEntries - 1;
         int r = rand() % (max_number + 1 - minimum_number) + minimum_number;
         menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
-        setTheme(randomEntry->name);
+        setTheme(randomEntry->executablePath);
     }
     
     initBackground();
@@ -725,8 +725,10 @@ int main()
             else if (menuStatus == menuStatusThemeSelect) {
                 if (updateGrid(&themesMenu)) {
                     if (themesMenu.selectedEntry == 0) {
-                        randomTheme = !randomTheme;
-                        updateMenuTicks(&themesMenu, NULL, true);
+                        if (!randomTheme) {
+                            randomTheme = true;
+                            updateMenuTicks(&themesMenu, NULL, true);
+                        }
                     }
                     else {
                         if (me->showTick == NULL) {

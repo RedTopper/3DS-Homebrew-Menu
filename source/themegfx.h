@@ -36,6 +36,8 @@ extern int themeImageProgressWheelFrame4;
 extern int themeImageProgressWheelFrame5;
 extern int themeImageProgressWheelFrame6;
 
+extern int themeImageBottomWallpaperNonGrid;
+
 extern bool themeHasProgressWheel;
 
 void initThemeImages();

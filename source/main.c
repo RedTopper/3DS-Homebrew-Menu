@@ -214,7 +214,11 @@ void renderFrame()
         drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
     }
     
-    if (themeImageExists(themeImageBottomWallpaper)) {
+    if (themeImageExists(themeImageBottomWallpaperNonGrid) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings)) {
+        drawThemeImage(themeImageBottomWallpaperNonGrid, GFX_BOTTOM, 0, 0);
+    }
+    
+    else if (themeImageExists(themeImageBottomWallpaper)) {
         drawThemeImage(themeImageBottomWallpaper, GFX_BOTTOM, 0, 0);
     }
     

@@ -45,6 +45,8 @@ int themeImageProgressWheelFrame4 = 23;
 int themeImageProgressWheelFrame5 = 24;
 int themeImageProgressWheelFrame6 = 25;
 
+int themeImageBottomWallpaperNonGrid = 26;
+
 bool themeHasProgressWheel = false;
 
 typedef struct themeImage {
@@ -54,7 +56,7 @@ typedef struct themeImage {
     int w, h;
 } themeImage;
 
-themeImage themeImages[26];
+themeImage themeImages[27];
 
 bool loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID) {
     themeImage * aThemeImage = &(themeImages[imageID]);
@@ -121,10 +123,13 @@ void initThemeImages() {
     loadThemeImage(path, "Top wallpaper", 400, 240, NULL, themeImageTopWallpaper);
     
     sprintf(path, "%swallpapertopinfo.png", themePath);
-    loadThemeImage(path, "Top wallpaper", 400, 240, NULL, themeImageTopWallpaperInfo);
+    loadThemeImage(path, "Top info wallpaper", 400, 240, NULL, themeImageTopWallpaperInfo);
 
     sprintf(path, "%swallpaperbottom.png", themePath);
     loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, themeImageBottomWallpaper);
+    
+    sprintf(path, "%swallpaperbottomnongrid.png", themePath);
+    loadThemeImage(path, "Bottom wallpaper (non grid)", 320, 240, NULL, themeImageBottomWallpaperNonGrid);
 
     
     

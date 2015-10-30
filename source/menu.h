@@ -28,6 +28,7 @@ extern int menuStatusThemeSettings;
 extern int menuStatusGridSettings;
 extern int menuStatusOpenTitleFiltering;
 extern int menuStatusTitleFiltering;
+extern int menuStatusSoftwareUpdate;
 
 //Checked by main.c so that the menu can force the title browser to close
 extern bool killTitleBrowser;
@@ -42,8 +43,6 @@ extern bool menuReloadRequired;
 //extern bool thirdRowVisible;
 extern bool dPadNavigation;
 extern bool animatedGrids;
-
-extern bool menuForceReturnTrue;
 
 extern bool trueBool;
 

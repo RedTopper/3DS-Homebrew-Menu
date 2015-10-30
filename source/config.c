@@ -33,6 +33,8 @@
 #include "settingsIconShowTitleID_bin.h"
 #include "helpIconIgnoredTitles_bin.h"
 #include "settingsIconAnimation_bin.h"
+#include "settingsIcon3DSFolder_bin.h"
+#include "settingsIconUpdate_bin.h"
 
 #include "titles.h"
 #include "themegfx.h"
@@ -313,7 +315,7 @@ void initGridSettingsMenu() {
     
     addSettingsMenuEntry("Grid animation", "Choose whether moving between pages in grids should be animated", (u8*)settingsIconAnimation_bin, &animatedGrids, &gridSettingsMenu, &settingsToggleBool, &animatedGrids, NULL);
     
-    addSettingsMenuEntry("Show 3DS folder", "Choose whether the default 3DS folder should be shown in the folds list", (u8*)settingsIconAnimation_bin, &show3DSFolder, &gridSettingsMenu, &settingsToggleShow3DS, NULL, NULL);
+    addSettingsMenuEntry("Show 3DS folder", "Choose whether the default 3DS folder should be shown in the folds list", (u8*)settingsIcon3DSFolder_bin, &show3DSFolder, &gridSettingsMenu, &settingsToggleShow3DS, NULL, NULL);
     
     
 }
@@ -400,6 +402,10 @@ void settingsSetMenuStatus(int * status) {
     setMenuStatus(*status);
 }
 
+void startUpdate() {
+    setMenuStatus(menuStatusSoftwareUpdate);
+}
+
 void initConfigMenu() {
     settingsMenuNeedsInit = false;
     
@@ -427,9 +433,15 @@ void initConfigMenu() {
     
     addSettingsMenuEntry("Theme settings", "Configure the theme for the launcher", (u8*)settingsIconTheme_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSettings, NULL);
     
-    addSettingsMenuEntry("Display title ID", "Displays the title ID for the selected item in the title menu. The ID is shown in the bottom left corner of the top screen.", (u8*)settingsIconShowTitleID_bin, &displayTitleID, &settingsMenu, &settingsToggleBool, &displayTitleID, NULL);
+//    addSettingsMenuEntry("Display title ID", "Displays the title ID for the selected item in the title menu. The ID is shown in the bottom left corner of the top screen.", (u8*)settingsIconShowTitleID_bin, &displayTitleID, &settingsMenu, &settingsToggleBool, &displayTitleID, NULL);
     
     addSettingsMenuEntry("Title filtering", "Show or hide system titles from the title launcher and save manager", (u8*)helpIconIgnoredTitles_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusOpenTitleFiltering, NULL);
+    
+    if (fileExists("/gridlauncher/update/mglupdate.3dsx", &sdmcArchive) && fileExists("/gridlauncher/update/index.lua", &sdmcArchive) && fileExists("/gridlauncher/update/config.txt", &sdmcArchive)) {
+        addSettingsMenuEntry("Software update", "Update Gridlauncher to the latest version", (u8*)settingsIconUpdate_bin, false, &settingsMenu, &startUpdate, NULL, NULL);
+        
+        strcpy(settingsMenu.entries[settingsMenu.numEntries-1].author, "By ihaveamac on GBATemp");
+    }
 }
 
 void handleSettingsMenuSelection(menu_s *m) {

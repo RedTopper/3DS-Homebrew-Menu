@@ -220,7 +220,6 @@ void initThemeImages() {
             numProgressWheelImages++;
         }
         else {
-            logText(progressWheelFrameFilename);
             break;
         }
     }

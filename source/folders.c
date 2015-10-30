@@ -16,8 +16,10 @@ bool show3DSFolder = true;
 //int buttonCount = 0;
 
 void folders3DSToggled() {
-    foldersMenu.entries[0].hidden = !show3DSFolder;
-    updateMenuIconPositions(&foldersMenu);
+    if (foldersMenu.numEntries > 0) {
+        foldersMenu.entries[0].hidden = !show3DSFolder;
+        updateMenuIconPositions(&foldersMenu);
+    }
 }
 
 char * currentFolder() {

@@ -581,8 +581,7 @@ int main()
         if (menuStatus == menuStatusOpenHomeMenuApps) {
             showHomeMenuTitleSelect();
         }
-        else
-        if (menuStatus == menuStatusOpenTitleFiltering) {
+        else if (menuStatus == menuStatusOpenTitleFiltering) {
             showFilterTitleSelect();
         }
         
@@ -714,6 +713,10 @@ int main()
             else if (menuStatus == menuStatusSettings) {
                 if (updateGrid(&settingsMenu)) {
                     handleSettingsMenuSelection(&settingsMenu);
+                    
+                    if (menuStatus == menuStatusSoftwareUpdate) {
+                        break;
+                    }
                 }
             }
             else if (menuStatus == menuStatusGridSettings) {
@@ -832,28 +835,29 @@ int main()
         svcSleepThread(delayNs);
 	}
     
-	menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
-
+    menuEntry_s* me;
+    
 	if(netloader_boot)
 	{
 		me = malloc(sizeof(menuEntry_s));
 		initMenuEntry(me, netloadedPath, "netloaded app", "", "", NULL);
 	}
+    else if (menuStatus == menuStatusSoftwareUpdate) {
+        me = malloc(sizeof(menuEntry_s));
+        initMenuEntry(me, "/gridlauncher/update/mglupdate.3dsx", "updater", "", "", NULL);
+    }
+    else {
+        me = getMenuEntry(&menu, menu.selectedEntry);
+    }
     
 	scanMenuEntry(me);
-    
-//    if (preloadTitles) {
-//        svcCloseHandle(threadRequest);
-//        svcCloseHandle(threadHandle);
-//        free(threadStack);
-//    }
     
     if (touchThreadNeedsRelease) {
         releaseTouchThread();
     }
     
     if (titlemenuIsUpdating) {
-//        logText("Cancel loading");
+        //Stop the title menu loading process, causing the thread to exit
         cancelTitleLoading();
         
         //Wait a little bit (two seconds) longer to allow the thread to actually terminate

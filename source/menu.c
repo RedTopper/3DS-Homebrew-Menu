@@ -45,8 +45,6 @@
 
 bool displayTitleID = false;
 
-bool menuForceReturnTrue = false;
-
 int menuStatusIcons = 0;
 int menuStatusSettings = 1;
 int menuStatusHelp = 2;
@@ -67,6 +65,7 @@ int menuStatusThemeSettings = 16;
 int menuStatusGridSettings = 17;
 int menuStatusOpenTitleFiltering = 18;
 int menuStatusTitleFiltering = 19;
+int menuStatusSoftwareUpdate = 20;
 
 bool killTitleBrowser = false;
 //bool thirdRowVisible = false;
@@ -122,7 +121,25 @@ int indexOfFirstVisibleMenuEntry(menu_s *m) {
 void setMenuStatus(int status) {
     dPadSelectedToolbarButton = -1;
     btnListUnHighlight(&toolbarButtons);
-    startBlockingTouches();
+    
+    /*
+     If we try to start blocking touches when we are about to launch the software updater,
+     the touch block thread will be active when the main function tries to deallocate it
+     before launching the updater.
+     
+     In all other instances, a touch up will follow the changing of the status. This will
+     cause the touch block thread function to return and the thread to die, so it can then
+     be safely deallocated by the main function.
+     
+     Before this if statement was implemented, launching the updater using A worked but
+     launching it using the touch screen caused a red screen hang.
+     
+     An if statement can cause give so much joy.
+     */
+    if (status != menuStatusSoftwareUpdate) {
+        startBlockingTouches();
+    }
+    
     menuStatus = status;
 }
 
@@ -1620,11 +1637,6 @@ void handleNonGridToolbarNavigation() {
 
 bool updateMenu(menu_s* m) {
     if (menuStatus == menuStatusIcons) {
-        if (menuForceReturnTrue) {
-            menuForceReturnTrue = false;
-            return true;
-        }
-        
         return updateGrid(m);
     }
     else if (menuStatus == menuStatusFolderChanged) {

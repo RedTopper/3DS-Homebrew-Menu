@@ -10,6 +10,9 @@
 #include "helpIconIgnoredTitles_bin.h"
 #include "touchblock.h"
 #include "folders.h"
+#include "version.h"
+#include "stdio.h"
+#include "stdlib.h"
 
 bool showingHelpDetails = false;
 bool skipHelpMenu = false;
@@ -77,8 +80,12 @@ void initHelpMenu() {
     helpMenu.scrollTarget=0;
     helpMenu.atEquilibrium=false;
     
-    //addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * showTick, menu_s *m,  void (*callback)(), void *callbackObject);
-    addSettingsMenuEntry("About", "Details of the Homebrew Launcher and the Grid Launcher.", (u8*)helpIconAbout_bin, false, &helpMenu, &showHelpDetails, "Homebrew Grid Launcher beta 73", "Original homebrew launcher by smealum.\nhttp://smealum.github.io/3ds/\n\nThis grid layout version by mashers.\nhttps://gbatemp.net/members/mashers.366855/");
+    char * titleTextFull = malloc(64);
+    sprintf(titleTextFull, "Homebrew Grid Launcher beta %d", currentversion);
+    
+    addSettingsMenuEntry("About", "Details of the Homebrew Launcher and the Grid Launcher.", (u8*)helpIconAbout_bin, false, &helpMenu, &showHelpDetails, titleTextFull, "Original homebrew launcher by smealum.\nhttp://smealum.github.io/3ds/\n\nThis grid layout version by mashers.\nhttps://gbatemp.net/members/mashers.366855/");
+    
+//    free(titleTextFull);
     
     addSettingsMenuEntry("Folders", "How to set up subfolders in the launcher.", (u8*)helpIconFolders_bin, false, &helpMenu, &showHelpDetails, foldersHelpTitle, foldersHelpBody);
     

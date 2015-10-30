@@ -210,4 +210,7 @@
    <FileRef
       location = "group:source/titles.h">
    </FileRef>
+   <FileRef
+      location = "group:source/version.h">
+   </FileRef>
 </Workspace>

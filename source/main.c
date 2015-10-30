@@ -544,10 +544,19 @@ int main()
     
     initThemeImages();
     
+    int frameRate = 60;
+    int frameMs = 1000 / frameRate;
+    int startMs = 0;
+    int endMs = 0;
+    int delayMs = 0;
+    unsigned long long int delayNs = 0;
+    
 	while(aptMainLoop()) {
         if (die) {
             break;
         }
+        
+        startMs = osGetTime();
         
 //        if (preloadTitles && !titleMenuInitialLoadDone && !titlemenuIsUpdating) {
 //            svcSignalEvent(threadRequest);
@@ -816,6 +825,11 @@ int main()
         renderFrame();
 
         gfxFlip();
+        
+        endMs = osGetTime();
+        delayMs = frameMs - (endMs - startMs);
+        delayNs = delayMs * 1000000;
+        svcSleepThread(delayNs);
 	}
     
 	menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);

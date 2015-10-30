@@ -164,6 +164,7 @@ void buildThemesList() {
     randomEntry.hidden = false;
     randomEntry.isTitleEntry = false;
     randomEntry.isRegionFreeEntry = false;
+    randomEntry.drawFirstLetterOfName = false;
     addMenuEntryCopy(&themesMenu, &randomEntry);
     
     char * smdhName = "/theme.smdh";

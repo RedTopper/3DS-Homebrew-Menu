@@ -36,6 +36,7 @@
 
 #include "titles.h"
 #include "themegfx.h"
+#include "folders.h"
 
 menu_s settingsMenu;
 bool settingsMenuNeedsInit = true;
@@ -217,6 +218,11 @@ void settingsToggleRegionFree() {
     menuRegionFreeToggled();
 }
 
+void settingsToggleShow3DS() {
+    show3DSFolder = !show3DSFolder;
+    folders3DSToggled();
+}
+
 void settingsToggleSortAlpha() {
     sortAlpha = !sortAlpha;
     menuReloadRequired = true;
@@ -306,6 +312,10 @@ void initGridSettingsMenu() {
     addSettingsMenuEntry("D-Pad Navigation", "Allows the use of the corner icons on the bottom screen using the D-Pad", (u8*)settingsIconDPadControls_bin, &dPadNavigation, &gridSettingsMenu, &settingsToggleBool, &dPadNavigation, NULL);
     
     addSettingsMenuEntry("Grid animation", "Choose whether moving between pages in grids should be animated", (u8*)settingsIconAnimation_bin, &animatedGrids, &gridSettingsMenu, &settingsToggleBool, &animatedGrids, NULL);
+    
+    addSettingsMenuEntry("Show 3DS folder", "Choose whether the default 3DS folder should be shown in the folds list", (u8*)settingsIconAnimation_bin, &show3DSFolder, &gridSettingsMenu, &settingsToggleShow3DS, NULL, NULL);
+    
+    
 }
 
 bool themeSettingsMenuNeedsInit = true;

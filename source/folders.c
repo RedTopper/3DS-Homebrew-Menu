@@ -10,9 +10,15 @@
 
 //buttonList folderButtons;
 menu_s foldersMenu;
+bool show3DSFolder = true;
 
 //button buttons[1024][sizeof(button)];
 //int buttonCount = 0;
+
+void folders3DSToggled() {
+    foldersMenu.entries[0].hidden = !show3DSFolder;
+    updateMenuIconPositions(&foldersMenu);
+}
 
 char * currentFolder() {
     return getConfigStringForKey("currentfolder", "/3ds/", configTypeMain);
@@ -143,6 +149,8 @@ void buildFoldersList() {
         static menuEntry_s me;
         addFolderToList(fullPath, &me, smdhName, folderPathLen);
     }
+    
+    foldersMenu.entries[0].hidden = !show3DSFolder;
     
     updateMenuIconPositions(&foldersMenu);
     

@@ -376,6 +376,7 @@ void initMenu(menu_s* m)
     dPadNavigation = getConfigBoolForKey("dPadNavigation", true, configTypeMain);
     displayTitleID = getConfigBoolForKey("displayTitleID", false, configTypeMain);
     animatedGrids = getConfigBoolForKey("animatedGrids", true, configTypeMain);
+    show3DSFolder = getConfigBoolForKey("show3DSFolder", true, configTypeMain);
     
     loadThemeConfig();
     
@@ -1083,6 +1084,7 @@ void quitSettings(menu_s* m) {
     setConfigBool("randomTheme", randomTheme, configTypeMain);
     setConfigBool("displayTitleID", displayTitleID, configTypeMain);
     setConfigBool("animatedGrids", animatedGrids, configTypeMain);
+    setConfigBool("show3DSFolder", show3DSFolder, configTypeMain);
     
     setConfigBool("waterEnabled", waterEnabled, configTypeTheme);
     setConfigBool("showLogo", showLogo, configTypeTheme);
@@ -1162,7 +1164,8 @@ void showFolders() {
     char * cfn = currentFolderName();
     updateMenuTicks(&foldersMenu, cfn, false);
     free(cfn);
-    checkReturnToGrid(&foldersMenu);
+    gotoFirstIcon(&foldersMenu);
+//    checkReturnToGrid(&foldersMenu);
     setMenuStatus(menuStatusFolders);
     
     if (animatedGrids) {

@@ -56,10 +56,29 @@ typedef struct themeImage {
     int w, h;
 } themeImage;
 
-themeImage themeImages[27];
+#define maxThemeImages 27
+themeImage themeImages[maxThemeImages];
+
 #define maxProgressWheelImages 16
 themeImage progressWheelImages[maxProgressWheelImages];
+
 int numProgressWheelImages = 0;
+
+void freeThemeImagesArray(themeImage images[], int numImages) {
+    int i;
+    for (i=0; i<numImages; i++) {
+        themeImage * aThemeImage = &(images[i]);
+        if (aThemeImage->spriteData) {
+            free(aThemeImage->spriteData);
+            aThemeImage->spriteData = NULL;
+        }
+    }
+}
+
+void freeThemeImages() {
+    freeThemeImagesArray(themeImages, maxThemeImages);
+    freeThemeImagesArray(progressWheelImages, maxProgressWheelImages);
+}
 
 bool loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID, themeImage images[]) {
     themeImage * aThemeImage = &(images[imageID]);

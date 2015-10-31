@@ -143,6 +143,7 @@ void launchSVDTFromTitleMenu() {
 
 void exitServices() {
     // cleanup whatever we have to cleanup
+    freeThemeImages();
     netloader_exit();
     titlesExit();
     ptmExit();

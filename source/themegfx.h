@@ -47,3 +47,4 @@ void drawThemeImage(int imageID, gfxScreen_t screen, int x, int y);
 void drawProgressWheelImage(int frame, gfxScreen_t screen, int x, int y);
 
 bool themeImageExists(int imageID);
+void freeThemeImages();

@@ -222,7 +222,10 @@ void settingsToggleRegionFree() {
 
 void settingsToggleShow3DS() {
     show3DSFolder = !show3DSFolder;
-    folders3DSToggled();
+    if (foldersMenu.numEntries > 0) {
+        foldersMenu.entries[0].hidden = !show3DSFolder;
+        updateMenuIconPositions(&foldersMenu);
+    }
 }
 
 void settingsToggleSortAlpha() {

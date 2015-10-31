@@ -9,7 +9,7 @@
 
 #define BGCOLOR (u8[]){0, 132, 255}
 
-#define BUBBLE_COUNT 15
+//#define BUBBLE_COUNT 15
 
 extern bool hideWaves;
 extern bool waterAnimated;
@@ -18,11 +18,11 @@ extern bool showLogo;
 extern bool staticWaterDrawn;
 extern bool keysExciteWater;
 
-typedef struct
-{
-	s32 x, y;
-	u8 fade;
-}bubble_t;
+//typedef struct
+//{
+//	s32 x, y;
+//	u8 fade;
+//}bubble_t;
 
 void initBackground(void);
 void updateBackground(void);

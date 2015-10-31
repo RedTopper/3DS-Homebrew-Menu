@@ -8,6 +8,7 @@
 
 extern "C" {
     #include "filesystem.h"
+    #include "shortcut.h"
 }
 
 bool comparisonFunc(const char *c1, const char *c2) {
@@ -52,7 +53,12 @@ void addMenuEntries(char paths[1024][1024], int totalEntries, int pathLength, me
         
         //File is a .3dsx
         if(n>5 && !strcmp(".3dsx", &path[n-5])){
-            addFileToMenu(m, path);
+            addExecutableToMenu(m, path);
+        }
+        
+        //File is a shortcut
+        else if(n>4 && !strcmp(".xml", &path[n-4])){
+            addShortcutToMenu(m, path);
         }
         
         //File is a directory

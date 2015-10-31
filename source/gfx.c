@@ -6,7 +6,7 @@
 #include "gfx.h"
 //#include "font.h"
 //#include "text.h"
-#include "costable.h"
+//#include "costable.h"
 
 //void gfxDrawText(gfxScreen_t screen, gfx3dSide_t side, font_s* f, char* str, s16 x, s16 y)
 //{

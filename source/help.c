@@ -144,12 +144,7 @@ void handleHelpMenuSelection() {
 }
 
 void updateHelp() {
-    if (showingHelpDetails) {
-        
-    }
-    else {
-        if (updateGrid(&helpMenu)) {
-            handleHelpMenuSelection();
-        }
+    if (!showingHelpDetails && updateGrid(&helpMenu)) {
+        handleHelpMenuSelection();
     }
 }

@@ -134,7 +134,7 @@ void setMenuStatus(int status) {
      Before this if statement was implemented, launching the updater using A worked but
      launching it using the touch screen caused a red screen hang.
      
-     An if statement can cause give so much joy.
+     An if statement can give so much joy.
      */
     if (status != menuStatusSoftwareUpdate) {
         startBlockingTouches();
@@ -1665,6 +1665,8 @@ void initEmptyMenuEntry(menuEntry_s* me)
 	me->name[0]=0x00;
 	me->description[0]=0x00;
 	me->executablePath[0]=0x00;
+    me->author[0]=0x00;
+    me->arg[0]=0x00;
     
 	initDescriptor(&me->descriptor);
 

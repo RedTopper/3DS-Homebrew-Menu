@@ -82,7 +82,7 @@ void btnSetButtonType(button * aButton, int type) {
         aButton->screen = GFX_BOTTOM;
         aButton->side = GFX_LEFT;
         
-        btnCentreVertically(aButton);
+        aButton->x = (240/2) - (aButton->w/2);
         
         int arrowEdgeOffset = 5;
         
@@ -399,10 +399,6 @@ void btnCentreHorizontally(button * aButton) {
     aButton->y = (320/2) - (aButton->h/2);
 }
 
-void btnCentreVertically(button * aButton) {
-    aButton->x = (240/2) - (aButton->w/2);
-}
-
 int updateSliderValue(int touchX, int touchY, button * slider) {
     if (btnTouchWithin(touchX, touchY, slider)) {
         slider->value = touchX - slider->y - 1;
@@ -426,33 +422,33 @@ int updateSliderValue(int touchX, int touchY, button * slider) {
     return slider->value;
 }
 
-int gridButtonGap = 5;
-int gridInitialX = 240 - btnRectWidth - 40;
-int gridInitialY = 27;
+//int gridButtonGap = 5;
+//int gridInitialX = 240 - btnRectWidth - 40;
+//int gridInitialY = 27;
 
-void btnConfigureButtonForGrid(button * aButton, int * x, int * y, char * shortText1, char * shortText2, char * longText) {
-    
-    if (*x == -1) {
-        *x = gridInitialX;
-    }
-    
-    if (*y == -1) {
-        *y = gridInitialY;
-    }
-    
-    btnSetButtonType(aButton, btnButtonTypeRect);
-    aButton->x = *x;
-    aButton->y = *y;
-    strcpy(aButton->shortText1, shortText1);
-    strcpy(aButton->shortText2, shortText2);
-    strcpy(aButton->longText, longText);
-    
-    *x -= (aButton->w + gridButtonGap);
-    if (*x < 0) {
-        *x = gridInitialX;
-        *y += (aButton->h + gridButtonGap);
-    }
-}
+//void btnConfigureButtonForGrid(button * aButton, int * x, int * y, char * shortText1, char * shortText2, char * longText) {
+//    
+//    if (*x == -1) {
+//        *x = gridInitialX;
+//    }
+//    
+//    if (*y == -1) {
+//        *y = gridInitialY;
+//    }
+//    
+//    btnSetButtonType(aButton, btnButtonTypeRect);
+//    aButton->x = *x;
+//    aButton->y = *y;
+//    strcpy(aButton->shortText1, shortText1);
+//    strcpy(aButton->shortText2, shortText2);
+//    strcpy(aButton->longText, longText);
+//    
+//    *x -= (aButton->w + gridButtonGap);
+//    if (*x < 0) {
+//        *x = gridInitialX;
+//        *y += (aButton->h + gridButtonGap);
+//    }
+//}
 
 void btnAddButtonToButtonList(button * aButton, buttonList *aButtonList) {
     if (aButtonList->numButtons == buttonListMaxButtons) {

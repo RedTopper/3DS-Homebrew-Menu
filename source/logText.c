@@ -1,22 +1,20 @@
 #include "logText.h"
+#include <stdio.h>
+#include <string.h>
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+//#include <cstdio>
+//#include <cstdlib>
+//#include <cstring>
 //#include <map>
 //#include <string>
 //#include <vector>
 
-void writeToPath(char *text, char const * path) {
+void logTextP(char *text, char const * path) {
     FILE* fSave = fopen( path, "w" );
     if (fSave != NULL) {
         fputs(text, fSave);
     }
     fclose(fSave);
-}
-
-void logTextP(char *text, char const * path) {
-    writeToPath(text, path);
 
     /*
     FILE* fLoad = fopen( LOG_PATH, "r" );
@@ -47,11 +45,11 @@ void logTextP(char *text, char const * path) {
      */
 }
 
-void logU8(uint8_t i, char * label) {
-    char s[strlen(label)+8];
-    sprintf(s, "%s: %u", label, i);
-    logText(s);
-}
+//void logU8(uint8_t i, char * label) {
+//    char s[strlen(label)+8];
+//    sprintf(s, "%s: %u", label, i);
+//    logText(s);
+//}
 
 void logIntP(int i, char * label, char const * path) {
     char s[strlen(label)+8];

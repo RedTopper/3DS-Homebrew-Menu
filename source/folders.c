@@ -15,12 +15,12 @@ bool show3DSFolder = true;
 //button buttons[1024][sizeof(button)];
 //int buttonCount = 0;
 
-void folders3DSToggled() {
-    if (foldersMenu.numEntries > 0) {
-        foldersMenu.entries[0].hidden = !show3DSFolder;
-        updateMenuIconPositions(&foldersMenu);
-    }
-}
+//void folders3DSToggled() {
+//    if (foldersMenu.numEntries > 0) {
+//        foldersMenu.entries[0].hidden = !show3DSFolder;
+//        updateMenuIconPositions(&foldersMenu);
+//    }
+//}
 
 char * currentFolder() {
     return getConfigStringForKey("currentfolder", "/3ds/", configTypeMain);
@@ -44,31 +44,38 @@ char * currentFolderName() {
     }
 }
 
-char * folderPathForFolderName(char * folderName) {
-    if (strcmp(folderName, "3ds") == 0) {
-        char * folderPath = malloc(strlen("/3ds/"));
-        strcpy(folderPath, "/3ds/");
-        return folderPath;
-    }
-    
-    char *folderPath = malloc(strlen(foldersPath) + strlen(folderName) + 2);
-    strcpy(folderPath, foldersPath);
-    strcat(folderPath, folderName);
-    
-    strcat(folderPath, "/");
-    
-    return folderPath;
-}
+//char * folderPathForFolderName(char * folderName) {
+//    if (strcmp(folderName, "3ds") == 0) {
+//        char * folderPath = malloc(strlen("/3ds/"));
+//        strcpy(folderPath, "/3ds/");
+//        return folderPath;
+//    }
+//    
+//    char *folderPath = malloc(strlen(foldersPath) + strlen(folderName) + 2);
+//    strcpy(folderPath, foldersPath);
+//    strcat(folderPath, folderName);
+//    
+//    strcat(folderPath, "/");
+//    
+//    return folderPath;
+//}
 
 void setFolder(char * folderName) {
-    char * folderPath = folderPathForFolderName(folderName);
+    char folderPath[256]; // = folderPathForFolderName(folderName);
+    
+    if (strcmp(folderName, "3ds") == 0) {
+        strcpy(folderPath, "/3ds/");
+    }
+    else {
+        strcpy(folderPath, foldersPath);
+        strcat(folderPath, folderName);
+        strcat(folderPath, "/");
+    }
 
     setConfigString("currentfolder", folderPath, configTypeMain);
     saveConfigWithType(configTypeMain);
     setMenuStatus(menuStatusFolderChanged);
-    
-    free(folderPath);
-    
+        
     if (animatedGrids) {
         startTransition(transitionDirectionUp, foldersMenu.pagePosition, &foldersMenu);
     }

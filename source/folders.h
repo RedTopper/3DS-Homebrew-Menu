@@ -8,7 +8,7 @@ extern bool show3DSFolder;
 
 //buttonList folderButtons;
 
-void folders3DSToggled();
+//void folders3DSToggled();
 
 char * currentFolder();
 char * currentFolderName();

@@ -38,14 +38,7 @@ int themeImageFoldersSymbol = 18;
 
 int themeImageTopWallpaperInfo = 19;
 
-int themeImageProgressWheelFrame1 = 20;
-int themeImageProgressWheelFrame2 = 21;
-int themeImageProgressWheelFrame3 = 22;
-int themeImageProgressWheelFrame4 = 23;
-int themeImageProgressWheelFrame5 = 24;
-int themeImageProgressWheelFrame6 = 25;
-
-int themeImageBottomWallpaperNonGrid = 26;
+int themeImageBottomWallpaperNonGrid = 20;
 
 bool themeHasProgressWheel = false;
 
@@ -56,7 +49,7 @@ typedef struct themeImage {
     int w, h;
 } themeImage;
 
-#define maxThemeImages 27
+#define maxThemeImages 21
 themeImage themeImages[maxThemeImages];
 
 #define maxProgressWheelImages 16

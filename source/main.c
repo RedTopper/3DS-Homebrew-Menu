@@ -32,6 +32,8 @@
 #include "themegfx.h"
 #include "version.h"
 
+#include "logText.h"
+
 u8 sdmcCurrent = 0;
 u64 nextSdCheck = 0;
 
@@ -101,15 +103,7 @@ void shutdown3DS()
 void logBoot(u64 title_id) {
     char titleIDString[128];
     sprintf(titleIDString, "Booting title ID: %llu", title_id);
-    
-    FILE* fSave = fopen( "sdmc:/bootlog.txt", "w" );
-    if (fSave != NULL) {
-        fputs(titleIDString, fSave);
-    }
-    fclose(fSave);
-    
-    //for some reason I get a linking error if I call this here
-//    logTextP(titleIDString, "sdmc:/bootlog.txt");
+    logTextP(titleIDString, "/bootlog.txt");
 }
 
 void launchSVDTFromTitleMenu() {
@@ -481,8 +475,6 @@ bool gamecardStatusChanged;
 //        svcExitThread();
 //    }
 //}
-
-#include "logText.h"
 
 void randomiseTheme() {
     buildThemesList();
@@ -897,5 +889,5 @@ int main(int argc, char *argv[])
     
 	regionFreeExit();
     
-	return bootApp(me->executablePath, &me->descriptor.executableMetadata, NULL);
+	return bootApp(me->executablePath, &me->descriptor.executableMetadata, me->arg);
 }

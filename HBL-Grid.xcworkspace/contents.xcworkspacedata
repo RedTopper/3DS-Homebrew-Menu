@@ -5,6 +5,12 @@
       location = "container:"
       name = "Filesystem">
       <FileRef
+         location = "group:source/addmenuentry.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:source/addmenuentry.h">
+      </FileRef>
+      <FileRef
          location = "group:source/descriptor.cpp">
       </FileRef>
       <FileRef
@@ -27,6 +33,12 @@
       </FileRef>
       <FileRef
          location = "group:source/scanner.h">
+      </FileRef>
+      <FileRef
+         location = "group:source/shortcut.cpp">
+      </FileRef>
+      <FileRef
+         location = "group:source/shortcut.h">
       </FileRef>
       <FileRef
          location = "group:source/smdh.c">
@@ -141,18 +153,9 @@
       location = "container:"
       name = "Utils">
       <FileRef
-         location = "group:source/costable.h">
-      </FileRef>
-      <FileRef
          location = "group:source/utils.h">
       </FileRef>
    </Group>
-   <FileRef
-      location = "group:source/addmenuentry.cpp">
-   </FileRef>
-   <FileRef
-      location = "group:source/addmenuentry.h">
-   </FileRef>
    <FileRef
       location = "group:source/boot.c">
    </FileRef>
@@ -172,7 +175,7 @@
       location = "group:source/help.h">
    </FileRef>
    <FileRef
-      location = "group:source/logText.cpp">
+      location = "group:source/logText.c">
    </FileRef>
    <FileRef
       location = "group:source/logText.h">

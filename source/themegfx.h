@@ -29,13 +29,6 @@ extern int themeImageFoldersSymbol;
 
 extern int themeImageTopWallpaperInfo;
 
-extern int themeImageProgressWheelFrame1;
-extern int themeImageProgressWheelFrame2;
-extern int themeImageProgressWheelFrame3;
-extern int themeImageProgressWheelFrame4;
-extern int themeImageProgressWheelFrame5;
-extern int themeImageProgressWheelFrame6;
-
 extern int themeImageBottomWallpaperNonGrid;
 
 extern bool themeHasProgressWheel;

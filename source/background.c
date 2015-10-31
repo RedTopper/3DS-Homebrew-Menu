@@ -30,7 +30,7 @@ bool waterEnabled = true;
 bool showLogo = true;
 bool keysExciteWater = true;
 
-static bubble_t bubbles[BUBBLE_COUNT];
+//static bubble_t bubbles[BUBBLE_COUNT];
 static waterEffect_s waterEffect;
 static int backgroundCnt;
 
@@ -38,41 +38,41 @@ void initBackground(void)
 {
     showLogo = getConfigBoolForKey("showLogo", true, configTypeTheme);
     
-	int i = 0;
-	for(i = 0;i < BUBBLE_COUNT;i += 1)
-	{
-		bubbles[i].x = rand() % 400;
-		bubbles[i].y = rand() % 240;
-		bubbles[i].fade = 15;
-	}
+//	int i = 0;
+//	for(i = 0;i < BUBBLE_COUNT;i += 1)
+//	{
+//		bubbles[i].x = rand() % 400;
+//		bubbles[i].y = rand() % 240;
+//		bubbles[i].fade = 15;
+//	}
 
 	initWaterEffect(&waterEffect, BG_WATER_CONTROLPOINTS, BG_WATER_NEIGHBORHOODS, BG_WATER_DAMPFACTOR, BG_WATER_SPRINGFACTOR, BG_WATER_WIDTH, BG_WATER_OFFSET);
 	backgroundCnt = 0;
 }
 
-void updateBubble(bubble_t* bubble)
-{
-	// Float up the screen.
-	bubble->y += 2;
-
-	// Check if faded away, then reset if gone.
-	if(bubble->fade < 10)
-	{
-		bubble->x = rand() % 400;
-		bubble->y = rand() % 10;
-		bubble->fade = 15;
-	}
-	// Check if too far up screen and start fizzling away.
-	else if(bubble->y >= 240 && bubble->y % 240 > 100)
-	{
-		bubble->fade -= 10;
-	}
-	// Otherwise make sure the bubble is visible.
-	else if(bubble->fade < 255)
-	{
-		bubble->fade += 10;
-	}
-}
+//void updateBubble(bubble_t* bubble)
+//{
+//	// Float up the screen.
+//	bubble->y += 2;
+//
+//	// Check if faded away, then reset if gone.
+//	if(bubble->fade < 10)
+//	{
+//		bubble->x = rand() % 400;
+//		bubble->y = rand() % 10;
+//		bubble->fade = 15;
+//	}
+//	// Check if too far up screen and start fizzling away.
+//	else if(bubble->y >= 240 && bubble->y % 240 > 100)
+//	{
+//		bubble->fade -= 10;
+//	}
+//	// Otherwise make sure the bubble is visible.
+//	else if(bubble->fade < 255)
+//	{
+//		bubble->fade += 10;
+//	}
+//}
 
 //void drawBubbles(void)
 //{
@@ -98,12 +98,12 @@ void updateBackground(void)
         return;
     }
     
-	int i;
-	for(i = 0;i < BUBBLE_COUNT;i += 1)
-	{
-		// Update first
-		updateBubble(&bubbles[i]);
-	}
+//	int i;
+//	for(i = 0;i < BUBBLE_COUNT;i += 1)
+//	{
+//		// Update first
+//		updateBubble(&bubbles[i]);
+//	}
 
 	exciteWater(&waterEffect, sin(backgroundCnt*0.1f)*2.0f, 0, true);
 

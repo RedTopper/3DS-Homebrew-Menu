@@ -487,7 +487,7 @@ void drawPanelTranslucencyAdjust() {
         addSlider(80, "Top screen panel edge offset", &panelTranslucencySliders);
     }
     
-    MAGFXDrawPanel(GFX_TOP, true);
+    MAGFXDrawPanel(GFX_TOP, false);
     MAGFXDrawPanel(GFX_BOTTOM, false);
     
     button * topSlider = panelTranslucencySliders.buttons[0];

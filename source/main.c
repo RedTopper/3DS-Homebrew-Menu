@@ -368,7 +368,7 @@ void renderFrame()
             }
             else if (menuStatus == menuStatusPanelSettings) {
                 drawPanelTranslucencyAdjust();
-                drawBottomStatusBar("Panel translucency");
+                drawBottomStatusBar("Panel settings");
             }
             else {
                 drawMenu(&menu);

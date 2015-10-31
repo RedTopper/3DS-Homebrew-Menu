@@ -484,6 +484,17 @@ bool gamecardStatusChanged;
 
 #include "logText.h"
 
+void randomiseTheme() {
+    buildThemesList();
+    int minimum_number = 2;
+    int max_number = themesMenu.numEntries - 1;
+    int r = rand() % (max_number + 1 - minimum_number) + minimum_number;
+    menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
+    setTheme(randomEntry->executablePath);
+}
+
+//#include <3ds/services/apt.h>
+
 int main(int argc, char *argv[])
 {
 	srvInit();
@@ -517,12 +528,7 @@ int main(int argc, char *argv[])
     randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
     
     if (randomTheme) {
-        buildThemesList();
-        int minimum_number = 2;
-        int max_number = themesMenu.numEntries - 1;
-        int r = rand() % (max_number + 1 - minimum_number) + minimum_number;
-        menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
-        setTheme(randomEntry->executablePath);
+        randomiseTheme();
     }
     
     initBackground();
@@ -571,6 +577,7 @@ int main(int argc, char *argv[])
         }
         
         startMs = osGetTime();
+        
         
 //        if (preloadTitles && !titleMenuInitialLoadDone && !titlemenuIsUpdating) {
 //            svcSignalEvent(threadRequest);
@@ -840,7 +847,6 @@ int main(int argc, char *argv[])
 
 
         renderFrame();
-
         gfxFlip();
         
         endMs = osGetTime();

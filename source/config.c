@@ -437,7 +437,7 @@ void initConfigMenu() {
     
     addSettingsMenuEntry("Title filtering", "Show or hide system titles from the title launcher and save manager", (u8*)helpIconIgnoredTitles_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusOpenTitleFiltering, NULL);
     
-    if (fileExists("/gridlauncher/update/mglupdate.3dsx", &sdmcArchive) && fileExists("/gridlauncher/update/index.lua", &sdmcArchive) && fileExists("/gridlauncher/update/config.txt", &sdmcArchive)) {
+    if (fileExists("/gridlauncher/update/mglupdate.3dsx", &sdmcArchive) && fileExists("/gridlauncher/update/index.lua", &sdmcArchive)) {
         addSettingsMenuEntry("Software update", "Update Gridlauncher to the latest version. By ihaveamac from GBATemp", (u8*)settingsIconUpdate_bin, false, &settingsMenu, &startUpdate, NULL, NULL);
         
         strcpy(settingsMenu.entries[settingsMenu.numEntries-1].author, "By ihaveamac on GBATemp");

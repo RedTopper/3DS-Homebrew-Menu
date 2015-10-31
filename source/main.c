@@ -30,6 +30,7 @@
 #include "touchblock.h"
 #include "folders.h"
 #include "themegfx.h"
+#include "version.h"
 
 u8 sdmcCurrent = 0;
 u64 nextSdCheck = 0;
@@ -482,7 +483,7 @@ bool gamecardStatusChanged;
 
 #include "logText.h"
 
-int main()
+int main(int argc, char *argv[])
 {
 	srvInit();
 	aptInit();
@@ -550,6 +551,18 @@ int main()
     int endMs = 0;
     int delayMs = 0;
     unsigned long long int delayNs = 0;
+    
+    char * glInfo = (char*)malloc(1024);
+    
+    if (argc > 0) {
+        sprintf(glInfo, "%s|%d", argv[0], currentversion);
+    }
+    else {
+        sprintf(glInfo, "sdmc:/boot.3dsx|%d", currentversion);
+    }
+    
+    logTextP(glInfo, "/gridlauncher/glinfo.txt");
+    free(glInfo);
     
 	while(aptMainLoop()) {
         if (die) {

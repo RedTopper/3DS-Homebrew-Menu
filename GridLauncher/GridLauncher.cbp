@@ -110,6 +110,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="../source/smdh.h" />
+		<Unit filename="../source/sound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../source/sound.h" />
 		<Unit filename="../source/statusbar.c">
 			<Option compilerVar="CC" />
 		</Unit>

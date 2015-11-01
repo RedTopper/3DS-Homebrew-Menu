@@ -1219,12 +1219,21 @@ void setPositionsToCurrentMenuSelection(menu_s* m);
 
 void showFolders() {
     buildFoldersList();
-    char * cfn = currentFolderName();
-    menuEntry_s *tickedEntry = updateMenuTicks(&foldersMenu, cfn, false);
-    free(cfn);
-    int tickedIndex = indexOfMenuEntryAtPageRowColInMenu(tickedEntry->page, tickedEntry->row, tickedEntry->col, &foldersMenu);
-    if (tickedIndex == -1) tickedIndex = 0;
-    foldersMenu.selectedEntry = tickedIndex;
+
+    if (foldersMenu.numEntries == 1) {
+        menuEntry_s * menuEntry3DSFolder = getMenuEntry(&foldersMenu, 0);
+        menuEntry3DSFolder->hidden = false;
+        foldersMenu.selectedEntry = 0;
+    }
+    else {
+        char * cfn = currentFolderName();
+        menuEntry_s *tickedEntry = updateMenuTicks(&foldersMenu, cfn, false);
+        free(cfn);
+        int tickedIndex = indexOfMenuEntryAtPageRowColInMenu(tickedEntry->page, tickedEntry->row, tickedEntry->col, &foldersMenu);
+        if (tickedIndex == -1) tickedIndex = 0;
+        foldersMenu.selectedEntry = tickedIndex;
+    }
+
     setPositionsToCurrentMenuSelection(&foldersMenu);
     //gotoFirstIcon(&foldersMenu);
 //    checkReturnToGrid(&foldersMenu);

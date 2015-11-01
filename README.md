@@ -1,4 +1,24 @@
 # The Homebrew Launcher
+#### Differences
+So far there has been only really minor changes:
+- Launcher now shows less garbage on startup (not none, but less). A splash screen will show if menuhax_imagedisplay.bin is in the same directory as the .3dsx. It is generated using Homemenuhax found here https://github.com/yellows8/3ds_homemenuhax.
+- Themes can include BGM.bin, a 44100Hz mono, signed 16 bit PCM wav file and will be loaded on startup.
+- Themes have an option to be randomized when the 3DS is closed for an extended period of time (5 seconds)
+
+#### How to make a BGM.bin
+
+1. Download an MP3/MP4/whatever you want as BGM.
+2. Load it up in audacity/any audio editor.
+3. Delete all of the tracks but one (If it is stereo, make it mono, for example. The result should leave you with a mono file.)
+4. Edit how you like it (make it louder, longer, faster, stronger).
+5. Change the project rate to 44100Hz if it isn't already.
+6. Export it as a WAV (Microsoft) signed 16bit PCM file.
+7. Rename it to BGM.bin and put it in your themes folder.
+
+#### Code credits
+- https://github.com/clank201/SoundExample
+
+That's it so far.
 
 #### Presentation
 

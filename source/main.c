@@ -137,6 +137,10 @@ void launchSVDTFromTitleMenu() {
 
 void exitServices() {
     // cleanup whatever we have to cleanup
+	audio_stop();
+	audio_stop();
+	csndExit();
+	
     freeThemeImages();
     netloader_exit();
     titlesExit();
@@ -492,7 +496,40 @@ int main(int argc, char *argv[])
 	srvInit();
 	aptInit();
 	gfxInitDefault();
+	
+	u8* framebuf_top;
+	u8* framebuf_bot;
+	framebuf_top = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
+	framebuf_bot = gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL);
+	memset(framebuf_top, 0, 400 * 240 * 3); //clear the screen to black
+	memset(framebuf_bot, 0, 320 * 240 * 3); //ensures no spaz shows.
+	gfxFlushBuffers();
+	gfxSwapBuffers();
+				
 	initFilesystem();
+	
+	FILE *file = fopen("menuhax_imagedisplay.bin","rb"); //attempts to load image
+	u8* buffer;
+	if (file != NULL){
+		fseek(file,0,SEEK_END);
+		off_t size = ftell(file);
+		fseek(file,0,SEEK_SET);
+		buffer=malloc(size);
+		if(buffer){
+			off_t bytesRead = fread(buffer,1,size,file);
+			fclose(file);
+			if(size==bytesRead){
+				framebuf_top = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
+				framebuf_bot = gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL);
+				memcpy(framebuf_top, buffer, 240*400*3*2);
+				memset(framebuf_bot, 0, 320 * 240 * 3);
+				gfxFlushBuffers();
+				gfxSwapBuffers();
+			}
+		}
+	}
+	
+	csndInit();//start Audio Lib
 	openSDArchive();
 	hidInit();
 	acInit();
@@ -543,6 +580,9 @@ int main(int argc, char *argv[])
     gamecardWasIn = regionFreeGamecardIn;
     
     initThemeImages();
+	if(!randomTheme) {
+		initThemeMusic();
+	}
     
     int frameRate = 60;
     int frameMs = 1000 / frameRate;

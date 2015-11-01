@@ -121,25 +121,25 @@ int indexOfFirstVisibleMenuEntry(menu_s *m) {
 void setMenuStatus(int status) {
     dPadSelectedToolbarButton = -1;
     btnListUnHighlight(&toolbarButtons);
-    
+
     /*
      If we try to start blocking touches when we are about to launch the software updater,
      the touch block thread will be active when the main function tries to deallocate it
      before launching the updater.
-     
+
      In all other instances, a touch up will follow the changing of the status. This will
      cause the touch block thread function to return and the thread to die, so it can then
      be safely deallocated by the main function.
-     
+
      Before this if statement was implemented, launching the updater using A worked but
      launching it using the touch screen caused a red screen hang.
-     
+
      An if statement can give so much joy.
      */
     if (status != menuStatusSoftwareUpdate) {
         startBlockingTouches();
     }
-    
+
     menuStatus = status;
 }
 
@@ -173,11 +173,11 @@ void showSettings() {
     if (settingsMenuNeedsInit) {
         initConfigMenu();
     }
-    
+
     updateMenuIconPositions(&settingsMenu);
     gotoFirstIcon(&settingsMenu);
     setMenuStatus(menuStatusSettings);
-    
+
     if (animatedGrids) {
         startTransition(transitionDirectionDown, menu.pagePosition, &menu);
     }
@@ -211,7 +211,7 @@ void handleMenuTopLeftActions(int source) {
 //        }
 
         setMenuStatus(menuStatusIcons);
-        
+
         if (animatedGrids) {
             startTransition(transitionDirectionUp, foldersMenu.pagePosition, &foldersMenu);
         }
@@ -220,7 +220,7 @@ void handleMenuTopLeftActions(int source) {
         cancelTitleLoading();
         saveIgnoredTitleIDs();
         setMenuStatus(menuStatusSettings);
-        
+
         if (animatedGrids) {
             startTransition(transitionDirectionUp, titleMenu.pagePosition, &titleMenu);
         }
@@ -232,7 +232,7 @@ void handleMenuTopLeftActions(int source) {
     else if (menuStatus == menuStatusColourSettings) {
         alphaImagesDrawn = false;
         setMenuStatus(menuStatusThemeSettings);
-        
+
         if (animatedGrids) {
             startTransition(transitionDirectionUp, colourSelectMenu.pagePosition, &colourSelectMenu);
         }
@@ -242,7 +242,7 @@ void handleMenuTopLeftActions(int source) {
     }
     else if (menuStatus == menuStatusGridSettings) {
         setMenuStatus(menuStatusSettings);
-        
+
         if (animatedGrids) {
             startTransition(transitionDirectionUp, gridSettingsMenu.pagePosition, &gridSettingsMenu);
         }
@@ -252,21 +252,21 @@ void handleMenuTopLeftActions(int source) {
     }
     else if (menuStatus == menuStatusThemeSelect) {
         setMenuStatus(menuStatusThemeSettings);
-        
+
         if (animatedGrids) {
             startTransition(transitionDirectionUp, themesMenu.pagePosition, &themesMenu);
         }
     }
     else if (menuStatus == menuStatusThemeSettings) {
         setMenuStatus(menuStatusSettings);
-        
+
         if (animatedGrids) {
             startTransition(transitionDirectionUp, themeSettingsMenu.pagePosition, &themeSettingsMenu);
         }
     }
     else if (menuStatus == menuStatusWaterSettings) {
         setMenuStatus(menuStatusThemeSettings);
-        
+
         if (animatedGrids) {
             startTransition(transitionDirectionUp, waterMenu.pagePosition, &waterMenu);
         }
@@ -298,7 +298,7 @@ void toolbarBottomLeftAction() {
         if (titleLoadPaused) {
             resumeTitleLoading();
         }
-        
+
         setMenuStatus(menuStatusOpenHomeMenuApps);
     }
 }
@@ -313,7 +313,7 @@ void loadThemeConfig() {
     waterEnabled = getConfigBoolForKey("waterEnabled", true, configTypeTheme);
     panelAlphaTop = getConfigIntForKey("panelAlphaTop", 0, configTypeTheme);
     panelAlphaBottom = getConfigIntForKey("panelAlphaBottom", 0, configTypeTheme);
-    
+
     translucencyTopBar = getConfigIntForKey("translucencyTopBar", 255, configTypeTheme);
     translucencyBottomBar = getConfigIntForKey("translucencyBottomBar", 255, configTypeTheme);
     translucencyBarIcons = getConfigIntForKey("translucencyBarIcons", 255, configTypeTheme);
@@ -322,7 +322,7 @@ void loadThemeConfig() {
     translucencyPageControls = getConfigIntForKey("translucencyPageControls", 255, configTypeTheme);
     translucencyWater = getConfigIntForKey("translucencyWater", 255, configTypeTheme);
     translucencyAppShadow = getConfigIntForKey("translucencyAppShadow", 255, configTypeTheme);
-    
+
     panelLeftOffsetTop = getConfigIntForKey("panelLeftOffsetTop", 0, configTypeTheme);
 }
 
@@ -331,12 +331,12 @@ void initMenu(menu_s* m)
     if(!m) {
         return;
     }
-    
+
     /*
      Initial menu status should always be to show the icons
      */
     setMenuStatus(menuStatusIcons);
-    
+
     /*
      Configure the toolbar buttons and page select buttons
      */
@@ -344,27 +344,27 @@ void initMenu(menu_s* m)
     addToolbarButton(btnButtonTypeToolbarRight, &toolbarTopRightAction, buttonTagTopRight);
     addToolbarButton(btnButtonTypeToolbarBottomRight, &toolbarBottomRightAction, buttonTagBottomRight);
     addToolbarButton(btnButtonTypeToolbarBottomLeft, &toolbarBottomLeftAction, buttonTagBottomLeft);
-    
+
     btnSetButtonType(&pageArrowLeft, btnButtonTypePageArrowLeft);
     btnSetButtonType(&pageArrowRight, btnButtonTypePageArrowRight);
-    
-    
+
+
     /*
-     
+
      REALLY WEIRD BUG ALERT!
-     
+
      If the last toolbar button to be drawn is not highlighted then the text wrapping when drawing the
      description of the currently selected app does not work.
-     
+
      I simply cannot work out why this is happening, so I have cheated.
-     
+
      This fake button is configured exactly the same way as another toolbar button,
      but it gets drawn off screen. It is set to be highlighted all the time, so this
      allows the text wrapping to work properly.
-     
+
      I'm guessing that this is 'undefined behaviour' due to some bad memory management,
      so if anyone can figure out what is actually going on then this can be removed.
-     
+
      */
 
     btnSetButtonType(&fakeButton, btnButtonTypeToolbarBottomLeft);
@@ -372,7 +372,7 @@ void initMenu(menu_s* m)
     fakeButton.y = 100;
     fakeButton.visible = true;
     fakeButton.highlighted = true;
-    
+
     /*
      If the region free launcher is available, load the setting which determines whether it should be shown in the grid
      */
@@ -394,12 +394,12 @@ void initMenu(menu_s* m)
     displayTitleID = getConfigBoolForKey("displayTitleID", false, configTypeMain);
     animatedGrids = getConfigBoolForKey("animatedGrids", true, configTypeMain);
     show3DSFolder = getConfigBoolForKey("show3DSFolder", true, configTypeMain);
-    
+
     loadThemeConfig();
-    
+
     //Used for ticking the icon in settings
 //    thirdRowVisible = (totalRows == 3);
-    
+
     /*
      Menu init
      */
@@ -413,14 +413,14 @@ void initMenu(menu_s* m)
 	m->scrollTarget=0;
 	m->atEquilibrium=false;
 
-    
+
     /*
      Add the region free entry to the menu if applicable
      */
 	if(regionFreeAvailable) {
         regionfreeEntry.isRegionFreeEntry = true;
         regionfreeEntry.hidden = !showRegionFree;
-        
+
 		extractSmdhData((smdh_s*)regionfree_bin, regionfreeEntry.name, regionfreeEntry.description, regionfreeEntry.author, regionfreeEntry.iconData);
 		strcpy(regionfreeEntry.executablePath, REGIONFREE_PATH);
 		addMenuEntryCopy(m, &regionfreeEntry);
@@ -447,27 +447,27 @@ void drawBottomStatusBar(char* title) {
         rgbColour * tintCol = tintColour();
         MAGFXTranslucentRect(height, 320, tintCol->r, tintCol->g, tintCol->b, translucencyBottomBar, bottomBar);
     }
-    
+
     gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, bottomBar, height, 320, 240-height, 0);
-    
-    
+
+
 //    gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, (u8[]){tintCol->r, tintCol->g, tintCol->b}, 240-height, 0, height, 400);
-    
+
     rgbColour * light = lightTextColour();
-    
+
     int stringLength = MATextWidthInPixels(title, &MAFontRobotoRegular10);
     MADrawText(GFX_BOTTOM, GFX_LEFT, 240-height-2, (320/2)-(stringLength/2), title, &MAFontRobotoRegular10, light->r, light->g, light->b);
-    
+
     button * leftToolbarButton = btnButtonInListWithTag(&toolbarButtons, buttonTagTopLeft);
     button * rightToolbarButton = btnButtonInListWithTag(&toolbarButtons, buttonTagTopRight);
     button * bottomLeftButton = btnButtonInListWithTag(&toolbarButtons, buttonTagBottomLeft);
     button * bottomRightButton = btnButtonInListWithTag(&toolbarButtons, buttonTagBottomRight);
-    
+
     leftToolbarButton->visible = true;
     rightToolbarButton->visible = false;
     bottomRightButton->visible = false;
     bottomLeftButton->visible = false;
-    
+
     if (menuStatus == menuStatusIcons) {
         rightToolbarButton->visible = true;
         bottomRightButton->visible = true;
@@ -481,11 +481,11 @@ void drawBottomStatusBar(char* title) {
             bottomLeftButton->visible = true;
         }
     }
-    
+
     int buttonIconLeft = 0;
     int buttonIconRight = 0;
     int buttonIconBottomLeft = 0;
-    
+
     if (menuStatus == menuStatusIcons) {
         buttonIconLeft = btnButtonIconSpanner;
         buttonIconRight = btnButtonIconQuestionMark;
@@ -504,10 +504,10 @@ void drawBottomStatusBar(char* title) {
 
     leftToolbarButton->buttonIcon = buttonIconLeft;
     rightToolbarButton->buttonIcon = buttonIconRight;
-    
+
     bottomLeftButton->buttonIcon = buttonIconBottomLeft;
     bottomRightButton->buttonIcon = btnButtonIconFolder;
-    
+
     btnDrawButtonList(&toolbarButtons);
     btnDrawButton(&fakeButton);
 }
@@ -516,19 +516,19 @@ int * coordsForMenuEntry(int row, int col, menu_s *m) {
     int xOffset = 121;
     int yOffset = 33;
     int gap = 15;
-    
+
 //    int totalRows = totalRowsForMenu(m);
-    
+
     if (totalRows == 3) {
         xOffset += 31;
     }
     else if (totalRows == 1) {
         xOffset -= 41;
     }
-    
+
     int x = xOffset - ( row * ENTRY_ICON_HEIGHT ) - (row * gap);
     int y = yOffset + (( col * ENTRY_ICON_WIDTH ) + (col * gap));
-    
+
     static int  r[2];
     r[0] = x;
     r[1] = y;
@@ -549,10 +549,10 @@ u8 pageControlPanelRight[81*36*4];
 bool pageControlPanelsDrawn = false;
 
 void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, bool gridOnly) {
-    
+
     rgbColour * inactiveCol = inactiveColour();
     rgbColour * tintCol = tintColour();
-    
+
     /*
      Prepare translucent images for drawing
      */
@@ -563,27 +563,27 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
         MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)cartbackgroundalphamask_bin, cartBackgroundSelected, 59, 59);
         MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)cartbackgroundalphamask_bin, cartBackground, 59, 59);
         MAGFXImageWithRGBAndAlphaMask(tintCol->r, tintCol->g, tintCol->b, (u8*)appbackgroundalphamask_bin, appBackgroundSelected, 56, 56);
-        
+
         alphaImagesDrawn = true;
     }
-    
+
     /*
      Prepare page controls for drawing
      */
     if (!pageControlPanelsDrawn) {
         MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelLeftAlphaMask_bin, pageControlPanelLeft, 81, 36);
         MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelRightAlphaMask_bin, pageControlPanelRight, 81, 36);
-        
+
         pageControlPanelsDrawn = true;
     }
-    
-    if (!gridOnly) {   
+
+    if (!gridOnly) {
         //Draw top screen translucent panel
         MAGFXDrawPanel(GFX_TOP, false);
     }
-    
+
     int totalDrawn = 0;
-    
+
     menuEntry_s* me=m->entries;
     int i=0;
     int h=0;
@@ -592,15 +592,15 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
             h+=drawMenuEntry(me, GFX_BOTTOM, (i==m->selectedEntry && m->rowPosition>-1), m, pageYOffset, pageXOffset, !gridOnly);
             totalDrawn++;
         }
-        
+
         me=me->next;
         i++;
     }
-    
+
     if (showAppBackgrounds) {
         int totalSpaces = totalRows * totalCols;
         int numPadding = totalSpaces - totalDrawn;
-        
+
         int i;
         int r = totalRows-1;
         int c = totalCols-1;
@@ -608,33 +608,33 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
             int * coords = coordsForMenuEntry(r, c, m);
             int x = coords[0];
             int y = coords[1];
-            
+
             x += pageXOffset;
             y += pageYOffset;
-            
+
             if (themeImageExists(themeImageAppBackground)) {
                 drawThemeImage(themeImageAppBackground, GFX_BOTTOM, x+3, y+4);
             }
             else {
                 gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, appBackground, 56, 56, x+3, y+4, translucencyAppBackgrounds);
             }
-            
+
             c--;
             if (c < 0) {
                 c = totalCols-1;
                 r--;
             }
-            
+
             if (r<0) {
                 //                break;
             }
-            
+
         }
     }
-    
-    
+
+
     if (!gridOnly) {
-        
+
         /*
          Draw bottom screen paging arrows and page indicators
          */
@@ -643,26 +643,26 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
                 gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)pageControlPanelLeft, 81, 36, 80, 0, panelAlphaBottom);
                 btnDrawButton(&pageArrowLeft);
             }
-            
+
             if (page < (m->totalPages - 1) || wrapScrolling) {
                 gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)pageControlPanelRight, 81, 36, 80, 284, panelAlphaBottom);
                 btnDrawButton(&pageArrowRight);
             }
-            
+
             int totalIndicatorWidth = 13 * m->totalPages;
             int pageIndicatorX = 5;
             int pageIndicatorY = (320-totalIndicatorWidth)/2;
-            
+
             int count;
-            
+
             for (count=0; count < page; count++) {
                 gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, pageUnselected, 13, 13, pageIndicatorX, pageIndicatorY, translucencyPageControls);
                 pageIndicatorY += 13;
             }
-            
+
             gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, pageSelected, 13, 13, pageIndicatorX, pageIndicatorY);
             pageIndicatorY += 13;
-            
+
             for (count=0; count<(m->totalPages - page - 1); count++) {
                 gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, pageUnselected, 13, 13, pageIndicatorX, pageIndicatorY, translucencyPageControls);
                 pageIndicatorY += 13;
@@ -682,10 +682,10 @@ void drawGrid(menu_s* m) {
     if (transitionFromPage > -1) {
         int transitionOutPixelX = 0;
         int transitionOutPixelY = 0;
-        
+
         int transitionInPixelX = 0;
         int transitionInPixelY = 0;
-        
+
         if (transitionDirection == transitionDirectionLeft || transitionDirection == transitionDirectionRight) {
             transitionOutPixelY = transitionOutPixel;
             transitionInPixelY = transitionInPixel;
@@ -694,18 +694,18 @@ void drawGrid(menu_s* m) {
             transitionOutPixelX = transitionOutPixel;
             transitionInPixelX = transitionInPixel;
         }
-        
+
         if (transitionFromMenu) {
             drawGridWithPage(transitionFromMenu, transitionFromPage, transitionOutPixelY, transitionOutPixelX, true);
         }
-        
+
         if (m) {
             drawGridWithPage(m, m->pagePosition, transitionInPixelY, transitionInPixelX, false);
         }
-        
+
         transitionOutPixel -= transitionSpeed;
         transitionInPixel -= transitionSpeed;
-        
+
         if (transitionInPixel == 0) {
             transitionFromPage = -1;
         }
@@ -720,19 +720,19 @@ void drawMenu(menu_s* m)
     if(!m) {
         return;
     }
-    
+
     if (!showRegionFree && m->selectedEntry == 0) {
         m->selectedEntry = 1;
     }
 
-    
+
     if (menuStatusIcons == menuStatusIcons) {
         if (m->numEntries == 1) {
             char * emptyFolderText = "Empty folder";
             int len = MATextWidthInPixels(emptyFolderText, &MAFontRobotoRegular16);
             rgbColour * dark = darkTextColour();
             MADrawText(GFX_BOTTOM, GFX_LEFT, 110, (320/2)-(len/2), emptyFolderText, &MAFontRobotoRegular16, dark->r, dark->g, dark->b);
-            
+
             if (transitionFromPage > -1) {
                 drawGrid(NULL);
             }
@@ -740,7 +740,7 @@ void drawMenu(menu_s* m)
         else {
             drawGrid(m);
         }
-        
+
         char * cfn = currentFolderName();
         char title[strlen(cfn) + strlen("Folder: ")];
         strcpy(title, "Folder: ");
@@ -757,7 +757,7 @@ void updateMenuIconPositions(menu_s* m) {
     m->totalPages = 0;
     int i=0;
 //    int totalRows = m->totalRows;
-    
+
     menuEntry_s* me=m->entries;
     while(me)
     {
@@ -765,26 +765,26 @@ void updateMenuIconPositions(menu_s* m) {
             me->row = currentRow;
             me->col = currentColumn;
             me->page = currentPage;
-            
-            
+
+
             if (currentRow == 0 && currentColumn == 0) {
                 m->totalPages = m->totalPages + 1;
             }
-            
+
             currentColumn++;
-            
+
             if (currentColumn > 3) {
                 currentColumn = 0;
                 currentRow++;
             }
-            
+
             if (currentRow >= totalRows) {
                 currentRow = 0;
                 currentColumn = 0;
                 currentPage++;
             }
         }
-        
+
         me=me->next;
         i++;
     }
@@ -810,7 +810,7 @@ void addMenuEntryCopy(menu_s* m, menuEntry_s* me)
 	if(!me2)return;
 
 	memcpy(me2, me, sizeof(menuEntry_s));
-	
+
 	addMenuEntry(m, me2);
 }
 
@@ -856,7 +856,7 @@ void createMenuEntry(menu_s* m, char* execPath, char* name, char* description, c
 	if(!me)return;
 
 	initMenuEntry(me, execPath, name, description, author, iconData);
-	
+
 	addMenuEntry(m, me);
 }
 
@@ -870,21 +870,21 @@ menuEntry_s* getMenuEntry(menu_s* m, u16 n)
 
 int indexOfMenuEntryAtPageRowColInMenu(int page, int row, int col, menu_s* m) {
     if (!m) return -1;
-    
+
     menuEntry_s* me = m->entries;
     int i=0;
     while(me) {
-        if (me->page == page && me->row == row && me->col == row) {
+        if (me->page == page && me->row == row && me->col == col) {
             if (me->hidden) {
                 i++;
             }
-            
+
             return i;
         }
         me=me->next;
         i++;
     }
-    
+
     return -1;
 }
 
@@ -892,7 +892,7 @@ int indexOfFirstVisibleMenuEntryOnPage(int page, menu_s* m);
 
 void startTransition(int direction, int fromPage, menu_s* fromMenu) {
     int absTransitionSpeed = 80;
-    
+
     if (direction == transitionDirectionLeft) {
         transitionInPixel = 320;
         transitionSpeed = absTransitionSpeed;
@@ -909,7 +909,7 @@ void startTransition(int direction, int fromPage, menu_s* fromMenu) {
         transitionInPixel = -240;
         transitionSpeed = -absTransitionSpeed;
     }
-    
+
     transitionDirection = direction;
     transitionFromPage = fromPage;
     transitionOutPixel = 0;
@@ -920,12 +920,12 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     if (m->totalPages < 2) {
         return;
     }
-    
+
     int previousPage = m->pagePosition;
-    
+
     m->pagePosition = m->pagePosition + 1;
     bool pageChanged = false;
-    
+
     if (m->pagePosition > (m->totalPages - 1)) {
         if (wrapScrolling) {
             m->pagePosition = 0;
@@ -939,15 +939,15 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     else {
         pageChanged = true;
     }
-    
+
     if (pageChanged) {
         if (animatedGrids) {
             startTransition(transitionDirectionLeft, previousPage, m);
         }
-        
+
         btnListUnHighlight(&toolbarButtons);
         dPadSelectedToolbarButton = -1;
-        
+
         if (preserveCursorPosition) {
             int firstIndex = indexOfFirstVisibleMenuEntryOnPage(m->pagePosition, m);
             int indexOffset = (m->rowPosition * totalCols) + m->colPosition;
@@ -960,7 +960,7 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
             m->colPosition = 0;
             int newSelectedIndex = indexOfMenuEntryAtPageRowColInMenu(m->pagePosition, 0, 0, m);
             m->selectedEntry = newSelectedIndex;
-            
+
             if ((m->selectedEntry + (4*oldRowPosition)) <= (m->numEntries - 1)) {
                 *move += (4*oldRowPosition);
                 m->colPosition = 0;
@@ -974,12 +974,12 @@ void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     if (m->totalPages < 2) {
         return;
     }
-    
+
     int previousPage = m->pagePosition;
-    
+
     m->pagePosition = m->pagePosition - 1;
     bool pageChanged = false;
-    
+
     if (m->pagePosition < 0) {
         if (wrapScrolling) {
             m->pagePosition = (m->totalPages - 1);
@@ -993,15 +993,15 @@ void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     else {
         pageChanged = true;
     }
-    
+
     if (pageChanged) {
         if (animatedGrids) {
             startTransition(transitionDirectionRight, previousPage, m);
         }
-        
+
         btnListUnHighlight(&toolbarButtons);
         dPadSelectedToolbarButton = -1;
-        
+
         if (preserveCursorPosition) {
             int firstIndex = indexOfFirstVisibleMenuEntryOnPage(m->pagePosition, m);
             int indexOffset = (m->rowPosition * totalCols) + m->colPosition;
@@ -1011,36 +1011,36 @@ void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
         else {
             //Store the old row which was selected
             int oldRowPosition = m->rowPosition;
-            
+
             //Move the selection to the first icon on this page
             m->rowPosition = 0;
             m->colPosition = 0;
             int newSelectedIndex = indexOfMenuEntryAtPageRowColInMenu(m->pagePosition, 0, 0, m);
             m->selectedEntry = newSelectedIndex;
-            
+
             //Move the selection to the same position on the new page
             *move += (3 + (4*oldRowPosition));
             m->colPosition = 3;
             m->rowPosition = oldRowPosition;
-            
+
             //If we moved back to the last page
             if (m->pagePosition == (m->totalPages - 1)) {
-                
+
                 //If the current position on the last page is not occupied by an app icon
                 if (*move + m->selectedEntry >= m->numEntries) {
-                    
+
                     //While the current position on the page is still not occupied by an icon
                     while (*move + m->selectedEntry >= m->numEntries) {
                         //Go left by one icon
                         *move -= 1;
                         m->colPosition = m->colPosition - 1;
-                        
+
                         //If we have got to the beginning of the row, go to the end of the next row up
                         if (m->colPosition < 0) {
                             m->colPosition = 3;
                             m->rowPosition = m->rowPosition - 1;
                         }
-                        
+
                         //If we have dropped off the left and edge of the first row then we must be on an empty page
                         //This really shouldn't ever happen, but just in case, this code will reset back to the first
                         //icon on the page and break out of the while loop so we don't hang here
@@ -1062,7 +1062,7 @@ bool touchWithin(int touchX, int touchY, int targetX, int targetY, int targetW, 
     if (touchX > targetY && touchX < (targetY+targetW) && (240-touchY) > targetX && (240-touchY) < (targetX+targetH)) {
         return true;
     }
-    
+
     return false;
 }
 
@@ -1070,7 +1070,7 @@ void gotoFirstIcon(menu_s* m) {
     m->rowPosition = 0;
     m->colPosition = 0;
     m->pagePosition = 0;
-    
+
     int selectedEntry = 0;
     if (m->entries[0].hidden) {
         selectedEntry++;
@@ -1102,36 +1102,36 @@ void quitSettings(menu_s* m) {
     setConfigBool("displayTitleID", displayTitleID, configTypeMain);
     setConfigBool("animatedGrids", animatedGrids, configTypeMain);
     setConfigBool("show3DSFolder", show3DSFolder, configTypeMain);
-    
+
     setConfigBool("waterEnabled", waterEnabled, configTypeTheme);
     setConfigBool("showLogo", showLogo, configTypeTheme);
     setConfigInt("panelAlphaTop", panelAlphaTop, configTypeTheme);
     setConfigInt("panelAlphaBottom", panelAlphaBottom, configTypeTheme);
-    
+
     setConfigInt("translucencyTopBar", translucencyTopBar, configTypeTheme);
     setConfigInt("translucencyWater", translucencyWater, configTypeTheme);
     setConfigInt("translucencyAppShadow", translucencyAppShadow, configTypeTheme);
-    
+
     setConfigInt("translucencyBottomBar", translucencyBottomBar, configTypeTheme);
     setConfigInt("translucencyBarIcons", translucencyBarIcons, configTypeTheme);
     setConfigInt("translucencyBarIconSymbols", translucencyBarIconSymbols, configTypeTheme);
     setConfigInt("translucencyAppBackgrounds", translucencyAppBackgrounds, configTypeTheme);
     setConfigInt("translucencyPageControls", translucencyPageControls, configTypeTheme);
-    
+
     setConfigInt("preloadTitles", preloadTitles, configTypeMain);
-    
+
     setConfigInt("panelLeftOffsetTop", panelLeftOffsetTop, configTypeTheme);
-    
+
     saveConfig();
-    
+
     if (menuReloadRequired) {
         reloadMenu(m);
     }
-    
+
     updateMenuIconPositions(m);
     setMenuStatus(menuStatusIcons);
     checkReturnToGrid(m);
-    
+
     if (animatedGrids) {
         startTransition(transitionDirectionUp, settingsMenu.pagePosition, &settingsMenu);
     }
@@ -1139,52 +1139,62 @@ void quitSettings(menu_s* m) {
 
 bool trueBool = true;
 
-void updateMenuTicks(menu_s* m, char * selectedString, bool useExeecutablePath) {
+menuEntry_s * updateMenuTicks(menu_s* m, char * selectedString, bool useExeecutablePath) {
+    menuEntry_s * tickedItem = NULL;
+
     menuEntry_s* me = m->entries;
-    
+
     if (m == &themesMenu && randomTheme) {
         bool first = true;
         while (me) {
             if (first) {
                 me->showTick = &trueBool;
+                tickedItem = me;
                 first = false;
             }
             else {
                 me->showTick = NULL;
             }
-            
+
             me=me->next;
         }
     }
     else {
-        
-        
         while(me) {
             if ((!useExeecutablePath &&  strcmp(me->name, selectedString) == 0) || (useExeecutablePath &&  strcmp(me->executablePath, selectedString) == 0)) {
                 me->showTick = &trueBool;
+                tickedItem = me;
             }
             else {
                 me->showTick = NULL;
             }
-            
+
             me=me->next;
         }
     }
-    
-    
-    
+
     //    free(cfn);
+
+    return tickedItem;
 }
+
+void setPositionsToCurrentMenuSelection(menu_s* m);
 
 void showFolders() {
     buildFoldersList();
     char * cfn = currentFolderName();
-    updateMenuTicks(&foldersMenu, cfn, false);
+    menuEntry_s *tickedEntry = updateMenuTicks(&foldersMenu, cfn, false);
+    if (!tickedEntry) logText("Nothing ticked");
+    else logText(tickedEntry->name);
     free(cfn);
-    gotoFirstIcon(&foldersMenu);
+    int tickedIndex = indexOfMenuEntryAtPageRowColInMenu(tickedEntry->page, tickedEntry->row, tickedEntry->col, &foldersMenu);
+    if (tickedIndex == -1) tickedIndex = 0;
+    foldersMenu.selectedEntry = tickedIndex;
+    setPositionsToCurrentMenuSelection(&foldersMenu);
+    //gotoFirstIcon(&foldersMenu);
 //    checkReturnToGrid(&foldersMenu);
     setMenuStatus(menuStatusFolders);
-    
+
     if (animatedGrids) {
         if (menu.numEntries > 1) {
             startTransition(transitionDirectionDown, menu.pagePosition, &menu);
@@ -1205,7 +1215,7 @@ void keyBAction() {
 
 void switchToolbarButtons() {
     btnListUnHighlight(&toolbarButtons);
-    
+
     if (dPadSelectedToolbarButton == 0) {
         dPadSelectedToolbarButton = 1;
     }
@@ -1237,30 +1247,30 @@ void handleDPadToolbarActions(menu_s* m) {
 
 int indexOfFirstVisibleMenuEntryOnPage(int page, menu_s* m) {
     int first = totalRows * totalCols * page;
-    
+
     if (!showRegionFree && menuStatus == menuStatusIcons) {
         first++;
     }
-    
+
     if (first >= m->numEntries) {
         first = m->numEntries - 1;
     }
-    
+
     return first;
 }
 
 int indexOfLastVisibleMenuEntryOnPage(int page, menu_s* m) {
     int last = totalRows * totalCols * (page+1);
     last--;
-    
+
     if (!showRegionFree) {
         last++;
     }
-    
+
     if (last >= m->numEntries) {
         last = m->numEntries - 1;
     }
-    
+
     return last;
 }
 
@@ -1269,7 +1279,7 @@ void setPositionsToCurrentMenuSelection(menu_s* m) {
     if (m->rowPosition == -1) {
         return;
     }
-    
+
     menuEntry_s *me = getMenuEntry(m, m->selectedEntry);
     m->rowPosition = me->row;
     m->colPosition = me->col;
@@ -1279,33 +1289,33 @@ bool updateGrid(menu_s* m) {
     if (transitionFromPage > -1) {
         return false;
     }
-    
+
     if(!m) {
         return false;
     }
     if(!m->numEntries) {
         return false;
     }
-    
+
     s8 move=0;
     circlePosition cstick;
     touchPosition touch;
     hidCstickRead(&cstick);
     hidTouchRead(&touch);
     cstick.dy=(abs(cstick.dy)<5)?0:cstick.dy;
-    
+
     touchX = touch.px;
     touchY = touch.py;
-    
+
     if (dPadSelectedToolbarButton > -1) {
         toolbarButtons.buttons[dPadSelectedToolbarButton]->highlighted = true;
     }
-    
+
     if (hidKeysDown()&KEY_B) {
         keyBAction();
         return false;
     }
-    
+
     if(hidKeysDown()&KEY_RIGHT) {
         if (m->rowPosition == -1) {
             switchToolbarButtons();
@@ -1323,7 +1333,7 @@ bool updateGrid(menu_s* m) {
             }
         }
     }
-    
+
     if(hidKeysDown()&KEY_LEFT) {
         if (m->rowPosition == -1) {
             switchToolbarButtons();
@@ -1351,11 +1361,11 @@ bool updateGrid(menu_s* m) {
 
             return false;
         }
-        
+
         else if (dPadNavigation && m->rowPosition == -1) {
             int last = indexOfLastVisibleMenuEntryOnPage(m->pagePosition, m);
             bool reselectGrid = false;
-            
+
             if (dPadSelectedToolbarButton == 2) {
                 m->selectedEntry = last;
                 reselectGrid = true;
@@ -1366,29 +1376,29 @@ bool updateGrid(menu_s* m) {
                 m->selectedEntry = last;
                 reselectGrid = true;
             }
-            
+
             if (reselectGrid) {
                 menuEntry_s *currentMenuEntry = getMenuEntry(m, m->selectedEntry);
                 m->rowPosition = currentMenuEntry->row;
                 m->colPosition = currentMenuEntry->col;
-                
+
                 dPadSelectedToolbarButton = -1;
                 btnListUnHighlight(&toolbarButtons);
             }
-            
+
             return false;
         }
-        
+
         else if (m->rowPosition > 0) {
             move-=4;
             m->rowPosition = m->rowPosition - 1;
         }
     }
-    
+
     if(hidKeysDown()&KEY_DOWN) {
         if (dPadNavigation && m->rowPosition == -1) {
             bool reselectGrid = false;
-            
+
             if (dPadSelectedToolbarButton == 0) {
                 m->selectedEntry = indexOfFirstVisibleMenuEntryOnPage(m->pagePosition, m);
                 reselectGrid = true;
@@ -1399,17 +1409,17 @@ bool updateGrid(menu_s* m) {
                 if (first >= m->numEntries) {
                     first = m->numEntries-1;
                 }
-                
+
                 m->selectedEntry = first;
-                
+
                 reselectGrid = true;
             }
-            
+
             if (reselectGrid) {
                 menuEntry_s *currentMenuEntry = getMenuEntry(m, m->selectedEntry);
                 m->rowPosition = currentMenuEntry->row;
                 m->colPosition = currentMenuEntry->col;
-                
+
                 dPadSelectedToolbarButton = -1;
                 btnListUnHighlight(&toolbarButtons);
             }
@@ -1417,8 +1427,8 @@ bool updateGrid(menu_s* m) {
             return false;
         }
         else if (dPadNavigation && (m->rowPosition == totalRows-1 || (m->selectedEntry + totalCols) >= m->numEntries)) {
-            
-            
+
+
             if (toolbarButtons.buttons[2]->visible && m->colPosition > 1) {
                 dPadSelectedToolbarButton = 2;
                 m->rowPosition = -1;
@@ -1429,29 +1439,29 @@ bool updateGrid(menu_s* m) {
                 m->rowPosition = -1;
                 m->selectedEntry = -1;
             }
-            
+
             return false;
         }
-        
+
         if (m->rowPosition < (totalRows - 1) && m->selectedEntry < (m->numEntries-4)) {
             move+=4;
             m->rowPosition = m->rowPosition + 1;
         }
     }
-    
+
     if(hidKeysDown()&KEY_R) {
         checkGotoNextPage(m, &move, true);
     }
-    
+
     if(hidKeysDown()&KEY_L) {
         checkGotoPreviousPage(m, &move, true);
     }
-    
+
     u16 oldEntry=m->selectedEntry;
-    
+
     if (hidKeysDown()&KEY_TOUCH) {
         m->firstTouch=touch;
-        
+
         menuEntry_s* me=m->entries;
         int i=0;
         int newRow = 0;
@@ -1461,30 +1471,30 @@ bool updateGrid(menu_s* m) {
             if (me->page == m->pagePosition) {
                 newRow = me->row;
                 newCol = me->col;
-                
+
                 int iconX = me->iconX;
                 int iconY = me->iconY;
                 int iconW = me->iconW;
                 int iconH = me->iconH;
-                
+
                 if (touchWithin(touchX, touchY, iconX, iconY, iconW, iconH)) {
                     gotAppMatch = true;
                     break;
                 }
             }
-            
+
             me=me->next;
             i++;
         }
-        
+
         if (gotAppMatch) {
             btnListUnHighlight(&toolbarButtons);
             dPadSelectedToolbarButton = -1;
-            
+
             if(m->selectedEntry==i) {
                 return true;
             }
-            
+
             else {
                 m->selectedEntry=i;
                 m->rowPosition = newRow;
@@ -1498,14 +1508,14 @@ bool updateGrid(menu_s* m) {
             else if (btnTouchWithin(touchX, touchY, &pageArrowRight)) {
                 checkGotoNextPage(m, &move, true);
             }
-            
+
             btnListCheckHighlight(&toolbarButtons, touchX, touchY);
         }
     }
     else if(hidKeysHeld()&KEY_TOUCH){
-        
+
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
-        
+
         //condition to make sure previousTouch is valid
         cstick.dy+=(touch.py-m->previousTouch.py)*16;
         m->touchTimer++;
@@ -1514,7 +1524,7 @@ bool updateGrid(menu_s* m) {
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
         btnListCheckRunCallback(&toolbarButtons, m->previousTouch.px, m->previousTouch.py);
     }
-    
+
     if (move + m->selectedEntry < 0) {
         m->selectedEntry=indexOfFirstVisibleMenuEntry(m);
         setPositionsToCurrentMenuSelection(m);
@@ -1526,31 +1536,31 @@ bool updateGrid(menu_s* m) {
     else {
         m->selectedEntry+=move;
     }
-    
+
     if(m->selectedEntry!=oldEntry)m->atEquilibrium=false;
-    
+
     if(hidKeysDown()&KEY_A) {
         /*
          We're about to launch a title from the A button
-         
+
          We need to re-scan the buttons to clear the A button's down state.
          If we don't do this, then the first title on the title menu
          will launch straight away.
-         
+
          */
-        
+
         hidScanInput();
-        
+
         if (m->rowPosition == -1) {
             handleDPadToolbarActions(m);
             return false;
         }
-        
+
         return true;
     }
-    
+
     m->previousTouch=touch;
-    
+
     return false;
 }
 
@@ -1559,7 +1569,7 @@ bool updateGrid(menu_s* m) {
 //    hidTouchRead(&touch);
 //    touchX = touch.px;
 //    touchY = touch.py;
-//    
+//
 //    if (hidKeysDown()&KEY_TOUCH || hidKeysHeld()&KEY_TOUCH) {
 //        btnListCheckHighlight(aButtonList, touchX, touchY);
 //        m->previousTouch.px = touchX;
@@ -1574,17 +1584,17 @@ bool updateGrid(menu_s* m) {
 #warning Try to get rid of this if possible
 void handleNonGridToolbarNavigation() {
     btnListUnHighlight(&toolbarButtons);
-    
+
     if (hidKeysDown()&KEY_UP && toolbarButtons.buttons[0]->visible == true) {
         if (dPadSelectedToolbarButton == -1) {
             dPadSelectedToolbarButton = 0;
         }
     }
-    
+
     if (hidKeysDown()&KEY_DOWN) {
         dPadSelectedToolbarButton = -1;
     }
-    
+
     if (hidKeysDown()&KEY_LEFT || hidKeysDown()&KEY_RIGHT) {
         if (dPadSelectedToolbarButton == 0 && toolbarButtons.buttons[1]->visible == true) {
             dPadSelectedToolbarButton = 1;
@@ -1593,7 +1603,7 @@ void handleNonGridToolbarNavigation() {
             dPadSelectedToolbarButton = 0;
         }
     }
-    
+
     if (hidKeysDown()&KEY_A) {
         if (dPadSelectedToolbarButton == 0) {
             hidScanInput();
@@ -1604,33 +1614,33 @@ void handleNonGridToolbarNavigation() {
             toolbarTopRightAction();
         }
     }
-    
+
     if (hidKeysDown()&KEY_B) {
         keyBAction();
     }
-    
+
     if (dPadSelectedToolbarButton > -1) {
         toolbarButtons.buttons[dPadSelectedToolbarButton]->highlighted = true;
     }
-    
+
     touchPosition touch;
     hidTouchRead(&touch);
     touchX = touch.px;
     touchY = touch.py;
-    
+
     if (hidKeysDown()&KEY_TOUCH) {
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
     }
-    
+
     else if(hidKeysHeld()&KEY_TOUCH){
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
     }
-    
+
     else if (hidKeysUp()&KEY_TOUCH) {
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
         btnListCheckRunCallback(&toolbarButtons, menu.previousTouch.px, menu.previousTouch.py);
     }
-    
+
     menu.previousTouch.px = touchX;
     menu.previousTouch.py = touchY;
 }
@@ -1641,15 +1651,15 @@ bool updateMenu(menu_s* m) {
     }
     else if (menuStatus == menuStatusFolderChanged) {
 //        logText("Reloading main menu");
-        
+
         drawDisk("Loading folder");
         gfxFlip();
         reloadMenu(m);
         gotoFirstIcon(m);
         setMenuStatus(menuStatusIcons);
-        
+
 //        logText("Done reloading");
-        
+
         return false;
     }
     else {
@@ -1667,7 +1677,7 @@ void initEmptyMenuEntry(menuEntry_s* me)
 	me->executablePath[0]=0x00;
     me->author[0]=0x00;
     me->arg[0]=0x00;
-    
+
 	initDescriptor(&me->descriptor);
 
 	me->next=NULL;
@@ -1684,9 +1694,9 @@ void initMenuEntry(menuEntry_s* me, char* execPath, char* name, char* descriptio
 	strncpy(me->description, description, ENTRY_DESCLENGTH);
 	strncpy(me->author, author, ENTRY_AUTHORLENGTH);
 	if(iconData)memcpy(me->iconData, iconData, ENTRY_ICONSIZE);
-    
+
 	initDescriptor(&me->descriptor);
-    
+
     me->title_id = 0;
 }
 
@@ -1694,16 +1704,16 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
     if(!me) {
         return 0;
     }
-    
+
 	const int totalWidth=selected?ENTRY_WIDTH_SELECTED:ENTRY_WIDTH;
-    
+
     int * coords = coordsForMenuEntry(me->row, me->col, m);
     int x = coords[0];
     int y = coords[1];
-    
+
     x += pageXOffset;
     y += pageYOffset;
-    
+
     me->iconX = x;
     me->iconY = y;
     me->iconW = ENTRY_ICON_WIDTH;
@@ -1711,11 +1721,11 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
 
     //Draw backgrounds for the icons if they haven't been drawn by drawMenu
     //(i.e. if showing app backgrounds for empty slots has been disabled)
-    
+
     /*
      Draw the icon on the bottom screen (if necessary)
      */
-    
+
     if (me != &gamecardMenuEntry && !me->isTitleEntry) {
         if (me->isRegionFreeEntry) {
             if (selected) {
@@ -1751,16 +1761,16 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
                 else {
                     gfxDrawSpriteAlphaBlendFade(screen, GFX_LEFT, appBackground, 56, 56, x+3, y+4, translucencyAppBackgrounds);
                 }
-                
+
             }
         }
-        
+
         //Highlight the icon if it is selected
-        
-        
+
+
         //This is where the masked image will be put (rounding the corners)
         u8 transparentIcon[48*48*4];
-        
+
         //Mask whichever icon is going to be drawn (either the game card icon or a homebrew app's icon
         if (me->isRegionFreeEntry && regionFreeGamecardIn) {
             MAGFXApplyAlphaMask(gamecardMenuEntry.iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
@@ -1768,21 +1778,21 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         else {
             MAGFXApplyAlphaMask(me->iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
         }
-        
+
         //Draw the icon on the bottom screen
         gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, transparentIcon, ENTRY_ICON_WIDTH, ENTRY_ICON_HEIGHT, x+7, y+8);
-        
+
         if (me->drawFirstLetterOfName) {
             char firstLetter[2];
             memcpy(firstLetter, &me->name, 1);
             firstLetter[1] = '\0';
-            
+
             rgbColour * light = lightTextColour();
-            
+
             MADrawText(screen, GFX_LEFT, x+9, y+27, firstLetter, &MAFontRobotoRegular16, light->r, light->g, light->b);
         }
     }
-    
+
     /*
      Draw a tick on the icon if it is ticked (e.g. for settings)
      */
@@ -1790,32 +1800,32 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)tick_bin, 48, 48, x+7, y+8);
 //        gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, tick, 48, 48, x+7, y+8);
     }
-    
+
     /*
      Top screen stuff for the selected item
      */
     if (selected && drawTopScreenInfo) {
         rgbColour * dark = darkTextColour();
-        
+
         int top = 240-50-18;
-        
+
         int xPos = 30;
-                
+
         int displayIconX = (240-ENTRY_ICON_HEIGHT)/2;
         int displayIconY = 0;
-        
+
         /*
          Draw the shadow
          */
         gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, (u8*)appshadow_bin, 27, 161, displayIconX-16, displayIconY-3, translucencyAppShadow);
-        
+
         displayIconY += (156-ENTRY_ICON_HEIGHT)/2;
-        
+
         /*
          Draw the app icon
          */
         u8 transparentIcon[48*48*4];
-        
+
         if (me->isRegionFreeEntry && regionFreeGamecardIn) {
             MAGFXApplyAlphaMask(gamecardMenuEntry.iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
         }
@@ -1824,32 +1834,32 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         }
 
         gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, transparentIcon, ENTRY_ICON_WIDTH, ENTRY_ICON_HEIGHT, displayIconX, displayIconY);
-        
+
         xPos += (ENTRY_ICON_WIDTH*2)+30;
-        
+
         int yAdjust = 20;
-        
+
         int maximumTextWidth = 400-xPos-20;
-        
+
         /*
          Draw the app title
          */
-        
+
         rgbColour *titleColour = titleTextColour();
-        
+
         int maxLines = (me->drawFullTitle) ? 100 : 1;
-        
+
         if (me == &gamecardMenuEntry || (me->isRegionFreeEntry && regionFreeGamecardIn)) {
             MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
         }
         else {
             MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
         }
-        
+
         /*
          Draw the app author
          */
-        
+
         if (me->isRegionFreeEntry && regionFreeGamecardIn) {
             yAdjust += 25;
             MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.author, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
@@ -1858,16 +1868,16 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
             yAdjust += 25;
             MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->author, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
         }
-        
+
         yAdjust += 25;
-        
+
         /*
          Draw the app description
          */
-        
+
         int descriptionMaxWidth = 400-xPos-20;
         int descriptionMaxLines = 4;
-        
+
         if (me->isRegionFreeEntry && regionFreeGamecardIn) {
             MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.description, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
         }
@@ -1880,7 +1890,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
                 MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->description, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
             }
         }
-        
+
         if (m == &titleMenu && displayTitleID) {
             char titleIDString[128];
             sprintf(titleIDString, "%llu", me->title_id);

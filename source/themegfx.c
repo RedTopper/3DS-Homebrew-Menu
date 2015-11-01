@@ -80,21 +80,21 @@ void freeThemeImages() {
 bool loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID, themeImage images[]) {
     themeImage * aThemeImage = &(images[imageID]);
     aThemeImage->exists = false;
-    
+
     if (aThemeImage->spriteData) {
         free(aThemeImage->spriteData);
     }
-    
+
     aThemeImage->spriteData = NULL;
-    
+
 //    free(aThemeImage->spriteData);
-    
+
     if (!fileExists(path, &sdmcArchive)) {
         return false;
     }
-    
+
     bool success = read_png_file(path);
-    
+
     if (success) {
         if (pngWidth != expectedWidth || pngHeight != expectedHeight) {
             char error[256];
@@ -104,7 +104,7 @@ bool loadThemeImage(char * path, char * description, int expectedWidth, int expe
         }
         else {
             u8 * out = process_png_file();
-            
+
             if (out) {
                 if (alphaMask) {
                     u8 * masked = malloc(expectedWidth*expectedHeight*4);
@@ -117,12 +117,12 @@ bool loadThemeImage(char * path, char * description, int expectedWidth, int expe
                     aThemeImage->spriteData = out;
                     aThemeImage->hasAlpha = (bytesPerPixel==4);
                 }
-                
-                
+
+
                 aThemeImage->exists = true;
                 aThemeImage->w = expectedWidth;
                 aThemeImage->h = expectedHeight;
-                
+
                 return true;
             }
             else {
@@ -145,7 +145,7 @@ void audio_load(const char *audio){
 		off_t sndsize = ftell(file);
 		fseek(file, 0, SEEK_SET);
 		sndbuffer = linearAlloc(sndsize);
-		off_t bytesRead = fread(sndbuffer, 1, sndsize, file);
+//		off_t bytesRead = fread(sndbuffer, 1, sndsize, file);
 		fclose(file);
 		csndPlaySound(8, SOUND_FORMAT_16BIT | SOUND_REPEAT, 44100, 1, 0, sndbuffer, sndbuffer, sndsize);
 		linearFree(sndbuffer);
@@ -174,7 +174,7 @@ void initThemeMusic() {
 	audio_stop();
 	audio_stop();
 	char * themePath = currentThemePath();
-    char path[128];
+//    char path[128];
 	char *bgmpath = concat(themePath, "BGM.bin");
 	audio_load(bgmpath);
 	free(bgmpath);
@@ -183,8 +183,8 @@ void initThemeMusic() {
 void initThemeImages() {
     char * themePath = currentThemePath();
     char path[128];
-    
-    
+
+
     sprintf(path, "%sappbackground.png", themePath);
     loadThemeImage(path, "App background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackground, themeImages);
 
@@ -192,30 +192,30 @@ void initThemeImages() {
     loadThemeImage(path, "Selected app background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackgroundSelected, themeImages);
 
 
-    
-    
+
+
     sprintf(path, "%scartbackground.png", themePath);
     loadThemeImage(path, "Cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackground, themeImages);
 
     sprintf(path, "%scartbackgroundselected.png", themePath);
     loadThemeImage(path, "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackgroundSelected, themeImages);
 
-    
-    
+
+
     sprintf(path, "%swallpapertop.png", themePath);
     loadThemeImage(path, "Top wallpaper", 400, 240, NULL, themeImageTopWallpaper, themeImages);
-    
+
     sprintf(path, "%swallpapertopinfo.png", themePath);
     loadThemeImage(path, "Top info wallpaper", 400, 240, NULL, themeImageTopWallpaperInfo, themeImages);
 
     sprintf(path, "%swallpaperbottom.png", themePath);
     loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, themeImageBottomWallpaper, themeImages);
-    
+
     sprintf(path, "%swallpaperbottomnongrid.png", themePath);
     loadThemeImage(path, "Bottom wallpaper (non grid)", 320, 240, NULL, themeImageBottomWallpaperNonGrid, themeImages);
 
-    
-    
+
+
 
 
     sprintf(path, "%sbuttontopleft.png", themePath);
@@ -229,51 +229,51 @@ void initThemeImages() {
 
     sprintf(path, "%sbuttonbottomright.png", themePath);
     loadThemeImage(path, "Bottom right button", 36, 36, NULL, themeImageBottomRightButton, themeImages);
-    
 
-    
-    
-    
+
+
+
+
     sprintf(path, "%sbuttontopleftselected.png", themePath);
     loadThemeImage(path, "Top left selected button", 36, 36, NULL, themeImageTopLeftButtonSelected, themeImages);
-    
+
     sprintf(path, "%sbuttontoprightselected.png", themePath);
     loadThemeImage(path, "Top right selected button", 36, 36, NULL, themeImageTopRightButtonSelected, themeImages);
-    
+
     sprintf(path, "%sbuttonbottomleftselected.png", themePath);
     loadThemeImage(path, "Bottom left selected button", 36, 36, NULL, themeImageBottomLeftButtonSelected, themeImages);
-    
+
     sprintf(path, "%sbuttonbottomrightselected.png", themePath);
     loadThemeImage(path, "Bottom right selected button", 36, 36, NULL, themeImageBottomRightButtonSelected, themeImages);
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     sprintf(path, "%shelpicon.png", themePath);
     loadThemeImage(path, "Help icon", 36, 36, NULL, themeImageHelpSymbol, themeImages);
-    
+
     sprintf(path, "%sbackicon.png", themePath);
     loadThemeImage(path, "Back icon", 36, 36, NULL, themeImageBackSymbol, themeImages);
 
     sprintf(path, "%shomeicon.png", themePath);
     loadThemeImage(path, "Home icon", 36, 36, NULL, themeImageHomeSymbol, themeImages);
-    
+
     sprintf(path, "%ssettingsicon.png", themePath);
     loadThemeImage(path, "Settings icon", 36, 36, NULL, themeImageSettingsSymbol, themeImages);
-    
+
     sprintf(path, "%sfoldersicon.png", themePath);
     loadThemeImage(path, "Folders icon", 36, 36, NULL, themeImageFoldersSymbol, themeImages);
-    
-    
+
+
     numProgressWheelImages = 0;
-    
+
     int frame;
     for (frame = 0; frame < maxProgressWheelImages; frame++) {
         char progressWheelFrameFilename[128];
         sprintf(progressWheelFrameFilename, "%sprogressWheelFrame%d.png", themePath, frame+1);
-        
+
         bool loadSuccess = loadThemeImage(progressWheelFrameFilename, "Progress wheel frame", 36, 36, NULL, frame, progressWheelImages);
         if (loadSuccess) {
             numProgressWheelImages++;
@@ -282,9 +282,9 @@ void initThemeImages() {
             break;
         }
     }
-    
+
     themeHasProgressWheel = (numProgressWheelImages > 0);
-    
+
     free(themePath);
 }
 
@@ -311,7 +311,7 @@ void drawProgressWheelImage(int frame, gfxScreen_t screen, int x, int y) {
     }
 }
 
-bool themeImageExists(int imageID) {    
+bool themeImageExists(int imageID) {
     themeImage aThemeImage = themeImages[imageID];
     return aThemeImage.exists;
 }

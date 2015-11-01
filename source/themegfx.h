@@ -4,23 +4,23 @@
 
 extern int themeImageAppBackground;
 extern int themeImageAppBackgroundSelected;
-    
+
 extern int themeImageCartBackground;
 extern int themeImageCartBackgroundSelected;
-    
+
 extern int themeImageTopWallpaper;
 extern int themeImageBottomWallpaper;
-    
+
 extern int themeImageTopLeftButton;
 extern int themeImageTopRightButton;
 extern int themeImageBottomLeftButton;
 extern int themeImageBottomRightButton;
-    
+
 extern int themeImageTopLeftButtonSelected;
 extern int themeImageTopRightButtonSelected;
 extern int themeImageBottomLeftButtonSelected;
 extern int themeImageBottomRightButtonSelected;
-    
+
 extern int themeImageHelpSymbol;
 extern int themeImageBackSymbol;
 extern int themeImageHomeSymbol;
@@ -35,6 +35,8 @@ extern bool themeHasProgressWheel;
 extern int numProgressWheelImages;
 
 void initThemeImages();
+void audio_stop(void);
+void initThemeMusic();
 
 void drawThemeImage(int imageID, gfxScreen_t screen, int x, int y);
 void drawProgressWheelImage(int frame, gfxScreen_t screen, int x, int y);

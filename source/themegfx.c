@@ -145,7 +145,7 @@ void audio_load(const char *audio){
 		off_t sndsize = ftell(file);
 		fseek(file, 0, SEEK_SET);
 		sndbuffer = linearAlloc(sndsize);
-//		off_t bytesRead = fread(sndbuffer, 1, sndsize, file);
+		off_t bytesRead = fread(sndbuffer, 1, sndsize, file);
 		fclose(file);
 		csndPlaySound(8, SOUND_FORMAT_16BIT | SOUND_REPEAT, 44100, 1, 0, sndbuffer, sndbuffer, sndsize);
 		linearFree(sndbuffer);

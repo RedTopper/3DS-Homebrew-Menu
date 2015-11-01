@@ -73,6 +73,9 @@ void setTheme(char * themeName) {
     
     //Reload theme images    
     initThemeImages();
+	
+	//Load BGM   
+    initThemeMusic();
     
     //Re-initialise colours
     initColours();

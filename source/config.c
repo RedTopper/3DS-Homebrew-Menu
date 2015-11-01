@@ -40,6 +40,7 @@
 #include "titles.h"
 #include "themegfx.h"
 #include "folders.h"
+#include "logText.h"
 
 menu_s settingsMenu;
 bool settingsMenuNeedsInit = true;

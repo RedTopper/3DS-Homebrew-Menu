@@ -10,6 +10,7 @@ typedef struct themeSound {
 extern themeSound themeSoundBGM;
 extern themeSound themeSoundMove;
 extern themeSound themeSoundSelect;
+extern themeSound themeSoundBack;
 
 void audio_stop(void);
 void initThemeSounds();

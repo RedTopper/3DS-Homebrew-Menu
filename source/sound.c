@@ -7,6 +7,7 @@
 themeSound themeSoundBGM;
 themeSound themeSoundMove;
 themeSound themeSoundSelect;
+themeSound themeSoundBack;
 
 #include "logText.h"
 
@@ -81,6 +82,11 @@ void initThemeSounds() {
 	audio_load(movePath, &themeSoundSelect);
 	themeSoundSelect.channel = 10;
 	free(selectPath);
+
+	char *backPath = concat(themePath, "backsound.bin");
+	audio_load(backPath, &themeSoundBack);
+	themeSoundBack.channel = 10;
+	free(backPath);
 
 	audioPlay(&themeSoundBGM, true);
 }

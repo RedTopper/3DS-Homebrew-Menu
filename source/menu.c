@@ -194,9 +194,12 @@ void checkReturnToGrid(menu_s* m) {
 #define menuTopLeftActionSourceTopLeft 20
 
 void handleMenuTopLeftActions(int source) {
-    bool playSelectSound = true;
+    bool playBackSound = true;
+    bool playSelectSound = false;
 
     if (source == menuTopLeftActionSourceTopLeft && menuStatus == menuStatusIcons) {
+        playSelectSound = true;
+        playBackSound = false;
         showSettings();
     }
     else if (menuStatus == menuStatusSettings) {
@@ -241,7 +244,7 @@ void handleMenuTopLeftActions(int source) {
         }
     }
     else if (menuStatus == menuStatusHelp) {
-            handleHelpBackButton();
+        handleHelpBackButton();
     }
     else if (menuStatus == menuStatusGridSettings) {
         setMenuStatus(menuStatusSettings);
@@ -275,10 +278,11 @@ void handleMenuTopLeftActions(int source) {
         }
     }
     else {
-        playSelectSound = false;
+        playBackSound = false;
     }
 
-    if (playSelectSound) audioPlay(&themeSoundSelect, false);
+    if (playBackSound) audioPlay(&themeSoundBack, false);
+    else if (playSelectSound) audioPlay(&themeSoundSelect, false);
 }
 
 void toolbarTopLeftAction() {

@@ -194,6 +194,8 @@ void checkReturnToGrid(menu_s* m) {
 #define menuTopLeftActionSourceTopLeft 20
 
 void handleMenuTopLeftActions(int source) {
+    bool playSelectSound = true;
+
     if (source == menuTopLeftActionSourceTopLeft && menuStatus == menuStatusIcons) {
         showSettings();
     }
@@ -239,7 +241,7 @@ void handleMenuTopLeftActions(int source) {
         }
     }
     else if (menuStatus == menuStatusHelp) {
-        handleHelpBackButton();
+            handleHelpBackButton();
     }
     else if (menuStatus == menuStatusGridSettings) {
         setMenuStatus(menuStatusSettings);
@@ -272,6 +274,11 @@ void handleMenuTopLeftActions(int source) {
             startTransition(transitionDirectionUp, waterMenu.pagePosition, &waterMenu);
         }
     }
+    else {
+        playSelectSound = false;
+    }
+
+    if (playSelectSound) audioPlay(&themeSoundSelect, false);
 }
 
 void toolbarTopLeftAction() {
@@ -279,6 +286,8 @@ void toolbarTopLeftAction() {
 }
 
 void toolbarTopRightAction() {
+    bool playSelectSound = true;
+
     if (menuStatus == menuStatusIcons) {
         showHelp();
     }
@@ -288,9 +297,16 @@ void toolbarTopRightAction() {
     else if (menuStatus == menuStatusThemeSelect) {
         showHelpWithForcedText(themesHelpTitle, themesHelpBody);
     }
+    else {
+        playSelectSound = false;
+    }
+
+    if (playSelectSound) audioPlay(&themeSoundSelect, false);
 }
 
 void toolbarBottomLeftAction() {
+    bool playSelectSound = true;
+
     if (menuStatus == menuStatusIcons) {
 //        if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
 //            updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", true, false);
@@ -302,12 +318,24 @@ void toolbarBottomLeftAction() {
 
         setMenuStatus(menuStatusOpenHomeMenuApps);
     }
+    else {
+        playSelectSound = false;
+    }
+
+    if (playSelectSound) audioPlay(&themeSoundSelect, false);
 }
 
 void toolbarBottomRightAction() {
+    bool playSelectSound = true;
+
     if (menuStatus == menuStatusIcons) {
         showFolders();
     }
+    else {
+        playSelectSound = false;
+    }
+
+    if (playSelectSound) audioPlay(&themeSoundSelect, false);
 }
 
 void loadThemeConfig() {
@@ -942,6 +970,8 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     }
 
     if (pageChanged) {
+        audioPlay(&themeSoundSelect, false);
+
         if (animatedGrids) {
             startTransition(transitionDirectionLeft, previousPage, m);
         }
@@ -996,6 +1026,8 @@ void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     }
 
     if (pageChanged) {
+        audioPlay(&themeSoundSelect, false);
+
         if (animatedGrids) {
             startTransition(transitionDirectionRight, previousPage, m);
         }
@@ -1306,7 +1338,7 @@ bool updateGrid(menu_s* m) {
     touchX = touch.px;
     touchY = touch.py;
 
-    if (hidKeysDown()&(KEY_LEFT|KEY_RIGHT|KEY_UP|KEY_DOWN|KEY_L|KEY_R)) {
+    if (hidKeysDown()&(KEY_LEFT|KEY_RIGHT|KEY_UP|KEY_DOWN)) {
        audioPlay(&themeSoundMove, false);
     }
 
@@ -1545,8 +1577,6 @@ bool updateGrid(menu_s* m) {
     if(m->selectedEntry!=oldEntry)m->atEquilibrium=false;
 
     if(hidKeysDown()&KEY_A) {
-        audioPlay(&themeSoundSelect, false);
-
         /*
          We're about to launch a title from the A button
 
@@ -1563,6 +1593,7 @@ bool updateGrid(menu_s* m) {
             return false;
         }
 
+        audioPlay(&themeSoundSelect, false);
         return true;
     }
 

@@ -1,1 +1,1 @@
-#define currentversion 87
+#define currentversion 88

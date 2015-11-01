@@ -64,7 +64,7 @@ Result loadTitleInfoIcon(titleInfo_s* ti)
 
 	Handle fileHandle;
 	u32 archivePath[] = {ti->title_id & 0xFFFFFFFF, (ti->title_id >> 32) & 0xFFFFFFFF, ti->mediatype, 0x00000000};
-	static const u32 filePath[] = {0x00000000, 0x00000000, 0x00000002, 0x6E6F6369, 0x00000000};	
+	static const u32 filePath[] = {0x00000000, 0x00000000, 0x00000002, 0x6E6F6369, 0x00000000};
 	Result ret = FSUSER_OpenFileDirectly(&fileHandle, (FS_archive){0x2345678a, (FS_path){PATH_BINARY, 0x10, (u8*)archivePath}}, (FS_path){PATH_BINARY, 0x14, (u8*)filePath}, FS_OPEN_READ, FS_ATTRIBUTE_NONE);
 
 	if(ret)
@@ -74,7 +74,7 @@ Result loadTitleInfoIcon(titleInfo_s* ti)
 		return ret;
 	}
 
-	u32 bytesRead;	
+	u32 bytesRead;
 	ret = FSFILE_Read(fileHandle, &bytesRead, 0x0, ti->icon, sizeof(smdh_s));
 
 	if(ret)
@@ -229,12 +229,12 @@ bool titleBrowserRefreshed = false;
 void refreshTitleBrowser(titleBrowser_s* tb) {
     if (titleBrowserRefreshed) return;
     titleBrowserRefreshed = true;
-    
+
     tb->total = 0;
     tb->selectedId = 0;
-    
+
     int i;
-    
+
     for(i=0; i<3; i++) {
         freeTitleList(&tb->lists[i]);
         populateTitleList(&tb->lists[i]);
@@ -248,9 +248,9 @@ void getIgnoredTitleIDs() {
         numIgnoreTitleIDs = 0;
         int maxTextSize = 20 * maxIgnoreTitleIDs;
         char ignoreText[maxTextSize];
-        
+
         FILE *fp = fopen(ignoredTitlesPath, "r");
-        
+
         if (fp != NULL) {
             fgets(ignoreText, maxTextSize, fp);
             char * split;
@@ -258,7 +258,7 @@ void getIgnoredTitleIDs() {
             while (split != NULL) {
                 strcpy(ignoreTitleIDs[numIgnoreTitleIDs], split);
                 numIgnoreTitleIDs++;
-                
+
                 split = strtok(NULL, ",");
             }
         }
@@ -268,44 +268,44 @@ void getIgnoredTitleIDs() {
 
 void saveIgnoredTitleIDs() {
     int n = 0;
-    
+
     menuEntry_s * me = titleMenu.entries;
     while (me) {
         if (!me->showTick) {
             n++;
         }
-        
+
         me = me->next;
     }
-    
+
     char ignored[n*20];
     strcpy(ignored, "");
-    
+
     int c=0;
-    
+
     me = titleMenu.entries;
     while (me) {
         if (!me->showTick) {
             char sTitleId[17];
             sprintf(sTitleId, "%llu", me->title_id);
             strcat(ignored, sTitleId);
-            
+
             if (c < n-1) {
                 strcat(ignored, ",");
             }
-            
+
             c++;
         }
-        
+
         me = me->next;
     }
-    
+
     FILE* fSave = fopen(ignoredTitlesPath, "w" );
     if (fSave != NULL) {
         fputs(ignored, fSave);
     }
     fclose(fSave);
-    
+
     ignoreTitleIDsLoaded = false;
     getIgnoredTitleIDs();
 }
@@ -313,27 +313,26 @@ void saveIgnoredTitleIDs() {
 bool titleIgnored(u64 titleID) {
     char sTitleId[17];
     sprintf(sTitleId, "%llu", titleID);
-    
+
     int iIgnoreTitleID;
     for (iIgnoreTitleID=0; iIgnoreTitleID<numIgnoreTitleIDs; iIgnoreTitleID++) {
         if (strcmp(sTitleId, ignoreTitleIDs[iIgnoreTitleID]) == 0) {
             return true;
         }
     }
-    
+
     return false;
 }
 
-#include "logText.h"
 //#include "MAFontRobotoRegular.h"
 
 void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
     getIgnoredTitleIDs();
-    
+
     if (!aTitleMenu) {
         return;
     }
-    
+
     aTitleMenu->entries=NULL;
     aTitleMenu->numEntries=0;
     aTitleMenu->selectedEntry=0;
@@ -343,71 +342,70 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
     aTitleMenu->scrollBarPos=0;
     aTitleMenu->scrollTarget=0;
     aTitleMenu->atEquilibrium=false;
-    
+
     int i;
-    
+
     for(i=0; i<3; i++) {
         const titleList_s* tl = &tb->lists[i];
         titleInfo_s *titles = tl->titles;
-        
+
         int titleNum;
         int count = tl->num;
-        
+
         for (titleNum = 0; titleNum < count; titleNum++) {
 //            MADrawText(GFX_TOP, GFX_LEFT, 0, 0, "Loading", &MAFontRobotoRegular10, 255, 255, 255);
-            
+
             while (titleLoadPaused) {
 //                MADrawText(GFX_TOP, GFX_LEFT, 15, 0, "Paused", &MAFontRobotoRegular10, 255, 255, 255);
                 svcSleepThread(1000000000ULL);
-                
+
                 if (titleLoadCancelled) {
                     return;
                 }
             }
-            
+
             if (titleLoadCancelled) {
-                logText("Received cancel signal within for loop");
                 return;
             }
-            
+
             titleInfo_s aTitle = titles[titleNum];
-            
+
             if (i==0 && titleNum == 0 && forceHideRegionFree) {
                 continue;
             }
-            
+
             if (filter && titleIgnored(aTitle.title_id)) {
                 continue;
             }
-        
-            
+
+
             if (!aTitle.icon) {
                 loadTitleInfoIcon(&aTitle);
             }
-            
+
             if (!aTitle.icon) {
                 continue;
             }
-            
+
             static menuEntry_s me;
-            
+
             me.hidden = false;
             me.isTitleEntry = false;
             me.isRegionFreeEntry = false;
-        
+
             if (i==0 && titleNum == 0) {
                 me.isRegionFreeEntry = true;
             }
-            
+
             extractSmdhData(aTitle.icon, me.name, me.description, me.author, me.iconData);
-            
+
             me.title_id = aTitle.title_id;
-            
+
             if (me.title_id == 1125968626461184) {
                 strcpy(me.name, "System Transfer");
                 strcpy(me.description, "System Transfer");
             }
-            
+
             if (setFilterTicks) {
                 if (titleIgnored(aTitle.title_id)) {
                     me.showTick = NULL;
@@ -419,9 +417,9 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             else {
                 me.showTick = NULL;
             }
-            
+
             addMenuEntryCopy(aTitleMenu, &me);
-            
+
             if (0) {
                 addMenuEntryCopy(aTitleMenu, &me);
                 addMenuEntryCopy(aTitleMenu, &me);
@@ -434,19 +432,18 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
                 addMenuEntryCopy(aTitleMenu, &me);
                 addMenuEntryCopy(aTitleMenu, &me);
             }
-            
-            
+
+
 //                titleMenu->numEntries = titleMenu->numEntries + 1;
             updateMenuIconPositions(aTitleMenu);
-            
+
             if (titleLoadCancelled) {
-                logText("Received cancel signal within for loop");
                 return;
             }
         }
     }
-    
-    
+
+
     updateMenuIconPositions(aTitleMenu);
 }
 
@@ -455,19 +452,19 @@ titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid) {
     for(i=0; i<3; i++) {
         const titleList_s* tl = &tb->lists[i];
         titleInfo_s *titles = tl->titles;
-        
+
         int titleNum;
         int count = tl->num;// sizeof(titles) / sizeof(titleInfo_s);
-                
+
         for (titleNum = 0; titleNum < count; titleNum++) {
             titleInfo_s * aTitle = &titles[titleNum];
             if (aTitle->title_id == tid) {
                 return aTitle;
             }
         }
-        
+
     }
-    
+
     return NULL;
 }
 
@@ -504,7 +501,7 @@ void titleLoadFunction() {
     refreshTitleBrowser(reloadTitleBrowser);
     clearMenuEntries(reloadTitleMenu);
     populateTitleMenu(reloadTitleMenu, reloadTitleBrowser, filterTitlesWhenLoading, forceHideRegionFreeWhenLoading, populateFilterTicksWhenLoading);
-    
+
     if (titleLoadCancelled) {
 //        logText("Returned from cancelled populate function");
     }
@@ -519,16 +516,16 @@ void titleLoadThreadFunction(void *arg) {
     while (1) {
         svcWaitSynchronization(titleLoadThreadRequest, U64_MAX);
         svcClearEvent(titleLoadThreadRequest);
-        
+
         titleLoadFunction();
-        
+
 //        logText("Returned from titleLoadFunction");
-        
+
         if (titleLoadCancelled) {
             titleLoadCancelled = false;
 //            logText("Cancelled");
         }
-        
+
         svcExitThread();
     }
 }
@@ -544,34 +541,34 @@ void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char *
     if (titlemenuIsUpdating) {
         return;
     }
-        
+
     titlemenuIsUpdating = true;
     titleMenuInitialLoadDone = false;
     titleLoadCancelled = false;
-    
+
     if (titleThreadNeedsRelease) {
         releaseTitleThread();
     }
-    
+
     reloadTitleMenu = aTitleMenu;
     reloadTitleBrowser = aTitleBrowser;
     filterTitlesWhenLoading = filter;
     forceHideRegionFreeWhenLoading = forceHideRegionFree;
     populateFilterTicksWhenLoading = setFilterTicks;
-    
+
     preloadTitles = getConfigBoolForKey("preloadTitles", true, configTypeMain);
-    
+
     if (aTitleMenu->numEntries > 0) {
         gotoFirstIcon(aTitleMenu);
     }
-    
+
     if (preloadTitles) {
         titleThreadNeedsRelease = true;
-        
+
         svcCreateEvent(&titleLoadThreadRequest,0);
         titleLoadThreadStack = memalign(32, STACKSIZE);
         Result ret = svcCreateThread(&titleLoadThreadHandle, titleLoadThreadFunction, 0, &titleLoadThreadStack[STACKSIZE/4], 0x3f, 0);
-        
+
         if (ret == 0) {
             svcSignalEvent(titleLoadThreadRequest);
         }

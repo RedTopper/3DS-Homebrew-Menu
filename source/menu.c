@@ -37,6 +37,7 @@
 #include "touchblock.h"
 
 #include "themegfx.h"
+#include "sound.h"
 
 #define buttonTagTopLeft 10
 #define buttonTagTopRight 20
@@ -1296,14 +1297,18 @@ bool updateGrid(menu_s* m) {
     }
 
     s8 move=0;
-    circlePosition cstick;
+    //circlePosition cstick;
     touchPosition touch;
-    hidCstickRead(&cstick);
+    //hidCstickRead(&cstick);
     hidTouchRead(&touch);
-    cstick.dy=(abs(cstick.dy)<5)?0:cstick.dy;
+    //cstick.dy=(abs(cstick.dy)<5)?0:cstick.dy;
 
     touchX = touch.px;
     touchY = touch.py;
+
+    if (hidKeysDown()&(KEY_LEFT|KEY_RIGHT|KEY_UP|KEY_DOWN|KEY_L|KEY_R)) {
+       audioPlay(&themeSoundMove, false);
+    }
 
     if (dPadSelectedToolbarButton > -1) {
         toolbarButtons.buttons[dPadSelectedToolbarButton]->highlighted = true;
@@ -1490,10 +1495,12 @@ bool updateGrid(menu_s* m) {
             dPadSelectedToolbarButton = -1;
 
             if(m->selectedEntry==i) {
+                audioPlay(&themeSoundSelect, false);
                 return true;
             }
 
             else {
+                audioPlay(&themeSoundMove, false);
                 m->selectedEntry=i;
                 m->rowPosition = newRow;
                 m->colPosition = newCol;
@@ -1515,7 +1522,7 @@ bool updateGrid(menu_s* m) {
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
 
         //condition to make sure previousTouch is valid
-        cstick.dy+=(touch.py-m->previousTouch.py)*16;
+        //cstick.dy+=(touch.py-m->previousTouch.py)*16;
         m->touchTimer++;
     }
     else if (hidKeysUp()&KEY_TOUCH) {
@@ -1538,6 +1545,8 @@ bool updateGrid(menu_s* m) {
     if(m->selectedEntry!=oldEntry)m->atEquilibrium=false;
 
     if(hidKeysDown()&KEY_A) {
+        audioPlay(&themeSoundSelect, false);
+
         /*
          We're about to launch a title from the A button
 

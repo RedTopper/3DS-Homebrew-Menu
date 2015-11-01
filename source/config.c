@@ -10,6 +10,7 @@
 #include "colours.h"
 #include "MAGFX.h"
 #include "filesystem.h"
+#include "sound.h"
 
 #include "settingsIconAlphaSort_bin.h"
 #include "settingsIconWaterAnimated_bin.h"
@@ -59,8 +60,6 @@ bool themesLoaded = false;
 
 void loadConfigWithType(int configType);
 
-#include "logText.h"
-
 void setTheme(char * themeName) {
     //Save the selected theme in main config
     setConfigString("currentTheme", themeName, configTypeMain);
@@ -75,7 +74,7 @@ void setTheme(char * themeName) {
     initThemeImages();
 
 	//Load BGM
-    initThemeMusic();
+    initThemeSounds();
 
     //Re-initialise colours
     initColours();

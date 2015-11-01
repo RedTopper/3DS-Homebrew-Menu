@@ -31,6 +31,7 @@
 #include "folders.h"
 #include "themegfx.h"
 #include "version.h"
+#include "sound.h"
 
 #include "logText.h"
 
@@ -100,12 +101,6 @@ void shutdown3DS()
     svcCloseHandle(ptmSysmHandle);
 }
 
-void logBoot(u64 title_id) {
-    char titleIDString[128];
-    sprintf(titleIDString, "Booting title ID: %llu", title_id);
-    logTextP(titleIDString, "/bootlog.txt");
-}
-
 void launchSVDTFromTitleMenu() {
     menuEntry_s* me = getMenuEntry(&titleMenu, titleMenu.selectedEntry);
 
@@ -115,23 +110,11 @@ void launchSVDTFromTitleMenu() {
 
                 titleInfo_s* ret = NULL;
                 ret = getTitleWithID(&titleBrowser, me->title_id);
-                logBoot(me->title_id);
                 targetProcessId = -2;
                 target_title = *ret;
                 die = true;
             }
-            else {
-                logText("Invalid title ID for menu entry");
-            }
         }
-        else {
-            //No title ID found. Show an error here
-            logText("No title ID for menu entry found");
-        }
-    }
-    else {
-        //Menu entry for title not found. Show an error here.
-        logText("menuEntry for title not found");
     }
 }
 
@@ -164,29 +147,14 @@ void launchTitleFromMenu(menu_s* m) {
                 ret = getTitleWithID(&titleBrowser, me->title_id);
 
                 if (ret) {
-                    logBoot(me->title_id);
                     exitServices();
                     regionFreeRun2(ret->title_id & 0xffffffff, (ret->title_id >> 32) & 0xffffffff, ret->mediatype, 0x1);
                 }
-                else {
-                    //Could not find title. Show an error here
-                    logText("Could not match title");
-                }
-            }
-            else {
-                logText("Invalid title ID for menu entry");
             }
         }
         else {
-            //No title ID found. Show an error here
-            logText("1 No title ID for menu entry found");
             die = true;
-//            return bootApp(me->executablePath, &me->descriptor.executableMetadata);
         }
-    }
-    else {
-        //Menu entry for title not found. Show an error here.
-        logText("menuEntry for title not found");
     }
 }
 
@@ -581,7 +549,7 @@ int main(int argc, char *argv[])
 
     initThemeImages();
 	if(!randomTheme) {
-		initThemeMusic();
+		initThemeSounds();
 	}
 
     int frameRate = 60;

@@ -42,10 +42,6 @@ int themeImageBottomWallpaperNonGrid = 20;
 
 bool themeHasProgressWheel = false;
 
-
-u8* sndbuffer;
-u32 sndsize;
-
 typedef struct themeImage {
     u8 * spriteData;
     bool exists;
@@ -133,51 +129,6 @@ bool loadThemeImage(char * path, char * description, int expectedWidth, int expe
     else {
         return false;
     }
-}
-
-#include "logText.h"
-
-void audio_load(const char *audio){
-
-	FILE *file = fopen(audio, "rb");
-	if(file != NULL){
-		fseek(file, 0, SEEK_END);
-		off_t sndsize = ftell(file);
-		fseek(file, 0, SEEK_SET);
-		sndbuffer = linearAlloc(sndsize);
-		off_t bytesRead = fread(sndbuffer, 1, sndsize, file);
-		fclose(file);
-		csndPlaySound(8, SOUND_FORMAT_16BIT | SOUND_REPEAT, 44100, 1, 0, sndbuffer, sndbuffer, sndsize);
-		linearFree(sndbuffer);
-	}
-}
-
-void audio_stop(void){
-	csndExecCmds(true);
-	CSND_SetPlayState(0x8, 0);
-	memset(sndbuffer, 0, sndsize);
-	GSPGPU_FlushDataCache(sndbuffer, sndsize);
-	linearFree(sndbuffer);
-}
-
-char* concat(char *s1, char *s2)
-{
-    char *result = malloc(strlen(s1)+strlen(s2)+1);
-    //in real code you would check for errors in malloc here.
-	//perhaps this should be done?
-    strcpy(result, s1);
-    strcat(result, s2);
-    return result;
-}
-
-void initThemeMusic() {
-	audio_stop();
-	audio_stop();
-	char * themePath = currentThemePath();
-//    char path[128];
-	char *bgmpath = concat(themePath, "BGM.bin");
-	audio_load(bgmpath);
-	free(bgmpath);
 }
 
 void initThemeImages() {

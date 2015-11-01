@@ -3,6 +3,7 @@
 So far there has been only really minor changes:
 - Launcher now shows less garbage on startup (not none, but less). A splash screen will show if menuhax_imagedisplay.bin is in the same directory as the .3dsx. It is generated using Homemenuhax found here https://github.com/yellows8/3ds_homemenuhax.
 - Themes can include BGM.bin, a 44100Hz mono, signed 16 bit PCM wav file and will be loaded on startup.
+- Themes have an option to be randomized when the 3DS is closed for an extended period of time (5 seconds)
 
 #### Code credits
 - https://github.com/clank201/SoundExample

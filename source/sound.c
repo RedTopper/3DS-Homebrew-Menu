@@ -62,16 +62,30 @@ char* concat(char *s1, char *s2)
     return result;
 }
 
+void loadThemeSoundOrDefault(char * filename, themeSound * aThemeSound, int channel) {
+    char * themePath = currentThemePath();
+
+    char * filePath = concat(themePath, filename);
+    if (fileExists(filePath, &sdmcArchive)) {
+        audio_load(filePath, aThemeSound);
+        aThemeSound->channel = channel;
+    }
+    else {
+
+    }
+    free(filePath);
+}
+
 void initThemeSounds() {
 	audio_stop();
 	audio_stop();
 
-	char * themePath = currentThemePath();
+    loadThemeSoundOrDefault("BGM.bin", &themeSoundBGM, 8);
 
-	char *bgmpath = concat(themePath, "BGM.bin");
-	audio_load(bgmpath, &themeSoundBGM);
-	themeSoundBGM.channel = 8;
-	free(bgmpath);
+	//char *bgmpath = concat(themePath, "BGM.bin");
+	//audio_load(bgmpath, &themeSoundBGM);
+	//themeSoundBGM.channel = 8;
+	//free(bgmpath);
 
 	char *movePath = concat(themePath, "movesound.bin");
 	audio_load(movePath, &themeSoundMove);

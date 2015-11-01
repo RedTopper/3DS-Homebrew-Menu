@@ -1,4 +1,9 @@
 # The Homebrew Launcher
+#### Differences
+So far there has been only really minor changes:
+- Launcher now shows less garbage on startup (not none, but less)
+- Themes can include BGM.bin, a 44100Hz mono, signed 16 bit PCM wav file and will be loaded on startup.
+
 
 #### Presentation
 

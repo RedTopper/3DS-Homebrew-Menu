@@ -77,7 +77,7 @@ extern void closeReboot() {
 
 extern void doReboot() {
     aptOpenSession();
-    APT_HardwareResetAsync(NULL);
+    APT_HardwareResetAsync();
     aptCloseSession();
 }
 
@@ -548,7 +548,7 @@ int main(int argc, char *argv[])
     
 	// offset potential issues caused by homebrew that just ran
 	aptOpenSession();
-	APT_SetAppCpuTimeLimit(NULL, 0);
+	APT_SetAppCpuTimeLimit(0);
 	aptCloseSession();
     
     // Moved this here as rand() is used for choosing a random theme
@@ -567,7 +567,7 @@ int main(int argc, char *argv[])
 	initTitleBrowser(&titleBrowser, NULL);
 
 	u8 sdmcPrevious = 0;
-	FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
+	FSUSER_IsSdmcDetected(&sdmcCurrent);
 	if(sdmcCurrent == 1)
 	{
 		scanHomebrewDirectory(&menu, currentFolder());
@@ -641,7 +641,7 @@ int main(int argc, char *argv[])
 		if (nextSdCheck < osGetTime()) {
 			regionFreeUpdate();
 
-			FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
+			FSUSER_IsSdmcDetected(&sdmcCurrent);
 
 			if(sdmcCurrent == 1 && (sdmcPrevious == 0 || sdmcPrevious < 0))
 			{

@@ -358,6 +358,8 @@ void initThemeSettingsMenu() {
     addSettingsMenuEntry("Logo", "Show the 'Homebrew Launcher' logo at the bottom of the screen", (u8*)settingsIconLogo_bin, &showLogo, &themeSettingsMenu, &settingsToggleBool, &showLogo, NULL);
 
     addSettingsMenuEntry("Theme", "Select which theme to use in the launcher", (u8*)settingsIconTheme_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusThemeSelect, NULL);
+
+    addSettingsMenuEntry("Random theme on wake", "Randomizes the theme when the 3DS has been closed for an extended period of time.", (u8*)settingsIconRandomTheme_bin, &randomiseThemeOnWake, &themeSettingsMenu, &settingsToggleBool, &randomiseThemeOnWake, NULL);
 }
 
 void settingsSetMenuStatus(int * status) {
@@ -439,16 +441,7 @@ void initConfigMenu() {
 
     addSettingsMenuEntry("Theme settings", "Configure the theme for the launcher", (u8*)settingsIconTheme_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusThemeSettings, NULL);
 
-//    addSettingsMenuEntry("Display title ID", "Displays the title ID for the selected item in the title menu. The ID is shown in the bottom left corner of the top screen.", (u8*)settingsIconShowTitleID_bin, &displayTitleID, &settingsMenu, &settingsToggleBool, &displayTitleID, NULL);
-
     addSettingsMenuEntry("Title filtering", "Show or hide system titles from the title launcher and save manager", (u8*)helpIconIgnoredTitles_bin, false, &settingsMenu, &settingsSetMenuStatus, &menuStatusOpenTitleFiltering, NULL);
-
-
-
-	//TECHNICALLY DISPLAY TITLE ID /!\ IF THESE CHANGES ARE EVER MERGED ONTO THE MAIN BRANCH, THIS SHOULD BE CHANGED TO SOEMTHING MORE CORRECT! /!\
-
-	addSettingsMenuEntry("Random theme on open", "Randomizes the theme when the 3DS has been closed for an extended period of time.", (u8*)settingsIconRandomTheme_bin, &displayTitleID, &settingsMenu, &settingsToggleBool, &displayTitleID, NULL);  //FIXME
-
 
 
 

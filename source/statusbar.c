@@ -57,18 +57,16 @@ void drawStatusBar(bool wifiStatus, bool charging, int batteryLevel)
     }
 
     gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, topBar, 18, 400, 240-18, 0);
-    
+
 	if(lastTimeInSeconds == 0) {
 		lastTimeInSeconds = osGetTime() / 1000; //get on boot.
 	}
 	u64 timeInSeconds = osGetTime() / 1000;
-	
+
 	if(timeInSeconds - lastTimeInSeconds > 5) {
 		randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
-		
-		// /!\ Should be fixed to be something other than displayTitleID if ever merged onto the main branch!!
-		bool trueRandomTheme = getConfigBoolForKey("displayTitleID", false, configTypeMain); //FIXME
-		if (randomTheme && trueRandomTheme) {
+
+		if (randomTheme && randomiseThemeOnWake) {
 			randomiseThemeToolbar();
 		}
 	}
@@ -77,9 +75,9 @@ void drawStatusBar(bool wifiStatus, bool charging, int batteryLevel)
 	u8 hour = dayTime / SECONDS_IN_HOUR;
 	u8 min = (dayTime % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
 	u8 seconds = dayTime % SECONDS_IN_MINUTE;
-        
+
     char *ampm = "";
-    
+
     if (!clock24) {
         if (hour == 12) {
             ampm = " pm";
@@ -96,9 +94,9 @@ void drawStatusBar(bool wifiStatus, bool charging, int batteryLevel)
             ampm = " am";
         }
     }
-    
+
     rgbColour *light = lightTextColour();
-    
+
 	char timeString[13];
     memset(timeString, 0, 11);
 	sprintf(timeString, "%02d:%02d:%02d%s", hour, min, seconds, ampm);

@@ -57,7 +57,7 @@ extern int translucencyAppShadow;
 
 extern bool toolbarNeedsUpdate;
 
-extern bool displayTitleID;
+extern bool randomiseThemeOnWake;
 
 #endif
 

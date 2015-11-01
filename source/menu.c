@@ -43,7 +43,7 @@
 #define buttonTagBottomLeft 30
 #define buttonTagBottomRight 40
 
-bool displayTitleID = false;
+bool randomiseThemeOnWake = false;
 
 int menuStatusIcons = 0;
 int menuStatusSettings = 1;
@@ -391,7 +391,7 @@ void initMenu(menu_s* m)
     wrapScrolling = getConfigBoolForKey("wrapScrolling", true, configTypeMain);
     keysExciteWater = getConfigBoolForKey("keysExciteWater", true, configTypeMain);
     dPadNavigation = getConfigBoolForKey("dPadNavigation", true, configTypeMain);
-    displayTitleID = getConfigBoolForKey("displayTitleID", false, configTypeMain);
+    randomiseThemeOnWake = getConfigBoolForKey("randomiseThemeOnWake", false, configTypeMain);
     animatedGrids = getConfigBoolForKey("animatedGrids", true, configTypeMain);
     show3DSFolder = getConfigBoolForKey("show3DSFolder", true, configTypeMain);
 
@@ -1099,7 +1099,7 @@ void quitSettings(menu_s* m) {
     setConfigBool("keysExciteWater", keysExciteWater, configTypeMain);
     setConfigBool("dPadNavigation", dPadNavigation, configTypeMain);
     setConfigBool("randomTheme", randomTheme, configTypeMain);
-    setConfigBool("displayTitleID", displayTitleID, configTypeMain);
+    setConfigBool("randomiseThemeOnWake", randomiseThemeOnWake, configTypeMain);
     setConfigBool("animatedGrids", animatedGrids, configTypeMain);
     setConfigBool("show3DSFolder", show3DSFolder, configTypeMain);
 
@@ -1184,8 +1184,6 @@ void showFolders() {
     buildFoldersList();
     char * cfn = currentFolderName();
     menuEntry_s *tickedEntry = updateMenuTicks(&foldersMenu, cfn, false);
-    if (!tickedEntry) logText("Nothing ticked");
-    else logText(tickedEntry->name);
     free(cfn);
     int tickedIndex = indexOfMenuEntryAtPageRowColInMenu(tickedEntry->page, tickedEntry->row, tickedEntry->col, &foldersMenu);
     if (tickedIndex == -1) tickedIndex = 0;
@@ -1889,12 +1887,6 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
             else {
                 MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->description, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
             }
-        }
-
-        if (m == &titleMenu && displayTitleID) {
-            char titleIDString[128];
-            sprintf(titleIDString, "%llu", me->title_id);
-            MADrawText(GFX_TOP, GFX_LEFT, 0, 0, titleIDString, &MAFontRobotoRegular10, dark->r, dark->g, dark->b);
         }
     }
 

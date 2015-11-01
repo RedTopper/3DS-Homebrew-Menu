@@ -71,7 +71,12 @@ void loadThemeSoundOrDefault(char * filename, themeSound * aThemeSound, int chan
         aThemeSound->channel = channel;
     }
     else {
-
+        char * defaultFilePath = concat(defaultThemePath, filename);
+        if (fileExists(defaultFilePath, &sdmcArchive)) {
+            audio_load(defaultFilePath, aThemeSound);
+            aThemeSound->channel = channel;
+        }
+        free(defaultFilePath);
     }
     free(filePath);
 }
@@ -81,26 +86,9 @@ void initThemeSounds() {
 	audio_stop();
 
     loadThemeSoundOrDefault("BGM.bin", &themeSoundBGM, 8);
-
-	//char *bgmpath = concat(themePath, "BGM.bin");
-	//audio_load(bgmpath, &themeSoundBGM);
-	//themeSoundBGM.channel = 8;
-	//free(bgmpath);
-
-	char *movePath = concat(themePath, "movesound.bin");
-	audio_load(movePath, &themeSoundMove);
-	themeSoundMove.channel = 9;
-	free(movePath);
-
-	char *selectPath = concat(themePath, "selectsound.bin");
-	audio_load(movePath, &themeSoundSelect);
-	themeSoundSelect.channel = 10;
-	free(selectPath);
-
-	char *backPath = concat(themePath, "backsound.bin");
-	audio_load(backPath, &themeSoundBack);
-	themeSoundBack.channel = 10;
-	free(backPath);
+    loadThemeSoundOrDefault("movesound.bin", &themeSoundMove, 9);
+    loadThemeSoundOrDefault("selectsound.bin", &themeSoundSelect, 10);
+    loadThemeSoundOrDefault("backsound.bin", &themeSoundBack, 10);
 
 	audioPlay(&themeSoundBGM, true);
 }

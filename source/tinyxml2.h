@@ -320,7 +320,7 @@ public:
     ~MemPoolT() {
         Clear();
     }
-    
+
     void Clear() {
         // Delete the blocks.
         while( !_blockPtrs.Empty()) {
@@ -364,7 +364,7 @@ public:
         _nUntracked++;
         return result;
     }
-    
+
     virtual void Free( void* mem ) {
         if ( !mem ) {
             return;
@@ -534,7 +534,7 @@ public:
     static bool IsWhiteSpace( char p )					{
         return !IsUTF8Continuation(p) && isspace( static_cast<unsigned char>(p) );
     }
-    
+
     inline static bool IsNameStartChar( unsigned char ch ) {
         if ( ch >= 128 ) {
             // This is a heuristic guess in attempt to not implement Unicode-aware isalpha()
@@ -545,7 +545,7 @@ public:
         }
         return ch == ':' || ch == '_';
     }
-    
+
     inline static bool IsNameChar( unsigned char ch ) {
         return IsNameStartChar( ch )
                || isdigit( ch )
@@ -568,7 +568,7 @@ public:
         }
         return false;
     }
-    
+
     inline static bool IsUTF8Continuation( char p ) {
         return ( p & 0x80 ) != 0;
     }
@@ -1285,14 +1285,14 @@ public:
         return a->QueryFloatValue( value );
     }
 
-	
+
     /** Given an attribute name, QueryAttribute() returns
     	XML_NO_ERROR, XML_WRONG_ATTRIBUTE_TYPE if the conversion
     	can't be performed, or XML_NO_ATTRIBUTE if the attribute
     	doesn't exist. It is overloaded for the primitive types,
 		and is a generally more convenient replacement of
 		QueryIntAttribute() and related functions.
-		
+
 		If successful, the result of the conversion
     	will be written to 'value'. If not successful, nothing will
     	be written to 'value'. This allows you to provide default
@@ -1420,7 +1420,7 @@ public:
     	@verbatim
     		<foo>Hullaballoo!<b>This is text</b></foo>
     	@endverbatim
-		
+
 		For this XML:
     	@verbatim
     		<foo />
@@ -1434,13 +1434,13 @@ public:
     /// Convenience method for setting text inside and element. See SetText() for important limitations.
     void SetText( int value );
     /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( unsigned value );  
+    void SetText( unsigned value );
     /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( bool value );  
+    void SetText( bool value );
     /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( double value );  
+    void SetText( double value );
     /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( float value );  
+    void SetText( float value );
 
     /**
     	Convenience method to query the value of a child text node. This is probably best
@@ -1565,8 +1565,8 @@ public:
 
     /**
     	Load an XML file from disk. You are responsible
-    	for providing and closing the FILE*. 
-     
+    	for providing and closing the FILE*.
+
         NOTE: The file should be opened as binary ("rb")
         not text in order for TinyXML-2 to correctly
         do newline normalization.
@@ -1581,7 +1581,8 @@ public:
     	Returns XML_NO_ERROR (0) on success, or
     	an errorID.
     */
-    XMLError SaveFile( const char* filename, bool compact = false );
+    //Removed by mashers
+    //XMLError SaveFile( const char* filename, bool compact = false );
 
     /**
     	Save the XML file to disk. You are responsible
@@ -1590,7 +1591,8 @@ public:
     	Returns XML_NO_ERROR (0) on success, or
     	an errorID.
     */
-    XMLError SaveFile( FILE* fp, bool compact = false );
+    //Removed by mashers
+    //XMLError SaveFile( FILE* fp, bool compact = false );
 
     bool ProcessEntities() const		{
         return _processEntities;
@@ -1691,7 +1693,8 @@ public:
     XMLError  ErrorID() const {
         return _errorID;
     }
-	const char* ErrorName() const;
+    // mashers removed
+	//const char* ErrorName() const;
 
     /// Return a possibly helpful diagnostic location or string.
     const char* GetErrorStr1() const {
@@ -1702,8 +1705,9 @@ public:
         return _errorStr2;
     }
     /// If there is an error, print it to stdout.
-    void PrintError() const;
-    
+    //mashers removed
+//    void PrintError() const;
+
     /// Clear the document, resetting it to the initial state.
     void Clear();
 

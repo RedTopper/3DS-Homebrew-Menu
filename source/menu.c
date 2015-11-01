@@ -1220,6 +1220,7 @@ void setPositionsToCurrentMenuSelection(menu_s* m);
 void showFolders() {
     buildFoldersList();
 
+#warning Put back when enough space
     if (foldersMenu.numEntries == 1) {
         menuEntry_s * menuEntry3DSFolder = getMenuEntry(&foldersMenu, 0);
         menuEntry3DSFolder->hidden = false;

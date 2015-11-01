@@ -714,7 +714,7 @@ XMLNode::~XMLNode()
     }
 }
 
-const char* XMLNode::Value() const 
+const char* XMLNode::Value() const
 {
     // Catch an edge case: XMLDocuments don't have a a Value. Carefully return nullptr.
     if ( this->ToDocument() )
@@ -1236,12 +1236,12 @@ bool XMLUnknown::Accept( XMLVisitor* visitor ) const
 
 // --------- XMLAttribute ---------- //
 
-const char* XMLAttribute::Name() const 
+const char* XMLAttribute::Name() const
 {
     return _name.GetStr();
 }
 
-const char* XMLAttribute::Value() const 
+const char* XMLAttribute::Value() const
 {
     return _value.GetStr();
 }
@@ -1431,7 +1431,7 @@ void	XMLElement::SetText( const char* inText )
 }
 
 
-void XMLElement::SetText( int v ) 
+void XMLElement::SetText( int v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
@@ -1439,7 +1439,7 @@ void XMLElement::SetText( int v )
 }
 
 
-void XMLElement::SetText( unsigned v ) 
+void XMLElement::SetText( unsigned v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
@@ -1447,7 +1447,7 @@ void XMLElement::SetText( unsigned v )
 }
 
 
-void XMLElement::SetText( bool v ) 
+void XMLElement::SetText( bool v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
@@ -1455,7 +1455,7 @@ void XMLElement::SetText( bool v )
 }
 
 
-void XMLElement::SetText( float v ) 
+void XMLElement::SetText( float v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
@@ -1463,7 +1463,7 @@ void XMLElement::SetText( float v )
 }
 
 
-void XMLElement::SetText( double v ) 
+void XMLElement::SetText( double v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
@@ -1805,7 +1805,7 @@ void XMLDocument::Clear()
     _commentPool.Trace( "comment" );
     _attributePool.Trace( "attribute" );
 #endif
-    
+
 #ifdef DEBUG
     if ( !hadError ) {
         TIXMLASSERT( _elementPool.CurrentAllocs()   == _elementPool.Untracked() );
@@ -1881,7 +1881,7 @@ static FILE* callfopen( const char* filepath, const char* mode )
 #endif
     return fp;
 }
-    
+
 void XMLDocument::DeleteNode( XMLNode* node )	{
     TIXMLASSERT( node );
     TIXMLASSERT(node->_document == this );
@@ -1957,7 +1957,9 @@ XMLError XMLDocument::LoadFile( FILE* fp )
     return _errorID;
 }
 
+//Removed by mashers
 
+/*
 XMLError XMLDocument::SaveFile( const char* filename, bool compact )
 {
     FILE* fp = callfopen( filename, "w" );
@@ -1980,6 +1982,7 @@ XMLError XMLDocument::SaveFile( FILE* fp, bool compact )
 //    Print( &stream );
     return _errorID;
 }
+*/
 
 
 XMLError XMLDocument::Parse( const char* p, size_t len )
@@ -2032,6 +2035,9 @@ void XMLDocument::SetError( XMLError error, const char* str1, const char* str2 )
     _errorStr2 = str2;
 }
 
+//mashers removed
+
+/*
 const char* XMLDocument::ErrorName() const
 {
 	TIXMLASSERT( _errorID >= 0 && _errorID < XML_ERROR_COUNT );
@@ -2039,8 +2045,11 @@ const char* XMLDocument::ErrorName() const
     TIXMLASSERT( errorName && errorName[0] );
     return errorName;
 }
+*/
 
-void XMLDocument::PrintError() const
+// mashers removed
+/*
+/void XMLDocument::PrintError() const
 {
     if ( Error() ) {
         static const int LEN = 20;
@@ -2061,6 +2070,7 @@ void XMLDocument::PrintError() const
                 static_cast<int>( _errorID ), ErrorName(), buf1, buf2 );
     }
 }
+*/
 
 void XMLDocument::Parse()
 {
@@ -2075,6 +2085,8 @@ void XMLDocument::Parse()
     }
     ParseDeep(p, 0 );
 }
+
+// mashers removed all below...
 
 //XMLPrinter::XMLPrinter( FILE* file, bool compact, int depth ) :
 //    _elementJustOpened( false ),

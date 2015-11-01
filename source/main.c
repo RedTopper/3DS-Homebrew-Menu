@@ -580,6 +580,9 @@ int main(int argc, char *argv[])
     gamecardWasIn = regionFreeGamecardIn;
     
     initThemeImages();
+	if(!randomTheme) {
+		initThemeMusic();
+	}
     
     int frameRate = 60;
     int frameMs = 1000 / frameRate;

@@ -974,7 +974,7 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     }
 
     if (pageChanged) {
-        audioPlay(&themeSoundSelect, false);
+        audioPlay(&themeSoundMove, false);
 
         if (animatedGrids) {
             startTransition(transitionDirectionLeft, previousPage, m);
@@ -1030,7 +1030,7 @@ void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
     }
 
     if (pageChanged) {
-        audioPlay(&themeSoundSelect, false);
+        audioPlay(&themeSoundMove, false);
 
         if (animatedGrids) {
             startTransition(transitionDirectionRight, previousPage, m);
@@ -1220,7 +1220,6 @@ void setPositionsToCurrentMenuSelection(menu_s* m);
 void showFolders() {
     buildFoldersList();
 
-#warning Put back when enough space
     if (foldersMenu.numEntries == 1) {
         menuEntry_s * menuEntry3DSFolder = getMenuEntry(&foldersMenu, 0);
         menuEntry3DSFolder->hidden = false;

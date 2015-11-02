@@ -18,6 +18,8 @@ void audio_load(const char *audio, themeSound * aThemeSound){
 		fseek(file, 0, SEEK_END);
 		aThemeSound->sndsize = ftell(file);
 		fseek(file, 0, SEEK_SET);
+		aThemeSound->sndsize = aThemeSound->sndsize - 0x48;
+		fseek(file, 0x48, SEEK_SET);
 		aThemeSound->sndbuffer = linearAlloc(aThemeSound->sndsize);
 		fread(aThemeSound->sndbuffer, 1, aThemeSound->sndsize, file);
 		fclose(file);

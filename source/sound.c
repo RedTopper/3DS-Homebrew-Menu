@@ -23,10 +23,20 @@ void audio_load(const char *audio, themeSound * aThemeSound){
 		aThemeSound->sndbuffer = linearAlloc(aThemeSound->sndsize);
 		fread(aThemeSound->sndbuffer, 1, aThemeSound->sndsize, file);
 		fclose(file);
+		if (aThemeSound->sndbuffer != NULL) {
+            aThemeSound->loaded = true;
+		}
+		else {
+            aThemeSound->loaded = false;
+		}
+	}
+	else {
+        aThemeSound->loaded = false;
 	}
 }
 
 void audioPlay(themeSound * aThemeSound, bool loop) {
+   if (aThemeSound->loaded) {
     u32 flags;
 
     if (loop) {
@@ -37,6 +47,7 @@ void audioPlay(themeSound * aThemeSound, bool loop) {
     }
 
     csndPlaySound(aThemeSound->channel, flags, 44100, 1, 0, aThemeSound->sndbuffer, aThemeSound->sndbuffer, aThemeSound->sndsize);
+   }
 }
 
 void audioFree(themeSound * aThemeSound) {

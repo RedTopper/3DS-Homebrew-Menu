@@ -12,7 +12,9 @@ extern themeSound themeSoundBGM;
 extern themeSound themeSoundMove;
 extern themeSound themeSoundSelect;
 extern themeSound themeSoundBack;
+extern themeSound themeSoundBoot;
 
 void audio_stop(void);
 void initThemeSounds();
 void audioPlay(themeSound * aThemeSound, bool loop);
+void playBootSound();

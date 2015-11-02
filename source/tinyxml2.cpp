@@ -722,6 +722,8 @@ const char* XMLNode::Value() const
     return _value.GetStr();
 }
 
+//Removed by mashers
+/*
 void XMLNode::SetValue( const char* str, bool staticMem )
 {
     if ( staticMem ) {
@@ -731,6 +733,7 @@ void XMLNode::SetValue( const char* str, bool staticMem )
         _value.SetStr( str );
     }
 }
+*/
 
 
 void XMLNode::DeleteChildren()
@@ -1060,7 +1063,8 @@ char* XMLText::ParseDeep( char* p, StrPair* )
     return 0;
 }
 
-
+//Removed by mashers
+/*
 XMLNode* XMLText::ShallowClone( XMLDocument* doc ) const
 {
     if ( !doc ) {
@@ -1070,6 +1074,7 @@ XMLNode* XMLText::ShallowClone( XMLDocument* doc ) const
     text->SetCData( this->CData() );
     return text;
 }
+*/
 
 
 bool XMLText::ShallowEqual( const XMLNode* compare ) const
@@ -1109,7 +1114,8 @@ char* XMLComment::ParseDeep( char* p, StrPair* )
     return p;
 }
 
-
+//Removed by mashers
+/*
 XMLNode* XMLComment::ShallowClone( XMLDocument* doc ) const
 {
     if ( !doc ) {
@@ -1118,6 +1124,7 @@ XMLNode* XMLComment::ShallowClone( XMLDocument* doc ) const
     XMLComment* comment = doc->NewComment( Value() );	// fixme: this will always allocate memory. Intern?
     return comment;
 }
+*/
 
 
 bool XMLComment::ShallowEqual( const XMLNode* compare ) const
@@ -1159,7 +1166,8 @@ char* XMLDeclaration::ParseDeep( char* p, StrPair* )
     return p;
 }
 
-
+//Removed by mashers
+/*
 XMLNode* XMLDeclaration::ShallowClone( XMLDocument* doc ) const
 {
     if ( !doc ) {
@@ -1168,6 +1176,7 @@ XMLNode* XMLDeclaration::ShallowClone( XMLDocument* doc ) const
     XMLDeclaration* dec = doc->NewDeclaration( Value() );	// fixme: this will always allocate memory. Intern?
     return dec;
 }
+*/
 
 
 bool XMLDeclaration::ShallowEqual( const XMLNode* compare ) const
@@ -1209,7 +1218,8 @@ char* XMLUnknown::ParseDeep( char* p, StrPair* )
     return p;
 }
 
-
+//Removed by mashers
+/*
 XMLNode* XMLUnknown::ShallowClone( XMLDocument* doc ) const
 {
     if ( !doc ) {
@@ -1218,6 +1228,7 @@ XMLNode* XMLUnknown::ShallowClone( XMLDocument* doc ) const
     XMLUnknown* text = doc->NewUnknown( Value() );	// fixme: this will always allocate memory. Intern?
     return text;
 }
+*/
 
 
 bool XMLUnknown::ShallowEqual( const XMLNode* compare ) const
@@ -1272,7 +1283,6 @@ char* XMLAttribute::ParseDeep( char* p, bool processEntities )
     p = _value.ParseText( p, endTag, processEntities ? StrPair::ATTRIBUTE_VALUE : StrPair::ATTRIBUTE_VALUE_LEAVE_ENTITIES );
     return p;
 }
-
 
 void XMLAttribute::SetName( const char* n )
 {
@@ -1419,7 +1429,8 @@ const char* XMLElement::GetText() const
     return 0;
 }
 
-
+//Removed by mashers
+/*
 void	XMLElement::SetText( const char* inText )
 {
 	if ( FirstChild() && FirstChild()->ToText() )
@@ -1429,46 +1440,57 @@ void	XMLElement::SetText( const char* inText )
 		InsertFirstChild( theText );
 	}
 }
+*/
 
-
+//Removed by mashers
+/*
 void XMLElement::SetText( int v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     SetText( buf );
 }
+*/
 
-
+//Removed by mashers
+/*
 void XMLElement::SetText( unsigned v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     SetText( buf );
 }
+*/
 
-
+//Removed by mashers
+/*
 void XMLElement::SetText( bool v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     SetText( buf );
 }
+*/
 
-
+//Removed by mashers
+/*
 void XMLElement::SetText( float v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     SetText( buf );
 }
+*/
 
-
+//Removed by mashers
+/*
 void XMLElement::SetText( double v )
 {
     char buf[BUF_SIZE];
     XMLUtil::ToStr( v, buf, BUF_SIZE );
     SetText( buf );
 }
+*/
 
 
 XMLError XMLElement::QueryIntText( int* ival ) const
@@ -1683,7 +1705,8 @@ char* XMLElement::ParseDeep( char* p, StrPair* strPair )
 }
 
 
-
+//Removed by mashers
+/*
 XMLNode* XMLElement::ShallowClone( XMLDocument* doc ) const
 {
     if ( !doc ) {
@@ -1695,6 +1718,7 @@ XMLNode* XMLElement::ShallowClone( XMLDocument* doc ) const
     }
     return element;
 }
+*/
 
 
 bool XMLElement::ShallowEqual( const XMLNode* compare ) const
@@ -1816,7 +1840,8 @@ void XMLDocument::Clear()
 #endif
 }
 
-
+//Removed by mashers
+/*
 XMLElement* XMLDocument::NewElement( const char* name )
 {
     TIXMLASSERT( sizeof( XMLElement ) == _elementPool.ItemSize() );
@@ -1825,8 +1850,10 @@ XMLElement* XMLDocument::NewElement( const char* name )
     ele->SetName( name );
     return ele;
 }
+*/
 
-
+//Removed by mashers
+/*
 XMLComment* XMLDocument::NewComment( const char* str )
 {
     TIXMLASSERT( sizeof( XMLComment ) == _commentPool.ItemSize() );
@@ -1835,8 +1862,10 @@ XMLComment* XMLDocument::NewComment( const char* str )
     comment->SetValue( str );
     return comment;
 }
+*/
 
-
+//Removed by mashers
+/*
 XMLText* XMLDocument::NewText( const char* str )
 {
     TIXMLASSERT( sizeof( XMLText ) == _textPool.ItemSize() );
@@ -1845,8 +1874,10 @@ XMLText* XMLDocument::NewText( const char* str )
     text->SetValue( str );
     return text;
 }
+*/
 
-
+//Removed by mashers
+/*
 XMLDeclaration* XMLDocument::NewDeclaration( const char* str )
 {
     TIXMLASSERT( sizeof( XMLDeclaration ) == _commentPool.ItemSize() );
@@ -1855,8 +1886,10 @@ XMLDeclaration* XMLDocument::NewDeclaration( const char* str )
     dec->SetValue( str ? str : "xml version=\"1.0\" encoding=\"UTF-8\"" );
     return dec;
 }
+*/
 
-
+//Removed by mashers
+/*
 XMLUnknown* XMLDocument::NewUnknown( const char* str )
 {
     TIXMLASSERT( sizeof( XMLUnknown ) == _commentPool.ItemSize() );
@@ -1865,6 +1898,7 @@ XMLUnknown* XMLDocument::NewUnknown( const char* str )
     unk->SetValue( str );
     return unk;
 }
+*/
 
 static FILE* callfopen( const char* filepath, const char* mode )
 {

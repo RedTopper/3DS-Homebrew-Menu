@@ -471,8 +471,6 @@ int main(int argc, char *argv[])
 	framebuf_bot = gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL);
 	memset(framebuf_top, 0, 400 * 240 * 3); //clear the screen to black
 	memset(framebuf_bot, 0, 320 * 240 * 3); //ensures no graphical glitching shows.
-	gfxFlushBuffers();
-	gfxSwapBuffers();
 
 	initFilesystem();
 
@@ -497,8 +495,23 @@ int main(int argc, char *argv[])
 		}
 	}
 
+    openSDArchive();
+    loadSplashImages();
+
+    if (themeImageExists(themeImageSplashTop)) {
+        drawThemeImage(themeImageSplashTop, GFX_TOP, 0, 0);
+    }
+
+    if (themeImageExists(themeImageSplashBottom)) {
+        drawThemeImage(themeImageSplashBottom, GFX_BOTTOM, 0, 0);
+    }
+
+    gfxFlip();
+
 	csndInit();//start Audio Lib
-	openSDArchive();
+
+	playBootSound();
+
 	hidInit();
 	acInit();
 	ptmInit();
@@ -548,6 +561,7 @@ int main(int argc, char *argv[])
     gamecardWasIn = regionFreeGamecardIn;
 
     initThemeImages();
+
 	if(!randomTheme) {
 		initThemeSounds();
 	}

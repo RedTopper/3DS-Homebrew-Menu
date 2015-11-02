@@ -695,7 +695,8 @@ public:
     /** Set the Value of an XML node.
     	@sa Value()
     */
-    void SetValue( const char* val, bool staticMem=false );
+    //Removed by mashers
+//    void SetValue( const char* val, bool staticMem=false );
 
     /// Get the parent of this node on the DOM.
     const XMLNode*	Parent() const			{
@@ -828,7 +829,8 @@ public:
 
     	Note: if called on a XMLDocument, this will return null.
     */
-    virtual XMLNode* ShallowClone( XMLDocument* document ) const = 0;
+    //Removed by mashers
+    //virtual XMLNode* ShallowClone( XMLDocument* document ) const = 0;
 
     /**
     	Test if 2 nodes are the same, but don't test children.
@@ -924,7 +926,8 @@ public:
         return _isCData;
     }
 
-    virtual XMLNode* ShallowClone( XMLDocument* document ) const;
+//Removed by mashers
+    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
     virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
@@ -954,8 +957,8 @@ public:
     }
 
     virtual bool Accept( XMLVisitor* visitor ) const;
-
-    virtual XMLNode* ShallowClone( XMLDocument* document ) const;
+//Removed by mashers
+    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
     virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
@@ -994,7 +997,8 @@ public:
 
     virtual bool Accept( XMLVisitor* visitor ) const;
 
-    virtual XMLNode* ShallowClone( XMLDocument* document ) const;
+//Removed by mashers
+    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
     virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
@@ -1029,7 +1033,8 @@ public:
 
     virtual bool Accept( XMLVisitor* visitor ) const;
 
-    virtual XMLNode* ShallowClone( XMLDocument* document ) const;
+//Removed by mashers
+    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
     virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
@@ -1160,9 +1165,11 @@ public:
         return Value();
     }
     /// Set the name of the element.
-    void SetName( const char* str, bool staticMem=false )	{
-        SetValue( str, staticMem );
-    }
+    //Removed by mashers
+//    void SetName( const char* str, bool staticMem=false )	{
+    //Removed by mashers
+        //SetValue( str, staticMem );
+    //}
 
     virtual XMLElement* ToElement()				{
         return this;
@@ -1430,6 +1437,9 @@ public:
     		<foo>Hullaballoo!</foo>
     	@endverbatim
     */
+
+    //Removed by mashers
+    /*
 	void SetText( const char* inText );
     /// Convenience method for setting text inside and element. See SetText() for important limitations.
     void SetText( int value );
@@ -1441,6 +1451,7 @@ public:
     void SetText( double value );
     /// Convenience method for setting text inside and element. See SetText() for important limitations.
     void SetText( float value );
+    */
 
     /**
     	Convenience method to query the value of a child text node. This is probably best
@@ -1487,7 +1498,8 @@ public:
     int ClosingType() const {
         return _closingType;
     }
-    virtual XMLNode* ShallowClone( XMLDocument* document ) const;
+    //Removed by mashers
+    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
     virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
@@ -1645,19 +1657,22 @@ public:
     	this Document. The memory for the Element
     	is managed by the Document.
     */
-    XMLElement* NewElement( const char* name );
+    //Removed by mashers
+    //XMLElement* NewElement( const char* name );
     /**
     	Create a new Comment associated with
     	this Document. The memory for the Comment
     	is managed by the Document.
     */
-    XMLComment* NewComment( const char* comment );
+    //Removed by mashers
+    //XMLComment* NewComment( const char* comment );
     /**
     	Create a new Text associated with
     	this Document. The memory for the Text
     	is managed by the Document.
     */
-    XMLText* NewText( const char* text );
+    //Removed by mashers
+    //XMLText* NewText( const char* text );
     /**
     	Create a new Declaration associated with
     	this Document. The memory for the object
@@ -1669,13 +1684,15 @@ public:
     		<?xml version="1.0" encoding="UTF-8"?>
     	@endverbatim
     */
-    XMLDeclaration* NewDeclaration( const char* text=0 );
+    //Removed by mashers
+    //XMLDeclaration* NewDeclaration( const char* text=0 );
     /**
     	Create a new Unknown associated with
     	this Document. The memory for the object
     	is managed by the Document.
     */
-    XMLUnknown* NewUnknown( const char* text );
+    //Removed by mashers
+    //XMLUnknown* NewUnknown( const char* text );
 
     /**
     	Delete a node associated with this document.
@@ -1714,9 +1731,11 @@ public:
     // internal
     char* Identify( char* p, XMLNode** node );
 
-    virtual XMLNode* ShallowClone( XMLDocument* /*document*/ ) const	{
-        return 0;
-    }
+//Removed by mashers
+    //virtual XMLNode* ShallowClone( XMLDocument* /*document*/ ) const	{
+    //    return 0;
+    //}
+
     virtual bool ShallowEqual( const XMLNode* /*compare*/ ) const	{
         return false;
     }

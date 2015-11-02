@@ -40,6 +40,9 @@ int themeImageTopWallpaperInfo = 19;
 
 int themeImageBottomWallpaperNonGrid = 20;
 
+int themeImageSplashTop = 21;
+int themeImageSplashBottom = 22;
+
 bool themeHasProgressWheel = false;
 
 typedef struct themeImage {
@@ -49,7 +52,7 @@ typedef struct themeImage {
     int w, h;
 } themeImage;
 
-#define maxThemeImages 21
+#define maxThemeImages 23
 themeImage themeImages[maxThemeImages];
 
 #define maxProgressWheelImages 16
@@ -218,6 +221,10 @@ void initThemeImages() {
     loadThemeImage(path, "Folders icon", 36, 36, NULL, themeImageFoldersSymbol, themeImages);
 
 
+
+
+
+
     numProgressWheelImages = 0;
 
     int frame;
@@ -235,6 +242,19 @@ void initThemeImages() {
     }
 
     themeHasProgressWheel = (numProgressWheelImages > 0);
+
+    free(themePath);
+}
+
+void loadSplashImages() {
+    char * themePath = currentThemePath();
+    char path[128];
+
+    sprintf(path, "%ssplashtop.png", themePath);
+    loadThemeImage(path, "Top splash screen", 400, 240, NULL, themeImageSplashTop, themeImages);
+
+    sprintf(path, "%ssplashbottom.png", themePath);
+    loadThemeImage(path, "Bottom splash screen", 320, 240, NULL, themeImageSplashBottom, themeImages);
 
     free(themePath);
 }

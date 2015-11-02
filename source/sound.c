@@ -8,6 +8,7 @@ themeSound themeSoundBGM;
 themeSound themeSoundMove;
 themeSound themeSoundSelect;
 themeSound themeSoundBack;
+themeSound themeSoundBoot;
 
 #include "logText.h"
 
@@ -63,6 +64,7 @@ void audio_stop(void){
     audioFree(&themeSoundBGM);
     audioFree(&themeSoundMove);
     audioFree(&themeSoundSelect);
+    audioFree(&themeSoundBoot);
 }
 
 char* concat(char *s1, char *s2)
@@ -104,4 +106,9 @@ void initThemeSounds() {
     loadThemeSoundOrDefault("backsound.bin", &themeSoundBack, 10);
 
 	audioPlay(&themeSoundBGM, true);
+}
+
+void playBootSound() {
+	loadThemeSoundOrDefault("bootsound.bin", &themeSoundBoot, 10);
+	audioPlay(&themeSoundBoot, false);
 }

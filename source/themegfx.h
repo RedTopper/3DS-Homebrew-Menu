@@ -31,10 +31,14 @@ extern int themeImageTopWallpaperInfo;
 
 extern int themeImageBottomWallpaperNonGrid;
 
+extern int themeImageSplashTop;
+extern int themeImageSplashBottom;
+
 extern bool themeHasProgressWheel;
 extern int numProgressWheelImages;
 
 void initThemeImages();
+void loadSplashImages();
 
 void drawThemeImage(int imageID, gfxScreen_t screen, int x, int y);
 void drawProgressWheelImage(int frame, gfxScreen_t screen, int x, int y);

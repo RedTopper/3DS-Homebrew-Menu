@@ -65,6 +65,7 @@ void audio_stop(void){
     audioFree(&themeSoundMove);
     audioFree(&themeSoundSelect);
     audioFree(&themeSoundBoot);
+    audioFree(&themeSoundBack);
 }
 
 char* concat(char *s1, char *s2)

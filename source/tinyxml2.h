@@ -695,8 +695,6 @@ public:
     /** Set the Value of an XML node.
     	@sa Value()
     */
-    //Removed by mashers
-//    void SetValue( const char* val, bool staticMem=false );
 
     /// Get the parent of this node on the DOM.
     const XMLNode*	Parent() const			{
@@ -742,11 +740,11 @@ public:
     /** Get the last child element or optionally the last child
         element with the specified name.
     */
-    const XMLElement* LastChildElement( const char* name = 0 ) const;
+//    const XMLElement* LastChildElement( const char* name = 0 ) const;
 
-    XMLElement* LastChildElement( const char* name = 0 )	{
-        return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->LastChildElement(name) );
-    }
+    //XMLElement* LastChildElement( const char* name = 0 )	{
+    //    return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->LastChildElement(name) );
+    //}
 
     /// Get the previous (left) sibling node of this node.
     const XMLNode*	PreviousSibling() const					{
@@ -758,11 +756,11 @@ public:
     }
 
     /// Get the previous (left) sibling element of this node, with an optionally supplied name.
-    const XMLElement*	PreviousSiblingElement( const char* name = 0 ) const ;
+//    const XMLElement*	PreviousSiblingElement( const char* name = 0 ) const ;
 
-    XMLElement*	PreviousSiblingElement( const char* name = 0 ) {
-        return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->PreviousSiblingElement( name ) );
-    }
+  //  XMLElement*	PreviousSiblingElement( const char* name = 0 ) {
+  //      return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->PreviousSiblingElement( name ) );
+  //  }
 
     /// Get the next (right) sibling node of this node.
     const XMLNode*	NextSibling() const						{
@@ -799,7 +797,7 @@ public:
 		Returns the addThis argument or 0 if the node does not
 		belong to the same document.
     */
-    XMLNode* InsertFirstChild( XMLNode* addThis );
+//    XMLNode* InsertFirstChild( XMLNode* addThis );
     /**
     	Add a node after the specified child node.
 		If the child node is already part of the document,
@@ -808,7 +806,7 @@ public:
 		is not a child of this node, or if the node does not
 		belong to the same document.
     */
-    XMLNode* InsertAfterChild( XMLNode* afterThis, XMLNode* addThis );
+//    XMLNode* InsertAfterChild( XMLNode* afterThis, XMLNode* addThis );
 
     /**
     	Delete all the children of this node.
@@ -829,8 +827,6 @@ public:
 
     	Note: if called on a XMLDocument, this will return null.
     */
-    //Removed by mashers
-    //virtual XMLNode* ShallowClone( XMLDocument* document ) const = 0;
 
     /**
     	Test if 2 nodes are the same, but don't test children.
@@ -838,7 +834,7 @@ public:
 
     	Note: if called on a XMLDocument, this will return false.
     */
-    virtual bool ShallowEqual( const XMLNode* compare ) const = 0;
+    //virtual bool ShallowEqual( const XMLNode* compare ) const = 0;
 
     /** Accept a hierarchical visit of the nodes in the TinyXML-2 DOM. Every node in the
     	XML tree will be conditionally visited and the host will be called back
@@ -862,7 +858,7 @@ public:
     	const char* xmlcstr = printer.CStr();
     	@endverbatim
     */
-    virtual bool Accept( XMLVisitor* visitor ) const = 0;
+//    virtual bool Accept( XMLVisitor* visitor ) const = 0;
 
 protected:
     XMLNode( XMLDocument* );
@@ -908,7 +904,7 @@ class TINYXML2_LIB XMLText : public XMLNode
     friend class XMLBase;
     friend class XMLDocument;
 public:
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
     virtual XMLText* ToText()			{
         return this;
@@ -926,9 +922,7 @@ public:
         return _isCData;
     }
 
-//Removed by mashers
-    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+    //virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     XMLText( XMLDocument* doc )	: XMLNode( doc ), _isCData( false )	{}
@@ -956,10 +950,8 @@ public:
         return this;
     }
 
-    virtual bool Accept( XMLVisitor* visitor ) const;
-//Removed by mashers
-    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
+    //virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     XMLComment( XMLDocument* doc );
@@ -995,11 +987,9 @@ public:
         return this;
     }
 
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
-//Removed by mashers
-    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+    //virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     XMLDeclaration( XMLDocument* doc );
@@ -1031,11 +1021,9 @@ public:
         return this;
     }
 
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
-//Removed by mashers
-    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+    //virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     XMLUnknown( XMLDocument* doc );
@@ -1119,18 +1107,6 @@ public:
     /// See QueryIntValue
     XMLError QueryFloatValue( float* value ) const;
 
-    /// Set the attribute to a string value.
-    void SetAttribute( const char* value );
-    /// Set the attribute to value.
-    void SetAttribute( int value );
-    /// Set the attribute to value.
-    void SetAttribute( unsigned value );
-    /// Set the attribute to value.
-    void SetAttribute( bool value );
-    /// Set the attribute to value.
-    void SetAttribute( double value );
-    /// Set the attribute to value.
-    void SetAttribute( float value );
 
 private:
     enum { BUF_SIZE = 200 };
@@ -1164,12 +1140,7 @@ public:
     const char* Name() const		{
         return Value();
     }
-    /// Set the name of the element.
-    //Removed by mashers
-//    void SetName( const char* str, bool staticMem=false )	{
-    //Removed by mashers
-        //SetValue( str, staticMem );
-    //}
+
 
     virtual XMLElement* ToElement()				{
         return this;
@@ -1177,7 +1148,7 @@ public:
     virtual const XMLElement* ToElement() const {
         return this;
     }
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
     /** Given an attribute name, Attribute() returns the value
     	for the attribute of that name, or null if none
@@ -1330,37 +1301,6 @@ public:
 		return QueryFloatAttribute( name, value );
 	}
 
-	/// Sets the named attribute to value.
-    void SetAttribute( const char* name, const char* value )	{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, int value )			{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, unsigned value )		{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, bool value )			{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, double value )		{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, float value )		{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-
     /**
     	Delete an attribute.
     */
@@ -1438,20 +1378,7 @@ public:
     	@endverbatim
     */
 
-    //Removed by mashers
-    /*
-	void SetText( const char* inText );
-    /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( int value );
-    /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( unsigned value );
-    /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( bool value );
-    /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( double value );
-    /// Convenience method for setting text inside and element. See SetText() for important limitations.
-    void SetText( float value );
-    */
+
 
     /**
     	Convenience method to query the value of a child text node. This is probably best
@@ -1479,15 +1406,15 @@ public:
     			 to the requested type, and XML_NO_TEXT_NODE if there is no child text to query.
 
     */
-    XMLError QueryIntText( int* ival ) const;
+//    XMLError QueryIntText( int* ival ) const;
     /// See QueryIntText()
-    XMLError QueryUnsignedText( unsigned* uval ) const;
+//    XMLError QueryUnsignedText( unsigned* uval ) const;
     /// See QueryIntText()
-    XMLError QueryBoolText( bool* bval ) const;
+//    XMLError QueryBoolText( bool* bval ) const;
     /// See QueryIntText()
-    XMLError QueryDoubleText( double* dval ) const;
+//    XMLError QueryDoubleText( double* dval ) const;
     /// See QueryIntText()
-    XMLError QueryFloatText( float* fval ) const;
+//    XMLError QueryFloatText( float* fval ) const;
 
     // internal:
     enum {
@@ -1498,9 +1425,7 @@ public:
     int ClosingType() const {
         return _closingType;
     }
-    //Removed by mashers
-    //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+    //virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     char* ParseDeep( char* p, StrPair* endTag );
@@ -1588,24 +1513,6 @@ public:
     */
     XMLError LoadFile( FILE* );
 
-    /**
-    	Save the XML file to disk.
-    	Returns XML_NO_ERROR (0) on success, or
-    	an errorID.
-    */
-    //Removed by mashers
-    //XMLError SaveFile( const char* filename, bool compact = false );
-
-    /**
-    	Save the XML file to disk. You are responsible
-    	for providing and closing the FILE*.
-
-    	Returns XML_NO_ERROR (0) on success, or
-    	an errorID.
-    */
-    //Removed by mashers
-    //XMLError SaveFile( FILE* fp, bool compact = false );
-
     bool ProcessEntities() const		{
         return _processEntities;
     }
@@ -1650,49 +1557,9 @@ public:
     	@endverbatim
     */
 //    void Print( XMLPrinter* streamer=0 ) const;
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
-    /**
-    	Create a new Element associated with
-    	this Document. The memory for the Element
-    	is managed by the Document.
-    */
-    //Removed by mashers
-    //XMLElement* NewElement( const char* name );
-    /**
-    	Create a new Comment associated with
-    	this Document. The memory for the Comment
-    	is managed by the Document.
-    */
-    //Removed by mashers
-    //XMLComment* NewComment( const char* comment );
-    /**
-    	Create a new Text associated with
-    	this Document. The memory for the Text
-    	is managed by the Document.
-    */
-    //Removed by mashers
-    //XMLText* NewText( const char* text );
-    /**
-    	Create a new Declaration associated with
-    	this Document. The memory for the object
-    	is managed by the Document.
 
-    	If the 'text' param is null, the standard
-    	declaration is used.:
-    	@verbatim
-    		<?xml version="1.0" encoding="UTF-8"?>
-    	@endverbatim
-    */
-    //Removed by mashers
-    //XMLDeclaration* NewDeclaration( const char* text=0 );
-    /**
-    	Create a new Unknown associated with
-    	this Document. The memory for the object
-    	is managed by the Document.
-    */
-    //Removed by mashers
-    //XMLUnknown* NewUnknown( const char* text );
 
     /**
     	Delete a node associated with this document.
@@ -1710,8 +1577,7 @@ public:
     XMLError  ErrorID() const {
         return _errorID;
     }
-    // mashers removed
-	//const char* ErrorName() const;
+
 
     /// Return a possibly helpful diagnostic location or string.
     const char* GetErrorStr1() const {
@@ -1721,9 +1587,7 @@ public:
     const char* GetErrorStr2() const {
         return _errorStr2;
     }
-    /// If there is an error, print it to stdout.
-    //mashers removed
-//    void PrintError() const;
+
 
     /// Clear the document, resetting it to the initial state.
     void Clear();
@@ -1731,14 +1595,11 @@ public:
     // internal
     char* Identify( char* p, XMLNode** node );
 
-//Removed by mashers
-    //virtual XMLNode* ShallowClone( XMLDocument* /*document*/ ) const	{
-    //    return 0;
-    //}
 
-    virtual bool ShallowEqual( const XMLNode* /*compare*/ ) const	{
-        return false;
-    }
+
+    //virtual bool ShallowEqual( const XMLNode* /*compare*/ ) const	{
+    //    return false;
+    //}
 
 private:
     XMLDocument( const XMLDocument& );	// not supported
@@ -1852,17 +1713,17 @@ public:
         return XMLHandle( _node ? _node->LastChild() : 0 );
     }
     /// Get the last child element of this handle.
-    XMLHandle LastChildElement( const char* name = 0 )						{
-        return XMLHandle( _node ? _node->LastChildElement( name ) : 0 );
-    }
+    //XMLHandle LastChildElement( const char* name = 0 )						{
+    //    return XMLHandle( _node ? _node->LastChildElement( name ) : 0 );
+    //}
     /// Get the previous sibling of this handle.
     XMLHandle PreviousSibling()												{
         return XMLHandle( _node ? _node->PreviousSibling() : 0 );
     }
     /// Get the previous sibling element of this handle.
-    XMLHandle PreviousSiblingElement( const char* name = 0 )				{
-        return XMLHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
-    }
+//    XMLHandle PreviousSiblingElement( const char* name = 0 )				{
+//        return XMLHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
+//    }
     /// Get the next sibling of this handle.
     XMLHandle NextSibling()													{
         return XMLHandle( _node ? _node->NextSibling() : 0 );
@@ -1929,15 +1790,15 @@ public:
     const XMLConstHandle LastChild()	const										{
         return XMLConstHandle( _node ? _node->LastChild() : 0 );
     }
-    const XMLConstHandle LastChildElement( const char* name = 0 ) const				{
-        return XMLConstHandle( _node ? _node->LastChildElement( name ) : 0 );
-    }
+    //const XMLConstHandle LastChildElement( const char* name = 0 ) const				{
+    //    return XMLConstHandle( _node ? _node->LastChildElement( name ) : 0 );
+    //}
     const XMLConstHandle PreviousSibling() const									{
         return XMLConstHandle( _node ? _node->PreviousSibling() : 0 );
     }
-    const XMLConstHandle PreviousSiblingElement( const char* name = 0 ) const		{
-        return XMLConstHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
-    }
+//    const XMLConstHandle PreviousSiblingElement( const char* name = 0 ) const		{
+//        return XMLConstHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
+//    }
     const XMLConstHandle NextSibling() const										{
         return XMLConstHandle( _node ? _node->NextSibling() : 0 );
     }

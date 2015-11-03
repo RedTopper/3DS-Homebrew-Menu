@@ -474,6 +474,7 @@ int main(int argc, char *argv[])
 
 	initFilesystem();
 
+/*
 	FILE *file = fopen("menuhax_imagedisplay.bin","rb"); //attempts to load image
 	u8* buffer;
 	if (file != NULL){
@@ -494,6 +495,7 @@ int main(int argc, char *argv[])
 			}
 		}
 	}
+*/
 
     openSDArchive();
     loadSplashImages();

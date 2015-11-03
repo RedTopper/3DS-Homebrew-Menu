@@ -251,10 +251,18 @@ void loadSplashImages() {
     char path[128];
 
     sprintf(path, "%ssplashtop.png", themePath);
-    loadThemeImage(path, "Top splash screen", 400, 240, NULL, themeImageSplashTop, themeImages);
+    if(!loadThemeImage(path, "Top splash screen", 400, 240, NULL, themeImageSplashTop, themeImages)) {
+		char emergencyPath[128];
+		sprintf(emergencyPath, "%ssplashtop.png", defaultThemePath);
+		loadThemeImage(emergencyPath, "Top splash screen", 400, 240, NULL, themeImageSplashTop, themeImages);
+	}
 
     sprintf(path, "%ssplashbottom.png", themePath);
-    loadThemeImage(path, "Bottom splash screen", 320, 240, NULL, themeImageSplashBottom, themeImages);
+    if(!loadThemeImage(path, "Bottom splash screen", 320, 240, NULL, themeImageSplashBottom, themeImages)) {
+		char emergencyPath[128];
+		sprintf(emergencyPath, "%ssplashbottom.png", defaultThemePath);
+		loadThemeImage(emergencyPath, "Bottom splash screen", 320, 240, NULL, themeImageSplashBottom, themeImages);
+	}
 
     free(themePath);
 }

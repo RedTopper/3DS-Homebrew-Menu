@@ -18,3 +18,4 @@ void audio_stop(void);
 void initThemeSounds();
 void audioPlay(themeSound * aThemeSound, bool loop);
 void playBootSound();
+void startBGM();

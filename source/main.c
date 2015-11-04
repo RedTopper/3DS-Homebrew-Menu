@@ -465,12 +465,16 @@ int main(int argc, char *argv[])
 	aptInit();
 	gfxInitDefault();
 
+    logTextP("Clear background", "/bootlog.txt");
+
 	u8* framebuf_top;
 	u8* framebuf_bot;
 	framebuf_top = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
 	framebuf_bot = gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL);
 	memset(framebuf_top, 0, 400 * 240 * 3); //clear the screen to black
 	memset(framebuf_bot, 0, 320 * 240 * 3); //ensures no graphical glitching shows.
+
+    logTextP("Init filesystem", "/bootlog.txt");
 
 	initFilesystem();
 
@@ -498,7 +502,12 @@ int main(int argc, char *argv[])
 */
 
     openSDArchive();
+
+    logTextP("Load splash images", "/bootlog.txt");
+
     loadSplashImages();
+
+    logTextP("Draw splash images", "/bootlog.txt");
 
     if (themeImageExists(themeImageSplashTop)) {
         drawThemeImage(themeImageSplashTop, GFX_TOP, 0, 0);
@@ -510,9 +519,15 @@ int main(int argc, char *argv[])
 
     gfxFlip();
 
+    logTextP("Init CSND", "/bootlog.txt");
+
 	csndInit();//start Audio Lib
 
+    logTextP("Play boot sound", "/bootlog.txt");
+
 	playBootSound();
+
+    logTextP("Init services", "/bootlog.txt");
 
 	hidInit();
 	acInit();
@@ -521,7 +536,11 @@ int main(int argc, char *argv[])
 	regionFreeInit();
 	netloader_init();
 
+	logTextP("Set CPU speed", "/bootlog.txt");
+
 	osSetSpeedupEnable(true);
+
+	logTextP("Create folders", "/bootlog.txt");
 
     mkdir(rootPath, 777);
     mkdir(themesPath, 777);
@@ -529,10 +548,14 @@ int main(int argc, char *argv[])
     mkdir(defaultThemePath, 777);
     mkdir("/gridlauncher/screenshots/", 777);
 
+    logTextP("APT Set CPU time limit", "/bootlog.txt");
+
 	// offset potential issues caused by homebrew that just ran
 	aptOpenSession();
 	APT_SetAppCpuTimeLimit(0);
 	aptCloseSession();
+
+    logTextP("? Randomise theme", "/bootlog.txt");
 
     // Moved this here as rand() is used for choosing a random theme
     srand(svcGetSystemTick());
@@ -543,11 +566,15 @@ int main(int argc, char *argv[])
         randomiseTheme();
     }
 
+    logTextP("Init background, menu and title browser", "/bootlog.txt");
+
     initBackground();
     //	initErrors();
 
 	initMenu(&menu);
 	initTitleBrowser(&titleBrowser, NULL);
+
+    logTextP("Scan HB directory", "/bootlog.txt");
 
 	u8 sdmcPrevious = 0;
 	FSUSER_IsSdmcDetected(&sdmcCurrent);
@@ -562,7 +589,10 @@ int main(int argc, char *argv[])
 
     gamecardWasIn = regionFreeGamecardIn;
 
+    logTextP("Init theme images", "/bootlog.txt");
     initThemeImages();
+
+    logTextP("Init theme sounds", "/bootlog.txt");
 
 	if(!randomTheme) {
 		initThemeSounds();
@@ -575,6 +605,8 @@ int main(int argc, char *argv[])
     int delayMs = 0;
     unsigned long long int delayNs = 0;
 
+    logTextP("Log launcher info", "/bootlog.txt");
+
     char * glInfo = (char*)malloc(1024);
 
     if (argc > 0) {
@@ -586,6 +618,10 @@ int main(int argc, char *argv[])
 
     logTextP(glInfo, "/gridlauncher/glinfo.txt");
     free(glInfo);
+
+    startBGM();
+
+    logTextP("Enter main loop", "/bootlog.txt");
 
 	while(aptMainLoop()) {
         if (die) {

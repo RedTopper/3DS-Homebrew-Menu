@@ -98,11 +98,6 @@ void loadThemeSoundOrDefault(char * filename, themeSound * aThemeSound, int chan
 }
 
 void initThemeSounds() {
-    logTextP("Stop audio", "/bootlog.txt");
-	audio_stop();
-	logTextP("Again", "/bootlog.txt");
-	audio_stop();
-
     logTextP("Load BGM", "/bootlog.txt");
     loadThemeSoundOrDefault("BGM.bin", &themeSoundBGM, 8);
     logTextP("Load move sound", "/bootlog.txt");

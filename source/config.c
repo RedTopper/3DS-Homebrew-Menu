@@ -75,6 +75,8 @@ void setTheme(char * themeName) {
     initThemeImages();
     loadSplashImages();
 
+    audio_stop();
+
 	//Load BGM
     initThemeSounds();
 

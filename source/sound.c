@@ -66,13 +66,20 @@ void audioFree(themeSound * aThemeSound) {
 
 void audio_stop(void){
 	csndExecCmds(true);
+
 	CSND_SetPlayState(0x8, 0);
+	CSND_SetPlayState(0x9, 0);
+	CSND_SetPlayState(0x10, 0);
+
+	csndExecCmds(true);
 
     audioFree(&themeSoundBGM);
     audioFree(&themeSoundMove);
     audioFree(&themeSoundSelect);
     audioFree(&themeSoundBoot);
     audioFree(&themeSoundBack);
+
+    csndExecCmds(true);
 }
 
 char* concat(char *s1, char *s2)

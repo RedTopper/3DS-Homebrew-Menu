@@ -43,6 +43,7 @@ u8 batteryLevel = 5;
 u8 charging = 0;
 
 bool die = false;
+bool dieImmediately = false;
 bool showRebootMenu = false;
 bool startRebootProcess = false;
 
@@ -101,13 +102,20 @@ void shutdown3DS()
     svcCloseHandle(ptmSysmHandle);
 }
 
+void delayBoot() {
+    int sTime = osGetTime();
+    int eTime = osGetTime();
+    while (eTime-sTime < 3000) {
+        eTime = osGetTime();
+    }
+}
+
 void launchSVDTFromTitleMenu() {
     menuEntry_s* me = getMenuEntry(&titleMenu, titleMenu.selectedEntry);
 
     if (me) {
         if (me->title_id) {
             if (me->title_id > 0) {
-
                 titleInfo_s* ret = NULL;
                 ret = getTitleWithID(&titleBrowser, me->title_id);
                 targetProcessId = -2;
@@ -148,7 +156,9 @@ void launchTitleFromMenu(menu_s* m) {
 
                 if (ret) {
                     exitServices();
+                    delayBoot();
                     regionFreeRun2(ret->title_id & 0xffffffff, (ret->title_id >> 32) & 0xffffffff, ret->mediatype, 0x1);
+                    dieImmediately = true;
                 }
             }
         }
@@ -636,7 +646,7 @@ int main(int argc, char *argv[])
     logTextP("Enter main loop", "/bootlog.txt");
 
 	while(aptMainLoop()) {
-        if (die) {
+        if (die || dieImmediately) {
             break;
         }
 
@@ -919,6 +929,10 @@ int main(int argc, char *argv[])
         svcSleepThread(delayNs);
 	}
 
+    if (dieImmediately) {
+        return 0;
+    }
+
     menuEntry_s* me;
 
 	if(netloader_boot)
@@ -953,6 +967,8 @@ int main(int argc, char *argv[])
     }
 
     exitServices();
+
+    delayBoot();
 
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
         return regionFreeRun();

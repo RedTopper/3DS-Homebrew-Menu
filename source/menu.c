@@ -1331,7 +1331,7 @@ void setPositionsToCurrentMenuSelection(menu_s* m) {
 }
 
 void checkWaitForLaunchSoundToEnd(menu_s* m) {
-    if (themeSoundSelect.loaded && m == &menu || m == &titleMenu) {
+    if (themeSoundSelect.loaded && (m == &menu || m == &titleMenu)) {
         waitForDurationOfSound(&themeSoundSelect, osGetTime());
     }
 }

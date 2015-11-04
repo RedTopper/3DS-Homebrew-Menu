@@ -427,6 +427,7 @@ void initMenu(menu_s* m)
     randomiseThemeOnWake = getConfigBoolForKey("randomiseThemeOnWake", false, configTypeMain);
     animatedGrids = getConfigBoolForKey("animatedGrids", true, configTypeMain);
     show3DSFolder = getConfigBoolForKey("show3DSFolder", true, configTypeMain);
+    preloadTitles = getConfigBoolForKey("preloadTitles", true, configTypeMain);
 
     loadThemeConfig();
 

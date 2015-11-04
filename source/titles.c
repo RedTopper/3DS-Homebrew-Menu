@@ -556,8 +556,6 @@ void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char *
     forceHideRegionFreeWhenLoading = forceHideRegionFree;
     populateFilterTicksWhenLoading = setFilterTicks;
 
-    preloadTitles = getConfigBoolForKey("preloadTitles", true, configTypeMain);
-
     if (aTitleMenu->numEntries > 0) {
         gotoFirstIcon(aTitleMenu);
     }

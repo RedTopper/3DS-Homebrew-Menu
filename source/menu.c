@@ -1329,6 +1329,12 @@ void setPositionsToCurrentMenuSelection(menu_s* m) {
     m->colPosition = me->col;
 }
 
+void checkWaitForLaunchSoundToEnd(menu_s* m) {
+    if (themeSoundSelect.loaded && m == &menu || m == &titleMenu) {
+        waitForDurationOfSound(&themeSoundSelect, osGetTime());
+    }
+}
+
 bool updateGrid(menu_s* m) {
     if (transitionFromPage > -1) {
         return false;
@@ -1541,6 +1547,7 @@ bool updateGrid(menu_s* m) {
 
             if(m->selectedEntry==i) {
                 audioPlay(&themeSoundSelect, false);
+                checkWaitForLaunchSoundToEnd(m);
                 return true;
             }
 
@@ -1607,6 +1614,7 @@ bool updateGrid(menu_s* m) {
         }
 
         audioPlay(&themeSoundSelect, false);
+        checkWaitForLaunchSoundToEnd(m);
         return true;
     }
 

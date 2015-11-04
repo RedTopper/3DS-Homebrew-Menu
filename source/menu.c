@@ -1609,6 +1609,11 @@ bool updateGrid(menu_s* m) {
 
         hidScanInput();
 
+        if (m->rowPosition == -1) {
+            handleDPadToolbarActions(m);
+            return false;
+        }
+
         if (m->numEntries == 0) {
             return false;
         }

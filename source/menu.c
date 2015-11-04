@@ -1597,14 +1597,6 @@ bool updateGrid(menu_s* m) {
     if(m->selectedEntry!=oldEntry)m->atEquilibrium=false;
 
     if(hidKeysDown()&KEY_A) {
-        if (m->numEntries == 0) {
-            return false;
-        }
-
-        if (m->numEntries == 1 && menuStatus == menuStatusIcons && !showRegionFree) {
-            return false;
-        }
-
         /*
          We're about to launch a title from the A button
 
@@ -1616,8 +1608,11 @@ bool updateGrid(menu_s* m) {
 
         hidScanInput();
 
-        if (m->rowPosition == -1) {
-            handleDPadToolbarActions(m);
+        if (m->numEntries == 0) {
+            return false;
+        }
+
+        if (m->numEntries == 1 && menuStatus == menuStatusIcons) {
             return false;
         }
 

@@ -18,23 +18,23 @@ void logTextP(char *text, char const * path) {
 
     /*
     FILE* fLoad = fopen( LOG_PATH, "r" );
-    
+
     if (fLoad != NULL) {
         fseek(fLoad, 0L, SEEK_END);
         int currentSize = ftell(fLoad);
         fseek(fLoad, 0L, SEEK_SET);
-        
+
         char currentLog[currentSize];
         fgets(currentLog, currentSize, fLoad);
-        
+
         int newSize = sizeof(text);
         char newLog[currentSize + newSize + 2];
-        
+
         strcpy(newLog, currentLog);
 //        strcat(newLog, currentLog);
         strcat(newLog, "\n");
         strcat(newLog, text);
-        
+
         fclose(fLoad);
         write(newLog);
     }

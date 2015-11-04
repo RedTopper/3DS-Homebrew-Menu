@@ -679,21 +679,6 @@ char* XMLDocument::Identify( char* p, XMLNode** node )
     return p;
 }
 
-/*
-bool XMLDocument::Accept( XMLVisitor* visitor ) const
-{
-    TIXMLASSERT( visitor );
-    if ( visitor->VisitEnter( *this ) ) {
-        for ( const XMLNode* node=FirstChild(); node; node=node->NextSibling() ) {
-            if ( !node->Accept( visitor ) ) {
-                break;
-            }
-        }
-    }
-    return visitor->VisitExit( *this );
-}
-*/
-
 
 // --------- XMLNode ----------- //
 
@@ -798,69 +783,6 @@ XMLNode* XMLNode::InsertEndChild( XMLNode* addThis )
     return addThis;
 }
 
-/*
-XMLNode* XMLNode::InsertFirstChild( XMLNode* addThis )
-{
-    TIXMLASSERT( addThis );
-    if ( addThis->_document != _document ) {
-        TIXMLASSERT( false );
-        return 0;
-    }
-    InsertChildPreamble( addThis );
-
-    if ( _firstChild ) {
-        TIXMLASSERT( _lastChild );
-        TIXMLASSERT( _firstChild->_prev == 0 );
-
-        _firstChild->_prev = addThis;
-        addThis->_next = _firstChild;
-        _firstChild = addThis;
-
-        addThis->_prev = 0;
-    }
-    else {
-        TIXMLASSERT( _lastChild == 0 );
-        _firstChild = _lastChild = addThis;
-
-        addThis->_prev = 0;
-        addThis->_next = 0;
-    }
-    addThis->_parent = this;
-    return addThis;
-}
-*/
-
-/*
-XMLNode* XMLNode::InsertAfterChild( XMLNode* afterThis, XMLNode* addThis )
-{
-    TIXMLASSERT( addThis );
-    if ( addThis->_document != _document ) {
-        TIXMLASSERT( false );
-        return 0;
-    }
-
-    TIXMLASSERT( afterThis );
-
-    if ( afterThis->_parent != this ) {
-        TIXMLASSERT( false );
-        return 0;
-    }
-
-    if ( afterThis->_next == 0 ) {
-        // The last node or the only node.
-        return InsertEndChild( addThis );
-    }
-    InsertChildPreamble( addThis );
-    addThis->_prev = afterThis;
-    addThis->_next = afterThis->_next;
-    afterThis->_next->_prev = addThis;
-    afterThis->_next = addThis;
-    addThis->_parent = this;
-    return addThis;
-}
-
-*/
-
 
 const XMLElement* XMLNode::FirstChildElement( const char* name ) const
 {
@@ -875,21 +797,6 @@ const XMLElement* XMLNode::FirstChildElement( const char* name ) const
     return 0;
 }
 
-/*
-const XMLElement* XMLNode::LastChildElement( const char* name ) const
-{
-    for( const XMLNode* node = _lastChild; node; node = node->_prev ) {
-        const XMLElement* element = node->ToElement();
-        if ( element ) {
-            if ( !name || XMLUtil::StringEqual( element->Name(), name ) ) {
-                return element;
-            }
-        }
-    }
-    return 0;
-}
-*/
-
 const XMLElement* XMLNode::NextSiblingElement( const char* name ) const
 {
     for( const XMLNode* node = _next; node; node = node->_next ) {
@@ -901,20 +808,6 @@ const XMLElement* XMLNode::NextSiblingElement( const char* name ) const
     }
     return 0;
 }
-
-/*
-const XMLElement* XMLNode::PreviousSiblingElement( const char* name ) const
-{
-    for( const XMLNode* node = _prev; node; node = node->_prev ) {
-        const XMLElement* element = node->ToElement();
-        if ( element
-                && (!name || XMLUtil::StringEqual( name, element->Name() ))) {
-            return element;
-        }
-    }
-    return 0;
-}
-*/
 
 char* XMLNode::ParseDeep( char* p, StrPair* parentEnd )
 {
@@ -1052,22 +945,6 @@ char* XMLText::ParseDeep( char* p, StrPair* )
     return 0;
 }
 
-/*
-bool XMLText::ShallowEqual( const XMLNode* compare ) const
-{
-    const XMLText* text = compare->ToText();
-    return ( text && XMLUtil::StringEqual( text->Value(), Value() ) );
-}
-*/
-
-/*
-bool XMLText::Accept( XMLVisitor* visitor ) const
-{
-    TIXMLASSERT( visitor );
-    return visitor->Visit( *this );
-}
-*/
-
 // --------- XMLComment ---------- //
 
 XMLComment::XMLComment( XMLDocument* doc ) : XMLNode( doc )
@@ -1090,24 +967,6 @@ char* XMLComment::ParseDeep( char* p, StrPair* )
     }
     return p;
 }
-
-/*
-bool XMLComment::ShallowEqual( const XMLNode* compare ) const
-{
-    TIXMLASSERT( compare );
-    const XMLComment* comment = compare->ToComment();
-    return ( comment && XMLUtil::StringEqual( comment->Value(), Value() ));
-}
-*/
-
-/*
-bool XMLComment::Accept( XMLVisitor* visitor ) const
-{
-    TIXMLASSERT( visitor );
-    return visitor->Visit( *this );
-}
-*/
-
 
 // --------- XMLDeclaration ---------- //
 
@@ -1133,23 +992,6 @@ char* XMLDeclaration::ParseDeep( char* p, StrPair* )
     return p;
 }
 
-/*
-bool XMLDeclaration::ShallowEqual( const XMLNode* compare ) const
-{
-    TIXMLASSERT( compare );
-    const XMLDeclaration* declaration = compare->ToDeclaration();
-    return ( declaration && XMLUtil::StringEqual( declaration->Value(), Value() ));
-}
-*/
-
-/*
-bool XMLDeclaration::Accept( XMLVisitor* visitor ) const
-{
-    TIXMLASSERT( visitor );
-    return visitor->Visit( *this );
-}
-*/
-
 // --------- XMLUnknown ---------- //
 
 XMLUnknown::XMLUnknown( XMLDocument* doc ) : XMLNode( doc )
@@ -1173,23 +1015,6 @@ char* XMLUnknown::ParseDeep( char* p, StrPair* )
     }
     return p;
 }
-
-/*
-bool XMLUnknown::ShallowEqual( const XMLNode* compare ) const
-{
-    TIXMLASSERT( compare );
-    const XMLUnknown* unknown = compare->ToUnknown();
-    return ( unknown && XMLUtil::StringEqual( unknown->Value(), Value() ));
-}
-*/
-
-/*
-bool XMLUnknown::Accept( XMLVisitor* visitor ) const
-{
-    TIXMLASSERT( visitor );
-    return visitor->Visit( *this );
-}
-*/
 
 // --------- XMLAttribute ---------- //
 
@@ -1272,13 +1097,13 @@ XMLError XMLAttribute::QueryFloatValue( float* value ) const
 }
 
 
-XMLError XMLAttribute::QueryDoubleValue( double* value ) const
-{
-    if ( XMLUtil::ToDouble( Value(), value )) {
-        return XML_NO_ERROR;
-    }
-    return XML_WRONG_ATTRIBUTE_TYPE;
-}
+//XMLError XMLAttribute::QueryDoubleValue( double* value ) const
+//{
+//    if ( XMLUtil::ToDouble( Value(), value )) {
+//        return XML_NO_ERROR;
+//    }
+//    return XML_WRONG_ATTRIBUTE_TYPE;
+//}
 
 
 
@@ -1331,76 +1156,6 @@ const char* XMLElement::GetText() const
     }
     return 0;
 }
-
-/*
-XMLError XMLElement::QueryIntText( int* ival ) const
-{
-    if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->Value();
-        if ( XMLUtil::ToInt( t, ival ) ) {
-            return XML_SUCCESS;
-        }
-        return XML_CAN_NOT_CONVERT_TEXT;
-    }
-    return XML_NO_TEXT_NODE;
-}
-*/
-
-/*
-XMLError XMLElement::QueryUnsignedText( unsigned* uval ) const
-{
-    if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->Value();
-        if ( XMLUtil::ToUnsigned( t, uval ) ) {
-            return XML_SUCCESS;
-        }
-        return XML_CAN_NOT_CONVERT_TEXT;
-    }
-    return XML_NO_TEXT_NODE;
-}
-*/
-
-/*
-XMLError XMLElement::QueryBoolText( bool* bval ) const
-{
-    if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->Value();
-        if ( XMLUtil::ToBool( t, bval ) ) {
-            return XML_SUCCESS;
-        }
-        return XML_CAN_NOT_CONVERT_TEXT;
-    }
-    return XML_NO_TEXT_NODE;
-}
-*/
-
-/*
-XMLError XMLElement::QueryDoubleText( double* dval ) const
-{
-    if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->Value();
-        if ( XMLUtil::ToDouble( t, dval ) ) {
-            return XML_SUCCESS;
-        }
-        return XML_CAN_NOT_CONVERT_TEXT;
-    }
-    return XML_NO_TEXT_NODE;
-}
-*/
-
-/*
-XMLError XMLElement::QueryFloatText( float* fval ) const
-{
-    if ( FirstChild() && FirstChild()->ToText() ) {
-        const char* t = FirstChild()->Value();
-        if ( XMLUtil::ToFloat( t, fval ) ) {
-            return XML_SUCCESS;
-        }
-        return XML_CAN_NOT_CONVERT_TEXT;
-    }
-    return XML_NO_TEXT_NODE;
-}
-*/
 
 
 XMLAttribute* XMLElement::FindOrCreateAttribute( const char* name )
@@ -1547,48 +1302,6 @@ char* XMLElement::ParseDeep( char* p, StrPair* strPair )
     p = XMLNode::ParseDeep( p, strPair );
     return p;
 }
-
-/*
-bool XMLElement::ShallowEqual( const XMLNode* compare ) const
-{
-    TIXMLASSERT( compare );
-    const XMLElement* other = compare->ToElement();
-    if ( other && XMLUtil::StringEqual( other->Name(), Name() )) {
-
-        const XMLAttribute* a=FirstAttribute();
-        const XMLAttribute* b=other->FirstAttribute();
-
-        while ( a && b ) {
-            if ( !XMLUtil::StringEqual( a->Value(), b->Value() ) ) {
-                return false;
-            }
-            a = a->Next();
-            b = b->Next();
-        }
-        if ( a || b ) {
-            // different count
-            return false;
-        }
-        return true;
-    }
-    return false;
-}
-*/
-
-/*
-bool XMLElement::Accept( XMLVisitor* visitor ) const
-{
-    TIXMLASSERT( visitor );
-    if ( visitor->VisitEnter( *this, _rootAttribute ) ) {
-        for ( const XMLNode* node=FirstChild(); node; node=node->NextSibling() ) {
-            if ( !node->Accept( visitor ) ) {
-                break;
-            }
-        }
-    }
-    return visitor->VisitExit( *this );
-}
-*/
 
 
 // --------- XMLDocument ----------- //

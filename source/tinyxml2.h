@@ -1081,11 +1081,11 @@ public:
         return b;
     }
     /// Query as a double. See IntValue()
-    double 	 DoubleValue() const			{
-        double d=0;
-        QueryDoubleValue( &d );
-        return d;
-    }
+//    double 	 DoubleValue() const			{
+//        double d=0;
+//        QueryDoubleValue( &d );
+//        return d;
+//    }
     /// Query as a float. See IntValue()
     float	 FloatValue() const				{
         float f=0;
@@ -1103,7 +1103,7 @@ public:
     /// See QueryIntValue
     XMLError QueryBoolValue( bool* value ) const;
     /// See QueryIntValue
-    XMLError QueryDoubleValue( double* value ) const;
+//    XMLError QueryDoubleValue( double* value ) const;
     /// See QueryIntValue
     XMLError QueryFloatValue( float* value ) const;
 
@@ -1198,11 +1198,11 @@ public:
         return b;
     }
     /// See IntAttribute()
-    double 	 DoubleAttribute( const char* name ) const	{
-        double d=0;
-        QueryDoubleAttribute( name, &d );
-        return d;
-    }
+//    double 	 DoubleAttribute( const char* name ) const	{
+//        double d=0;
+//        QueryDoubleAttribute( name, &d );
+//        return d;
+//    }
     /// See IntAttribute()
     float	 FloatAttribute( const char* name ) const	{
         float f=0;
@@ -1247,13 +1247,13 @@ public:
         return a->QueryBoolValue( value );
     }
     /// See QueryIntAttribute()
-    XMLError QueryDoubleAttribute( const char* name, double* value ) const			{
-        const XMLAttribute* a = FindAttribute( name );
-        if ( !a ) {
-            return XML_NO_ATTRIBUTE;
-        }
-        return a->QueryDoubleValue( value );
-    }
+//    XMLError QueryDoubleAttribute( const char* name, double* value ) const			{
+//        const XMLAttribute* a = FindAttribute( name );
+//        if ( !a ) {
+//            return XML_NO_ATTRIBUTE;
+//        }
+//        return a->QueryDoubleValue( value );
+//    }
     /// See QueryIntAttribute()
     XMLError QueryFloatAttribute( const char* name, float* value ) const			{
         const XMLAttribute* a = FindAttribute( name );
@@ -1293,9 +1293,9 @@ public:
 		return QueryBoolAttribute( name, value );
 	}
 
-	int QueryAttribute( const char* name, double* value ) const {
-		return QueryDoubleAttribute( name, value );
-	}
+//	int QueryAttribute( const char* name, double* value ) const {
+//		return QueryDoubleAttribute( name, value );
+//	}
 
 	int QueryAttribute( const char* name, float* value ) const {
 		return QueryFloatAttribute( name, value );

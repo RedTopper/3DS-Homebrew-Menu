@@ -98,6 +98,7 @@ void loadThemeSoundOrDefault(char * filename, themeSound * aThemeSound, int chan
 }
 
 void initThemeSounds() {
+    //logTextP("S1", "/err.txt");
 	audio_stop();
 	audio_stop();
 

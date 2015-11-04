@@ -20,3 +20,4 @@ void initThemeSounds();
 void audioPlay(themeSound * aThemeSound, bool loop);
 void playBootSound();
 void startBGM();
+void waitForDurationOfSound(themeSound * aThemeSound, int startMs);

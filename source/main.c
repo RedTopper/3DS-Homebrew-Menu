@@ -632,14 +632,7 @@ int main(int argc, char *argv[])
     logTextP(glInfo, "/gridlauncher/glinfo.txt");
     free(glInfo);
 
-    if (themeSoundBoot.loaded) {
-        int durationMs = themeSoundBoot.duration * 1000;
-
-        endMs = osGetTime();
-        while (endMs - startMs < durationMs) {
-            endMs = osGetTime();
-        }
-    }
+    waitForDurationOfSound(&themeSoundBoot, startMs);
 
     startBGM();
 

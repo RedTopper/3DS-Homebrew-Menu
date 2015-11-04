@@ -131,3 +131,14 @@ void playBootSound() {
 	loadThemeSoundOrDefault("bootsound.bin", &themeSoundBoot, 10);
 	audioPlay(&themeSoundBoot, false);
 }
+
+void waitForDurationOfSound(themeSound * aThemeSound, int startMs) {
+    if (aThemeSound->loaded) {
+        int durationMs = aThemeSound->duration * 1000;
+        int endMs = osGetTime();
+
+        while (endMs - startMs < durationMs) {
+            endMs = osGetTime();
+        }
+    }
+}

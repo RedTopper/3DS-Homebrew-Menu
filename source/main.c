@@ -525,7 +525,14 @@ int main(int argc, char *argv[])
 
     logTextP("Play boot sound", "/bootlog.txt");
 
+    int startMs = 0;
+    int endMs = 0;
+    int delayMs = 0;
+    unsigned long long int delayNs = 0;
+
 	playBootSound();
+
+	startMs = osGetTime();
 
     logTextP("Init services", "/bootlog.txt");
 
@@ -600,10 +607,6 @@ int main(int argc, char *argv[])
 
     int frameRate = 60;
     int frameMs = 1000 / frameRate;
-    int startMs = 0;
-    int endMs = 0;
-    int delayMs = 0;
-    unsigned long long int delayNs = 0;
 
     logTextP("Log launcher info", "/bootlog.txt");
 
@@ -618,6 +621,15 @@ int main(int argc, char *argv[])
 
     logTextP(glInfo, "/gridlauncher/glinfo.txt");
     free(glInfo);
+
+    if (themeSoundBoot.loaded) {
+        int durationMs = themeSoundBoot.duration * 1000;
+
+        endMs = osGetTime();
+        while (endMs - startMs < durationMs) {
+            endMs = osGetTime();
+        }
+    }
 
     startBGM();
 

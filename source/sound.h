@@ -6,6 +6,7 @@ typedef struct themeSound {
     u32 sndsize;
     int channel;
     bool loaded;
+    int duration;
 } themeSound;
 
 extern themeSound themeSoundBGM;

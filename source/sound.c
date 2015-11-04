@@ -34,6 +34,13 @@ void audio_load(const char *audio, themeSound * aThemeSound){
 	else {
         aThemeSound->loaded = false;
 	}
+
+	if (aThemeSound->loaded) {
+        aThemeSound->duration = aThemeSound->sndsize / 88244;
+	}
+	else {
+        aThemeSound->duration = 0;
+	}
 }
 
 void audioPlay(themeSound * aThemeSound, bool loop) {

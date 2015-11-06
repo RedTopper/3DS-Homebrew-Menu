@@ -39,6 +39,7 @@ bool statusbarNeedsUpdate = true;
 
 u64 lastTimeInSeconds = 0; //Used for calculating if the lid has been shut.
 
+/*
 void randomiseThemeToolbar() { //No different then main.c's
     buildThemesList();
     int minimum_number = 2;
@@ -47,6 +48,7 @@ void randomiseThemeToolbar() { //No different then main.c's
     menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
     setTheme(randomEntry->executablePath);
 }
+*/
 
 void drawStatusBar(bool wifiStatus, bool charging, int batteryLevel)
 {
@@ -67,7 +69,7 @@ void drawStatusBar(bool wifiStatus, bool charging, int batteryLevel)
 		randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
 
 		if (randomTheme && randomiseThemeOnWake) {
-			randomiseThemeToolbar();
+			randomiseTheme();
 		}
 	}
 	lastTimeInSeconds = timeInSeconds;

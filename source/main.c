@@ -488,12 +488,7 @@ int main(int argc, char *argv[])
     openSDArchive();
 
 	Result r = csndInit();//start Audio Lib
-	if (r != 0) {
-        setAudioActive(false);
-	}
-	else {
-        setAudioActive(true);
-	}
+	audioActive = (r == 0);
 
 	// Moved this here as rand() is used for choosing a random theme
     srand(svcGetSystemTick());
@@ -505,6 +500,7 @@ int main(int argc, char *argv[])
     }
     else {
         audio_stop();
+        playBootSound();
         loadSplashImages();
 
         if (themeImageExists(themeImageSplashTop)) {
@@ -518,10 +514,7 @@ int main(int argc, char *argv[])
         gfxFlip();
 
         initThemeImages();
-        playBootSound();
-        waitForDurationOfSound(&themeSoundBoot, startMs);
         initThemeSounds();
-        startBGM();
         initColours();
     }
 
@@ -603,7 +596,9 @@ int main(int argc, char *argv[])
     logTextP(glInfo, "/gridlauncher/glinfo.txt");
     free(glInfo);
 
+    waitForDurationOfSound(&themeSoundBoot, startMs);
 
+    startBGM();
 
     logTextP("Enter main loop", "/bootlog.txt");
 

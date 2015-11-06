@@ -10,12 +10,14 @@ themeSound themeSoundSelect;
 themeSound themeSoundBack;
 themeSound themeSoundBoot;
 
+bool audioActive;
+
 #include "logText.h"
 
 void audio_load(const char *audio, themeSound * aThemeSound){
 
 	FILE *file = fopen(audio, "rb");
-	if(file != NULL){
+	if(file != NULL && audioActive){
 		fseek(file, 0, SEEK_END);
 		aThemeSound->sndsize = ftell(file);
 		fseek(file, 0, SEEK_SET);
@@ -44,7 +46,7 @@ void audio_load(const char *audio, themeSound * aThemeSound){
 }
 
 void audioPlay(themeSound * aThemeSound, bool loop) {
-   if (aThemeSound->loaded) {
+   if (aThemeSound->loaded && audioActive) {
     u32 flags;
 
     if (loop) {
@@ -59,27 +61,31 @@ void audioPlay(themeSound * aThemeSound, bool loop) {
 }
 
 void audioFree(themeSound * aThemeSound) {
-    memset(aThemeSound->sndbuffer, 0, aThemeSound->sndsize);
-	GSPGPU_FlushDataCache(aThemeSound->sndbuffer, aThemeSound->sndsize);
-	linearFree(aThemeSound->sndbuffer);
+    if (audioActive) {
+        memset(aThemeSound->sndbuffer, 0, aThemeSound->sndsize);
+        GSPGPU_FlushDataCache(aThemeSound->sndbuffer, aThemeSound->sndsize);
+        linearFree(aThemeSound->sndbuffer);
+    }
 }
 
 void audio_stop(void){
-	csndExecCmds(true);
+    if (audioActive) {
+        csndExecCmds(true);
 
-	CSND_SetPlayState(0x8, 0);
-	CSND_SetPlayState(0x9, 0);
-	CSND_SetPlayState(0x10, 0);
+        CSND_SetPlayState(0x8, 0);
+        CSND_SetPlayState(0x9, 0);
+        CSND_SetPlayState(0x10, 0);
 
-	csndExecCmds(true);
+        csndExecCmds(true);
 
-    audioFree(&themeSoundBGM);
-    audioFree(&themeSoundMove);
-    audioFree(&themeSoundSelect);
-    audioFree(&themeSoundBoot);
-    audioFree(&themeSoundBack);
+        audioFree(&themeSoundBGM);
+        audioFree(&themeSoundMove);
+        audioFree(&themeSoundSelect);
+        audioFree(&themeSoundBoot);
+        audioFree(&themeSoundBack);
 
-    csndExecCmds(true);
+        csndExecCmds(true);
+    }
 }
 
 char* concat(char *s1, char *s2)
@@ -112,24 +118,30 @@ void loadThemeSoundOrDefault(char * filename, themeSound * aThemeSound, int chan
 }
 
 void initThemeSounds() {
-    logTextP("Load BGM", "/bootlog.txt");
-    loadThemeSoundOrDefault("BGM.bin", &themeSoundBGM, 8);
-    logTextP("Load move sound", "/bootlog.txt");
-    loadThemeSoundOrDefault("movesound.bin", &themeSoundMove, 9);
-    logTextP("Load select sound", "/bootlog.txt");
-    loadThemeSoundOrDefault("selectsound.bin", &themeSoundSelect, 10);
-    logTextP("Load back sound", "/bootlog.txt");
-    loadThemeSoundOrDefault("backsound.bin", &themeSoundBack, 10);
+    if (audioActive) {
+        logTextP("Load BGM", "/bootlog.txt");
+        loadThemeSoundOrDefault("BGM.bin", &themeSoundBGM, 8);
+        logTextP("Load move sound", "/bootlog.txt");
+        loadThemeSoundOrDefault("movesound.bin", &themeSoundMove, 9);
+        logTextP("Load select sound", "/bootlog.txt");
+        loadThemeSoundOrDefault("selectsound.bin", &themeSoundSelect, 10);
+        logTextP("Load back sound", "/bootlog.txt");
+        loadThemeSoundOrDefault("backsound.bin", &themeSoundBack, 10);
+    }
 }
 
 void startBGM() {
-    logTextP("Play music", "/bootlog.txt");
-	audioPlay(&themeSoundBGM, true);
+    if (audioActive) {
+        logTextP("Play music", "/bootlog.txt");
+        audioPlay(&themeSoundBGM, true);
+    }
 }
 
 void playBootSound() {
-	loadThemeSoundOrDefault("bootsound.bin", &themeSoundBoot, 10);
-	audioPlay(&themeSoundBoot, false);
+    if (audioActive) {
+        loadThemeSoundOrDefault("bootsound.bin", &themeSoundBoot, 10);
+        audioPlay(&themeSoundBoot, false);
+    }
 }
 
 void waitForDurationOfSound(themeSound * aThemeSound, int startMs) {

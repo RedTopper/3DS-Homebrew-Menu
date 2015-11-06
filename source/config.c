@@ -71,27 +71,12 @@ void setTheme(char * themeName) {
     //Reload theme variables for menu
     loadThemeConfig();
 
-    loadSplashImages();
-
-    if (themeImageExists(themeImageSplashTop)) {
-        drawThemeImage(themeImageSplashTop, GFX_TOP, 0, 0);
-    }
-    if (themeImageExists(themeImageSplashBottom)) {
-        drawThemeImage(themeImageSplashBottom, GFX_BOTTOM, 0, 0);
-    }
-
-    gfxFlip();
-
-    audio_stop();
-    audio_stop();
-
-    playBootSound();
-
     //Reload theme images
     initThemeImages();
+    loadSplashImages();
 
-
-
+    audio_stop();
+    audio_stop();
 
 	//Load BGM
     initThemeSounds();

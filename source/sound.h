@@ -15,6 +15,8 @@ extern themeSound themeSoundSelect;
 extern themeSound themeSoundBack;
 extern themeSound themeSoundBoot;
 
+extern bool audioActive;
+
 void audio_stop(void);
 void initThemeSounds();
 void audioPlay(themeSound * aThemeSound, bool loop);

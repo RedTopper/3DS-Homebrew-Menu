@@ -129,7 +129,6 @@ void launchSVDTFromTitleMenu() {
 void exitServices() {
     // cleanup whatever we have to cleanup
 	audio_stop();
-	audio_stop();
 	csndExit();
 
     freeThemeImages();
@@ -484,63 +483,53 @@ int main(int argc, char *argv[])
 	memset(framebuf_top, 0, 400 * 240 * 3); //clear the screen to black
 	memset(framebuf_bot, 0, 320 * 240 * 3); //ensures no graphical glitching shows.
 
-    logTextP("Init filesystem", "/bootlog.txt");
-
 	initFilesystem();
-
-/*
-	FILE *file = fopen("menuhax_imagedisplay.bin","rb"); //attempts to load image
-	u8* buffer;
-	if (file != NULL){
-		fseek(file,0,SEEK_END);
-		off_t size = ftell(file);
-		fseek(file,0,SEEK_SET);
-		buffer=malloc(size);
-		if(buffer){
-			off_t bytesRead = fread(buffer,1,size,file);
-			fclose(file);
-			if(size==bytesRead){
-				framebuf_top = gfxGetFramebuffer(GFX_TOP, GFX_LEFT, NULL, NULL);
-				framebuf_bot = gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL);
-				memcpy(framebuf_top, buffer, 240*400*3*2);
-				memset(framebuf_bot, 0, 320 * 240 * 3);
-				gfxFlushBuffers();
-				gfxSwapBuffers();
-			}
-		}
-	}
-*/
 
     openSDArchive();
 
-    logTextP("Load splash images", "/bootlog.txt");
+	Result r = csndInit();//start Audio Lib
+	if (r != 0) {
+        setAudioActive(false);
+	}
+	else {
+        setAudioActive(true);
+	}
 
-    loadSplashImages();
+	// Moved this here as rand() is used for choosing a random theme
+    srand(svcGetSystemTick());
 
-    logTextP("Draw splash images", "/bootlog.txt");
+    randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
 
-    if (themeImageExists(themeImageSplashTop)) {
-        drawThemeImage(themeImageSplashTop, GFX_TOP, 0, 0);
+    if (randomTheme) {
+        randomiseTheme();
+    }
+    else {
+        audio_stop();
+        loadSplashImages();
+
+        if (themeImageExists(themeImageSplashTop)) {
+            drawThemeImage(themeImageSplashTop, GFX_TOP, 0, 0);
+        }
+
+        if (themeImageExists(themeImageSplashBottom)) {
+            drawThemeImage(themeImageSplashBottom, GFX_BOTTOM, 0, 0);
+        }
+
+        gfxFlip();
+
+        initThemeImages();
+        playBootSound();
+        waitForDurationOfSound(&themeSoundBoot, startMs);
+        initThemeSounds();
+        startBGM();
+        initColours();
     }
 
-    if (themeImageExists(themeImageSplashBottom)) {
-        drawThemeImage(themeImageSplashBottom, GFX_BOTTOM, 0, 0);
-    }
-
-    gfxFlip();
-
-    logTextP("Init CSND", "/bootlog.txt");
-
-	csndInit();//start Audio Lib
-
-    logTextP("Play boot sound", "/bootlog.txt");
 
     int startMs = 0;
     int endMs = 0;
     int delayMs = 0;
     unsigned long long int delayNs = 0;
-
-	playBootSound();
 
 	startMs = osGetTime();
 
@@ -572,17 +561,6 @@ int main(int argc, char *argv[])
 	APT_SetAppCpuTimeLimit(0);
 	aptCloseSession();
 
-    logTextP("? Randomise theme", "/bootlog.txt");
-
-    // Moved this here as rand() is used for choosing a random theme
-    srand(svcGetSystemTick());
-
-    randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
-
-    if (randomTheme) {
-        randomiseTheme();
-    }
-
     logTextP("Init background, menu and title browser", "/bootlog.txt");
 
     initBackground();
@@ -606,14 +584,7 @@ int main(int argc, char *argv[])
 
     gamecardWasIn = regionFreeGamecardIn;
 
-    logTextP("Init theme images", "/bootlog.txt");
-    initThemeImages();
 
-    logTextP("Init theme sounds", "/bootlog.txt");
-
-	if(!randomTheme) {
-		initThemeSounds();
-	}
 
     int frameRate = 60;
     int frameMs = 1000 / frameRate;
@@ -632,9 +603,7 @@ int main(int argc, char *argv[])
     logTextP(glInfo, "/gridlauncher/glinfo.txt");
     free(glInfo);
 
-    waitForDurationOfSound(&themeSoundBoot, startMs);
 
-    startBGM();
 
     logTextP("Enter main loop", "/bootlog.txt");
 

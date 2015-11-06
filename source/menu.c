@@ -357,6 +357,8 @@ void loadThemeConfig() {
     translucencyAppShadow = getConfigIntForKey("translucencyAppShadow", 255, configTypeTheme);
 
     panelLeftOffsetTop = getConfigIntForKey("panelLeftOffsetTop", 0, configTypeTheme);
+
+    waitForSounds = getConfigBoolForKey("waitForSounds", true, configTypeTheme);
 }
 
 void initMenu(menu_s* m)
@@ -1159,6 +1161,8 @@ void quitSettings(menu_s* m) {
     setConfigInt("preloadTitles", preloadTitles, configTypeMain);
 
     setConfigInt("panelLeftOffsetTop", panelLeftOffsetTop, configTypeTheme);
+
+    setConfigBool("waitForSounds", waitForSounds, configTypeTheme);
 
     saveConfig();
 

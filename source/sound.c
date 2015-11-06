@@ -11,6 +11,7 @@ themeSound themeSoundBack;
 themeSound themeSoundBoot;
 
 bool audioActive;
+bool waitForSounds = true;
 
 #include "logText.h"
 

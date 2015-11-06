@@ -380,6 +380,8 @@ void initThemeSettingsMenu() {
     addSettingsMenuEntry("Theme", "Select which theme to use in the launcher", (u8*)settingsIconTheme_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusThemeSelect, NULL);
 
     addSettingsMenuEntry("Random theme on wake", "Randomizes the theme when the 3DS has been closed for an extended period of time.", (u8*)settingsIconRandomTheme_bin, &randomiseThemeOnWake, &themeSettingsMenu, &settingsToggleBool, &randomiseThemeOnWake, NULL);
+
+    addSettingsMenuEntry("Wait for sounds", "Wait until the boot sound has finished playing before showing the menu, and the select sound before starting an app", (u8*)settingsIconRandomTheme_bin, &waitForSounds, &themeSettingsMenu, &settingsToggleBool, &waitForSounds, NULL);
 }
 
 void settingsSetMenuStatus(int * status) {

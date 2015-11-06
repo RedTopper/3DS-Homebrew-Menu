@@ -16,6 +16,7 @@ extern themeSound themeSoundBack;
 extern themeSound themeSoundBoot;
 
 extern bool audioActive;
+extern bool waitForSounds;
 
 void audio_stop(void);
 void initThemeSounds();

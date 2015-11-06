@@ -62,6 +62,8 @@ bool themesLoaded = false;
 void loadConfigWithType(int configType);
 
 void setTheme(char * themeName) {
+    audio_stop();
+
     //Save the selected theme in main config
     setConfigString("currentTheme", themeName, configTypeMain);
 
@@ -71,17 +73,25 @@ void setTheme(char * themeName) {
     //Reload theme variables for menu
     loadThemeConfig();
 
-    //Reload theme images
-    initThemeImages();
     loadSplashImages();
 
-    audio_stop();
-    audio_stop();
+    if (themeImageExists(themeImageSplashTop)) {
+        drawThemeImage(themeImageSplashTop, GFX_TOP, 0, 0);
+    }
+    if (themeImageExists(themeImageSplashBottom)) {
+        drawThemeImage(themeImageSplashBottom, GFX_BOTTOM, 0, 0);
+    }
+
+    gfxFlip();
+
+    int startMs = osGetTime();
+    playBootSound();
+
+    //Reload theme images
+    initThemeImages();
 
 	//Load BGM
     initThemeSounds();
-
-    startBGM();
 
     //Re-initialise colours
     initColours();
@@ -90,6 +100,10 @@ void setTheme(char * themeName) {
     statusbarNeedsUpdate = true;
     toolbarNeedsUpdate = true;
     alphaImagesDrawn = false;
+
+    waitForDurationOfSound(&themeSoundBoot, startMs);
+
+    startBGM();
 }
 
 void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int folderPathLen) {

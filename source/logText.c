@@ -10,9 +10,9 @@
 //#include <vector>
 
 void logTextP(char *text, char const * path) {
-    FILE* fSave = fopen( path, "w" );
+    FILE* fSave = fopen( path, "a" );
     if (fSave != NULL) {
-        fputs(text, fSave);
+        fprintf(fSave, "%s\n", text);
     }
     fclose(fSave);
 

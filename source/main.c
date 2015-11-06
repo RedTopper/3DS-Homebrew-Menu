@@ -102,14 +102,6 @@ void shutdown3DS()
     svcCloseHandle(ptmSysmHandle);
 }
 
-void delayBoot() {
-    int sTime = osGetTime();
-    int eTime = osGetTime();
-    while (eTime-sTime < 3000) {
-        eTime = osGetTime();
-    }
-}
-
 void launchSVDTFromTitleMenu() {
     menuEntry_s* me = getMenuEntry(&titleMenu, titleMenu.selectedEntry);
 
@@ -155,7 +147,6 @@ void launchTitleFromMenu(menu_s* m) {
 
                 if (ret) {
                     exitServices();
-                    delayBoot();
                     regionFreeRun2(ret->title_id & 0xffffffff, (ret->title_id >> 32) & 0xffffffff, ret->mediatype, 0x1);
                     dieImmediately = true;
                 }
@@ -924,8 +915,6 @@ int main(int argc, char *argv[])
     }
 
     exitServices();
-
-    delayBoot();
 
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
         return regionFreeRun();

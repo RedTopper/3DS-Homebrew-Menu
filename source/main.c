@@ -457,7 +457,7 @@ void randomiseTheme() {
     setTheme(randomEntry->executablePath);
 }
 
-//#include <3ds/services/apt.h>
+#include "MAFontRobotoRegular.h"
 
 int main(int argc, char *argv[])
 {
@@ -481,17 +481,41 @@ int main(int argc, char *argv[])
 	Result r = csndInit();//start Audio Lib
 	audioActive = (r == 0);
 
+    int bootAttempts = getConfigIntForKey("bootAttempts", 0, configTypeMain);
+
+    if (!audioActive) {
+        if (bootAttempts < 5) {
+            bootAttempts++;
+            setConfigInt("bootAttempts", bootAttempts, configTypeMain);
+            saveConfigWithType(configTypeMain);
+
+            menuEntry_s* me = malloc(sizeof(menuEntry_s));
+            initMenuEntry(me, "/boot.3dsx", "launcher", "", "", NULL);
+            scanMenuEntry(me);
+            exitServices();
+            regionFreeExit();
+            return bootApp(me->executablePath, &me->descriptor.executableMetadata, me->arg);
+        }
+    }
+
+    if (bootAttempts > 0) {
+        setConfigInt("bootAttempts", 0, configTypeMain);
+        saveConfigWithType(configTypeMain);
+    }
+
 	// Moved this here as rand() is used for choosing a random theme
     srand(svcGetSystemTick());
 
     randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
+
+    int startMs = 0;
 
     if (randomTheme) {
         randomiseTheme();
     }
     else {
         audio_stop();
-        playBootSound();
+
         loadSplashImages();
 
         if (themeImageExists(themeImageSplashTop)) {
@@ -504,13 +528,16 @@ int main(int argc, char *argv[])
 
         gfxFlip();
 
+        startMs = osGetTime();
+        playBootSound();
+
         initThemeImages();
         initThemeSounds();
         initColours();
     }
 
 
-    int startMs = 0;
+
     int endMs = 0;
     int delayMs = 0;
     unsigned long long int delayNs = 0;
@@ -786,9 +813,10 @@ int main(int argc, char *argv[])
                         }
                     }
                     else {
+                        menuEntry_s* me = getMenuEntry(&themesMenu, themesMenu.selectedEntry);
+
                         if (me->showTick == NULL) {
                             randomTheme = false;
-                            menuEntry_s* me = getMenuEntry(&themesMenu, themesMenu.selectedEntry);
                             setTheme(me->executablePath);
                             char * currentThemeName = getConfigStringForKey("currentTheme", "Default", configTypeMain);
                             updateMenuTicks(&themesMenu, currentThemeName, true);

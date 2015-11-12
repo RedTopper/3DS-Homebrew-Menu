@@ -146,7 +146,8 @@ void playBootSound() {
 }
 
 void waitForDurationOfSound(themeSound * aThemeSound, int startMs) {
-    if (aThemeSound->loaded) {
+    if (waitForSounds && aThemeSound->loaded) {
+    logText("wait");
         int durationMs = aThemeSound->duration * 1000;
         int endMs = osGetTime();
 

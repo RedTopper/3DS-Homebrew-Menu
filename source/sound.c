@@ -149,7 +149,6 @@ void waitForDurationOfSound(themeSound * aThemeSound, int startMs) {
     if (waitForSounds && aThemeSound->loaded) {
     logText("wait");
         int durationMs = aThemeSound->duration * 1000;
-        durationMs += 1000;
         int endMs = osGetTime();
 
         while (endMs - startMs < durationMs) {

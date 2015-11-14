@@ -6,6 +6,7 @@
 #include "boot.h"
 #include "netloader.h"
 #include "filesystem.h"
+#include "sound.h"
 
 extern void (*__system_retAddr)(void);
 
@@ -58,6 +59,11 @@ bool isNinjhax2(void)
 
 int bootApp(char* executablePath, executableMetadata_s* em, char* arg)
 {
+    if (themeSoundSelect.loaded) {
+        int time = osGetTime();
+        waitForDurationOfSound(&themeSoundSelect, time);
+    }
+
 	// open file that we're going to boot up
 	fsInit();
 	FSUSER_OpenFileDirectly(&hbFileHandle, sdmcArchive, FS_makePath(PATH_CHAR, executablePath), FS_OPEN_READ, FS_ATTRIBUTE_NONE);
@@ -82,7 +88,7 @@ int bootApp(char* executablePath, executableMetadata_s* em, char* arg)
 		snprintf((char*)&argbuffer[1], 0x200*4 - 4, "sdmc:%s", executablePath);
 		argbuffer_length = strlen((char*)&argbuffer[1]) + 4 + 1; // don't forget null terminator !
 	// }
-    
+
     if(arg && *arg)
     {
         strcpy(&(((char*)argbuffer)[argbuffer_length]), arg);

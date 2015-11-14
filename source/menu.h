@@ -29,6 +29,7 @@ extern int menuStatusGridSettings;
 extern int menuStatusOpenTitleFiltering;
 extern int menuStatusTitleFiltering;
 extern int menuStatusSoftwareUpdate;
+extern int menuStatusHansMissingError;
 
 //Checked by main.c so that the menu can force the title browser to close
 extern bool killTitleBrowser;

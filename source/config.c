@@ -436,6 +436,15 @@ void startUpdate() {
     setMenuStatus(menuStatusSoftwareUpdate);
 }
 
+void toggleHansBoot() {
+    if (fileExists("/gridlauncher/hans/hans.3dsx", &sdmcArchive) && fileExists("/gridlauncher/hans/hans.xml", &sdmcArchive)) {
+        hansTitleBoot = !hansTitleBoot;
+    }
+    else {
+        setMenuStatus(menuStatusHansMissingError);
+    }
+}
+
 void initConfigMenu() {
     settingsMenuNeedsInit = false;
 
@@ -474,6 +483,8 @@ void initConfigMenu() {
 
         strcpy(updateEntry->author, "By ihaveamac on GBATemp");
     }
+
+    addSettingsMenuEntry("HANS title booting", "Boot titles using HANS rather than Region4", (u8*)helpIconIgnoredTitles_bin, &hansTitleBoot, &settingsMenu, &toggleHansBoot(), NULL, NULL);
 }
 
 void handleSettingsMenuSelection(menu_s *m) {

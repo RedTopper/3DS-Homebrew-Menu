@@ -67,6 +67,7 @@ int menuStatusGridSettings = 17;
 int menuStatusOpenTitleFiltering = 18;
 int menuStatusTitleFiltering = 19;
 int menuStatusSoftwareUpdate = 20;
+int menuStatusHansMissingError = 21;
 
 bool killTitleBrowser = false;
 //bool thirdRowVisible = false;

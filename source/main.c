@@ -342,6 +342,11 @@ void renderFrame()
                 drawPanelTranslucencyAdjust();
                 drawBottomStatusBar("Panel settings");
             }
+            else if (menuStatus == menuStatusHansMissingError) {
+                char buttonTitles[3][32];
+                strcpy(buttonTitles[0], "OK");
+                drawAlert("Hans isn't here...", "Please copy hans.3dsx and hans.xml in /gridlauncher/hans/ on your 3ds SD card.", NULL, 1, buttonTitles);
+            }
             else {
                 drawMenu(&menu);
             }

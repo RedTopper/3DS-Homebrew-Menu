@@ -8,6 +8,8 @@
 #include "filesystem.h"
 #include "sound.h"
 
+bool hansTitleBoot = false;
+
 extern void (*__system_retAddr)(void);
 
 static Handle hbFileHandle;

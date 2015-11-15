@@ -186,14 +186,14 @@ void renderFrame()
     gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
 
     //Wallpaper
-    if (themeImageExists(themeImageTopWallpaperInfo) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || showRebootMenu)) {
+    if (themeImageExists(themeImageTopWallpaperInfo) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || showRebootMenu)) {
         drawThemeImage(themeImageTopWallpaperInfo, GFX_TOP, 0, 0);
     }
     else if (themeImageExists(themeImageTopWallpaper)) {
         drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
     }
 
-    if (themeImageExists(themeImageBottomWallpaperNonGrid) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || showRebootMenu)) {
+    if (themeImageExists(themeImageBottomWallpaperNonGrid) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || showRebootMenu)) {
         drawThemeImage(themeImageBottomWallpaperNonGrid, GFX_BOTTOM, 0, 0);
     }
 
@@ -349,9 +349,13 @@ void renderFrame()
                 drawTranslucencyAdjust(GFX_BOTTOM);
                 drawBottomStatusBar("Bottom screen translucency");
             }
-            else if (menuStatus == menuStatusPanelSettings) {
-                drawPanelTranslucencyAdjust();
-                drawBottomStatusBar("Panel settings");
+            else if (menuStatus == menuStatusPanelSettingsTop) {
+                drawPanelTranslucencyAdjust(GFX_TOP);
+                drawBottomStatusBar("Top panel settings");
+            }
+            else if (menuStatus == menuStatusPanelSettingsBottom) {
+                drawPanelTranslucencyAdjust(GFX_BOTTOM);
+                drawBottomStatusBar("Bottom panel settings");
             }
             else if (menuStatus == menuStatusHansMissingError) {
                 char buttonTitles[3][32];
@@ -848,7 +852,7 @@ int main(int argc, char *argv[])
             else if (menuStatus == menuStatusHelp) {
                 updateHelp();
             }
-            else if (menuStatus == menuStatusColourAdjust || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom) {
+            else if (menuStatus == menuStatusColourAdjust || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom) {
                 handleNonGridToolbarNavigation();
             }
 

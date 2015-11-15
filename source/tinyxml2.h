@@ -580,18 +580,18 @@ public:
     static void ConvertUTF32ToUTF8( unsigned long input, char* output, int* length );
 
     // converts primitive types to strings
-    static void ToStr( int v, char* buffer, int bufferSize );
-    static void ToStr( unsigned v, char* buffer, int bufferSize );
-    static void ToStr( bool v, char* buffer, int bufferSize );
-    static void ToStr( float v, char* buffer, int bufferSize );
-    static void ToStr( double v, char* buffer, int bufferSize );
+//    static void ToStr( int v, char* buffer, int bufferSize );
+//    static void ToStr( unsigned v, char* buffer, int bufferSize );
+//    static void ToStr( bool v, char* buffer, int bufferSize );
+//    static void ToStr( float v, char* buffer, int bufferSize );
+//    static void ToStr( double v, char* buffer, int bufferSize );
 
     // converts strings to primitive types
     static bool	ToInt( const char* str, int* value );
-    static bool ToUnsigned( const char* str, unsigned* value );
+//    static bool ToUnsigned( const char* str, unsigned* value );
     static bool	ToBool( const char* str, bool* value );
-    static bool	ToFloat( const char* str, float* value );
-    static bool ToDouble( const char* str, double* value );
+//    static bool	ToFloat( const char* str, float* value );
+//    static bool ToDouble( const char* str, double* value );
 };
 
 
@@ -1081,11 +1081,11 @@ public:
         return i;
     }
     /// Query as an unsigned integer. See IntValue()
-    unsigned UnsignedValue() const			{
-        unsigned i=0;
-        QueryUnsignedValue( &i );
-        return i;
-    }
+//    unsigned UnsignedValue() const			{
+//        unsigned i=0;
+//        QueryUnsignedValue( &i );
+//        return i;
+//    }
     /// Query as a boolean. See IntValue()
     bool	 BoolValue() const				{
         bool b=false;
@@ -1093,17 +1093,19 @@ public:
         return b;
     }
     /// Query as a double. See IntValue()
+    /*
     double 	 DoubleValue() const			{
         double d=0;
         QueryDoubleValue( &d );
         return d;
     }
+    */
     /// Query as a float. See IntValue()
-    float	 FloatValue() const				{
-        float f=0;
-        QueryFloatValue( &f );
-        return f;
-    }
+//    float	 FloatValue() const				{
+//        float f=0;
+//        QueryFloatValue( &f );
+//        return f;
+//    }
 
     /** QueryIntValue interprets the attribute as an integer, and returns the value
     	in the provided parameter. The function will return XML_NO_ERROR on success,
@@ -1111,26 +1113,26 @@ public:
     */
     XMLError QueryIntValue( int* value ) const;
     /// See QueryIntValue
-    XMLError QueryUnsignedValue( unsigned int* value ) const;
+//    XMLError QueryUnsignedValue( unsigned int* value ) const;
     /// See QueryIntValue
     XMLError QueryBoolValue( bool* value ) const;
     /// See QueryIntValue
-    XMLError QueryDoubleValue( double* value ) const;
+    //XMLError QueryDoubleValue( double* value ) const;
     /// See QueryIntValue
-    XMLError QueryFloatValue( float* value ) const;
+//    XMLError QueryFloatValue( float* value ) const;
 
     /// Set the attribute to a string value.
-    void SetAttribute( const char* value );
-    /// Set the attribute to value.
-    void SetAttribute( int value );
-    /// Set the attribute to value.
-    void SetAttribute( unsigned value );
-    /// Set the attribute to value.
-    void SetAttribute( bool value );
-    /// Set the attribute to value.
-    void SetAttribute( double value );
-    /// Set the attribute to value.
-    void SetAttribute( float value );
+//    void SetAttribute( const char* value );
+//    /// Set the attribute to value.
+//    void SetAttribute( int value );
+//    /// Set the attribute to value.
+//    void SetAttribute( unsigned value );
+//    /// Set the attribute to value.
+//    void SetAttribute( bool value );
+//    /// Set the attribute to value.
+//    void SetAttribute( double value );
+//    /// Set the attribute to value.
+//    void SetAttribute( float value );
 
 private:
     enum { BUF_SIZE = 200 };
@@ -1215,11 +1217,11 @@ public:
         return i;
     }
     /// See IntAttribute()
-    unsigned UnsignedAttribute( const char* name ) const {
-        unsigned i=0;
-        QueryUnsignedAttribute( name, &i );
-        return i;
-    }
+//    unsigned UnsignedAttribute( const char* name ) const {
+//        unsigned i=0;
+//        QueryUnsignedAttribute( name, &i );
+//        return i;
+//    }
     /// See IntAttribute()
     bool	 BoolAttribute( const char* name ) const	{
         bool b=false;
@@ -1227,17 +1229,21 @@ public:
         return b;
     }
     /// See IntAttribute()
+    /*
     double 	 DoubleAttribute( const char* name ) const	{
         double d=0;
         QueryDoubleAttribute( name, &d );
         return d;
     }
+    */
     /// See IntAttribute()
+    /*
     float	 FloatAttribute( const char* name ) const	{
         float f=0;
         QueryFloatAttribute( name, &f );
         return f;
     }
+    */
 
     /** Given an attribute name, QueryIntAttribute() returns
     	XML_NO_ERROR, XML_WRONG_ATTRIBUTE_TYPE if the conversion
@@ -1260,13 +1266,13 @@ public:
         return a->QueryIntValue( value );
     }
     /// See QueryIntAttribute()
-    XMLError QueryUnsignedAttribute( const char* name, unsigned int* value ) const	{
-        const XMLAttribute* a = FindAttribute( name );
-        if ( !a ) {
-            return XML_NO_ATTRIBUTE;
-        }
-        return a->QueryUnsignedValue( value );
-    }
+//    XMLError QueryUnsignedAttribute( const char* name, unsigned int* value ) const	{
+//        const XMLAttribute* a = FindAttribute( name );
+//        if ( !a ) {
+//            return XML_NO_ATTRIBUTE;
+//        }
+//        return a->QueryUnsignedValue( value );
+//    }
     /// See QueryIntAttribute()
     XMLError QueryBoolAttribute( const char* name, bool* value ) const				{
         const XMLAttribute* a = FindAttribute( name );
@@ -1276,6 +1282,7 @@ public:
         return a->QueryBoolValue( value );
     }
     /// See QueryIntAttribute()
+    /*
     XMLError QueryDoubleAttribute( const char* name, double* value ) const			{
         const XMLAttribute* a = FindAttribute( name );
         if ( !a ) {
@@ -1283,6 +1290,8 @@ public:
         }
         return a->QueryDoubleValue( value );
     }
+    */
+    /*
     /// See QueryIntAttribute()
     XMLError QueryFloatAttribute( const char* name, float* value ) const			{
         const XMLAttribute* a = FindAttribute( name );
@@ -1291,7 +1300,7 @@ public:
         }
         return a->QueryFloatValue( value );
     }
-
+*/
 
     /** Given an attribute name, QueryAttribute() returns
     	XML_NO_ERROR, XML_WRONG_ATTRIBUTE_TYPE if the conversion
@@ -1314,52 +1323,57 @@ public:
 		return QueryIntAttribute( name, value );
 	}
 
+/*
 	int QueryAttribute( const char* name, unsigned int* value ) const {
 		return QueryUnsignedAttribute( name, value );
 	}
+	*/
 
 	int QueryAttribute( const char* name, bool* value ) const {
 		return QueryBoolAttribute( name, value );
 	}
 
+/*
 	int QueryAttribute( const char* name, double* value ) const {
 		return QueryDoubleAttribute( name, value );
 	}
-
+*/
+/*
 	int QueryAttribute( const char* name, float* value ) const {
 		return QueryFloatAttribute( name, value );
 	}
+	*/
 
 	/// Sets the named attribute to value.
-    void SetAttribute( const char* name, const char* value )	{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, int value )			{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, unsigned value )		{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, bool value )			{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, double value )		{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
-    /// Sets the named attribute to value.
-    void SetAttribute( const char* name, float value )		{
-        XMLAttribute* a = FindOrCreateAttribute( name );
-        a->SetAttribute( value );
-    }
+//    void SetAttribute( const char* name, const char* value )	{
+//        XMLAttribute* a = FindOrCreateAttribute( name );
+//        a->SetAttribute( value );
+//    }
+//    /// Sets the named attribute to value.
+//    void SetAttribute( const char* name, int value )			{
+//        XMLAttribute* a = FindOrCreateAttribute( name );
+//        a->SetAttribute( value );
+//    }
+//    /// Sets the named attribute to value.
+//    void SetAttribute( const char* name, unsigned value )		{
+//        XMLAttribute* a = FindOrCreateAttribute( name );
+//        a->SetAttribute( value );
+//    }
+//    /// Sets the named attribute to value.
+//    void SetAttribute( const char* name, bool value )			{
+//        XMLAttribute* a = FindOrCreateAttribute( name );
+//        a->SetAttribute( value );
+//    }
+//    /// Sets the named attribute to value.
+//    void SetAttribute( const char* name, double value )		{
+//        XMLAttribute* a = FindOrCreateAttribute( name );
+//        a->SetAttribute( value );
+//    }
+//    /// Sets the named attribute to value.
+//    void SetAttribute( const char* name, float value )		{
+//        XMLAttribute* a = FindOrCreateAttribute( name );
+//        a->SetAttribute( value );
+//    }
 
     /**
     	Delete an attribute.
@@ -1481,13 +1495,13 @@ public:
     */
     XMLError QueryIntText( int* ival ) const;
     /// See QueryIntText()
-    XMLError QueryUnsignedText( unsigned* uval ) const;
+//    XMLError QueryUnsignedText( unsigned* uval ) const;
     /// See QueryIntText()
-    XMLError QueryBoolText( bool* bval ) const;
+//    XMLError QueryBoolText( bool* bval ) const;
     /// See QueryIntText()
-    XMLError QueryDoubleText( double* dval ) const;
+//    XMLError QueryDoubleText( double* dval ) const;
     /// See QueryIntText()
-    XMLError QueryFloatText( float* fval ) const;
+//    XMLError QueryFloatText( float* fval ) const;
 
     // internal:
     enum {

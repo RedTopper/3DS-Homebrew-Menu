@@ -30,5 +30,5 @@ void drawColourAdjuster();
 void handleColourSelectMenuSelection();
 void initColourSelectMenu();
 void drawTranslucencyAdjust(gfxScreen_t screen);
-void drawPanelTranslucencyAdjust();
+void drawPanelTranslucencyAdjust(gfxScreen_t screen);
 void initColours();

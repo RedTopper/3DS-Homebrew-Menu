@@ -60,7 +60,7 @@ int menuStatusColourSettings = 9;
 int menuStatusColourAdjust = 10;
 int menuStatusTranslucencyTop = 11;
 int menuStatusTranslucencyBottom = 12;
-int menuStatusPanelSettings = 13;
+
 int menuStatusThemeSelect = 14;
 int menuStatusWaterSettings = 15;
 int menuStatusThemeSettings = 16;
@@ -69,6 +69,9 @@ int menuStatusOpenTitleFiltering = 18;
 int menuStatusTitleFiltering = 19;
 int menuStatusSoftwareUpdate = 20;
 int menuStatusHansMissingError = 21;
+
+int menuStatusPanelSettingsTop = 13;
+int menuStatusPanelSettingsBottom = 22;
 
 bool killTitleBrowser = false;
 //bool thirdRowVisible = false;
@@ -255,7 +258,7 @@ void handleMenuTopLeftActions(int source) {
             startTransition(transitionDirectionUp, gridSettingsMenu.pagePosition, &gridSettingsMenu);
         }
     }
-    else if (menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings) {
+    else if (menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom) {
         setMenuStatus(menuStatusThemeSettings);
     }
     else if (menuStatus == menuStatusThemeSelect) {
@@ -346,8 +349,17 @@ void toolbarBottomRightAction() {
 
 void loadThemeConfig() {
     waterEnabled = getConfigBoolForKey("waterEnabled", true, configTypeTheme);
+
     panelAlphaTop = getConfigIntForKey("panelAlphaTop", 0, configTypeTheme);
     panelAlphaBottom = getConfigIntForKey("panelAlphaBottom", 0, configTypeTheme);
+
+    panelRTop = getConfigIntForKey("panelRTop", 128, configTypeTheme);
+    panelGTop = getConfigIntForKey("panelGTop", 128, configTypeTheme);
+    panelBTop = getConfigIntForKey("panelBTop", 128, configTypeTheme);
+
+    panelRBottom = getConfigIntForKey("panelRBottom", 128, configTypeTheme);
+    panelGBottom = getConfigIntForKey("panelGBottom", 128, configTypeTheme);
+    panelBBottom = getConfigIntForKey("panelBBottom", 128, configTypeTheme);
 
     translucencyTopBar = getConfigIntForKey("translucencyTopBar", 255, configTypeTheme);
     translucencyBottomBar = getConfigIntForKey("translucencyBottomBar", 255, configTypeTheme);
@@ -537,7 +549,7 @@ void drawBottomStatusBar(char* title) {
         buttonIconLeft = btnButtonIconBackArrow;
         buttonIconRight = btnButtonIconQuestionMark;
     }
-    else if (menuStatus == menuStatusColourSettings || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettings || menuStatus == menuStatusWaterSettings || menuStatus == menuStatusThemeSettings || menuStatus == menuStatusGridSettings || menuStatus == menuStatusTitleFiltering) {
+    else if (menuStatus == menuStatusColourSettings || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || menuStatus == menuStatusWaterSettings || menuStatus == menuStatusThemeSettings || menuStatus == menuStatusGridSettings || menuStatus == menuStatusTitleFiltering) {
         buttonIconLeft = btnButtonIconBackArrow;
     }
 
@@ -610,8 +622,8 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
      Prepare page controls for drawing
      */
     if (!pageControlPanelsDrawn) {
-        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelLeftAlphaMask_bin, pageControlPanelLeft, 81, 36);
-        MAGFXImageWithRGBAndAlphaMask(inactiveCol->r, inactiveCol->g, inactiveCol->b, (u8*)pageControlPanelRightAlphaMask_bin, pageControlPanelRight, 81, 36);
+        MAGFXImageWithRGBAndAlphaMask(panelRBottom, panelGBottom, panelBBottom, (u8*)pageControlPanelLeftAlphaMask_bin, pageControlPanelLeft, 81, 36);
+        MAGFXImageWithRGBAndAlphaMask(panelRBottom, panelGBottom, panelBBottom, (u8*)pageControlPanelRightAlphaMask_bin, pageControlPanelRight, 81, 36);
 
         pageControlPanelsDrawn = true;
     }
@@ -1149,8 +1161,17 @@ void quitSettings(menu_s* m) {
 
     setConfigBool("waterEnabled", waterEnabled, configTypeTheme);
     setConfigBool("showLogo", showLogo, configTypeTheme);
+
     setConfigInt("panelAlphaTop", panelAlphaTop, configTypeTheme);
     setConfigInt("panelAlphaBottom", panelAlphaBottom, configTypeTheme);
+
+    setConfigInt("panelRTop", panelRTop, configTypeTheme);
+    setConfigInt("panelGTop", panelGTop, configTypeTheme);
+    setConfigInt("panelBTop", panelBTop, configTypeTheme);
+
+    setConfigInt("panelRBottom", panelRBottom, configTypeTheme);
+    setConfigInt("panelGBottom", panelGBottom, configTypeTheme);
+    setConfigInt("panelBBottom", panelBBottom, configTypeTheme);
 
     setConfigInt("translucencyTopBar", translucencyTopBar, configTypeTheme);
     setConfigInt("translucencyWater", translucencyWater, configTypeTheme);

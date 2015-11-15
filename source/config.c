@@ -25,7 +25,8 @@
 #include "settingsIconTranslucencyBottom_bin.h"
 #include "settingsIconLogo_bin.h"
 #include "settingsIconKeysExciteWater_bin.h"
-#include "settingsIconPanels_bin.h"
+#include "settingsIconPanelTop_bin.h"
+#include "settingsIconPanelBottom_bin.h"
 #include "settingsIconPreloadTitles_bin.h"
 #include "settingsIconTheme_bin.h"
 #include "settingsIconDPadControls_bin.h"
@@ -107,6 +108,9 @@ void setTheme(char * themeName) {
     waitForDurationOfSound(&themeSoundBoot, startMs);
 
     startBGM();
+
+    panelsDrawn = false;
+    pageControlPanelsDrawn = false;
 }
 
 void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int folderPathLen) {
@@ -376,7 +380,8 @@ void initThemeSettingsMenu() {
 
     addSettingsMenuEntry("Translucency (bottom screen)", "Draw the user interface with translucency - useful if using custom wallpapers", (u8*)settingsIconTranslucencyBottom_bin, false, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusTranslucencyBottom, NULL);
 
-    addSettingsMenuEntry("Panels", "Show panels behind text to make it easier to read against wallpaper", (u8*)settingsIconPanels_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusPanelSettings, NULL);
+    addSettingsMenuEntry("Top panels", "Show panels behind text to make it easier to read against wallpaper", (u8*)settingsIconPanelTop_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusPanelSettingsTop, NULL);
+    addSettingsMenuEntry("Bottom panels", "Show panels behind text to make it easier to read against wallpaper", (u8*)settingsIconPanelBottom_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusPanelSettingsBottom, NULL);
 
     addSettingsMenuEntry("Logo", "Show the 'Homebrew Launcher' logo at the bottom of the screen", (u8*)settingsIconLogo_bin, &showLogo, &themeSettingsMenu, &settingsToggleBool, &showLogo, NULL);
 

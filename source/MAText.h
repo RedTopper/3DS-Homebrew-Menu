@@ -11,12 +11,12 @@ typedef struct {
     u8 * data;
     int nChars, pngW, pngH, lineHeight;
 } MAFont;
-    
+
 typedef struct {int cursorx, cursory;} MACursorPosition;
 
 void MADrawText(gfxScreen_t screen, gfx3dSide_t side, int cursorx, int cursory, char * text, MAFont * font, int red, int green, int blue);
 
-void MADrawTextWrap(gfxScreen_t screen, gfx3dSide_t side, int cursorx, int cursory, char * text, MAFont * font, int red, int green, int blue, int maxWidth, int maxLines);
+int MADrawTextWrap(gfxScreen_t screen, gfx3dSide_t side, int cursorx, int cursory, char * text, MAFont * font, int red, int green, int blue, int maxWidth, int maxLines);
 
 int MATextWidthInPixels(char * text, MAFont * font);
 

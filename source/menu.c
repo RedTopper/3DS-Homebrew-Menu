@@ -1916,24 +1916,29 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         rgbColour *titleColour = titleTextColour();
 
         int maxLines = (me->drawFullTitle) ? 100 : 1;
+        int numTitleLines;
 
         if (me == &gamecardMenuEntry || (me->isRegionFreeEntry && regionFreeGamecardIn)) {
-            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
+            numTitleLines = MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
         }
         else {
-            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
+            numTitleLines = MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
         }
+
+        char s[8];
+        sprintf(s, "%d", numTitleLines);
+        MADrawText(GFX_TOP, GFX_LEFT, 0, 0, s, &MAFontRobotoRegular10, 255, 255, 255);
 
         /*
          Draw the app author
          */
 
         if (me->isRegionFreeEntry && regionFreeGamecardIn) {
-            yAdjust += 25;
+            yAdjust += (numTitleLines * 25);
             MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.author, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
         }
         else if (strlen(me->author) > 0) {
-            yAdjust += 25;
+            yAdjust += (numTitleLines * 25);
             MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->author, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
         }
 

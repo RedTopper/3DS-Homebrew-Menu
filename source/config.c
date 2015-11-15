@@ -11,6 +11,7 @@
 #include "MAGFX.h"
 #include "filesystem.h"
 #include "sound.h"
+#include "boot.h"
 
 #include "settingsIconAlphaSort_bin.h"
 #include "settingsIconWaterAnimated_bin.h"
@@ -36,6 +37,8 @@
 #include "settingsIconAnimation_bin.h"
 #include "settingsIcon3DSFolder_bin.h"
 #include "settingsIconUpdate_bin.h"
+#include "settingsIconWaitForSounds_bin.h"
+#include "settingsIconHansTitleBooting_bin.h"
 
 #include "titles.h"
 #include "themegfx.h"
@@ -381,7 +384,7 @@ void initThemeSettingsMenu() {
 
     addSettingsMenuEntry("Random theme on wake", "Randomizes the theme when the 3DS has been closed for an extended period of time.", (u8*)settingsIconRandomTheme_bin, &randomiseThemeOnWake, &themeSettingsMenu, &settingsToggleBool, &randomiseThemeOnWake, NULL);
 
-    addSettingsMenuEntry("Wait for sounds", "Wait until the boot sound has finished playing before showing the menu, and the select sound before starting an app", (u8*)settingsIconRandomTheme_bin, &waitForSounds, &themeSettingsMenu, &settingsToggleBool, &waitForSounds, NULL);
+    addSettingsMenuEntry("Wait for sounds", "Wait until the boot sound has finished playing before showing the menu, and the select sound before starting an app", (u8*)settingsIconWaitForSounds_bin, &waitForSounds, &themeSettingsMenu, &settingsToggleBool, &waitForSounds, NULL);
 }
 
 void settingsSetMenuStatus(int * status) {
@@ -484,7 +487,7 @@ void initConfigMenu() {
         strcpy(updateEntry->author, "By ihaveamac on GBATemp");
     }
 
-    addSettingsMenuEntry("HANS title booting", "Boot titles using HANS rather than Region4", (u8*)helpIconIgnoredTitles_bin, &hansTitleBoot, &settingsMenu, &toggleHansBoot(), NULL, NULL);
+    addSettingsMenuEntry("HANS title booting", "Boot titles using HANS rather than Region4", (u8*)settingsIconHansTitleBooting_bin, &hansTitleBoot, &settingsMenu, &toggleHansBoot, NULL, NULL);
 }
 
 void handleSettingsMenuSelection(menu_s *m) {

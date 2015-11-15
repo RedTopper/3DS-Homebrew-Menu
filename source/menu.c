@@ -12,6 +12,7 @@
 #include "folders.h"
 #include "background.h"
 #include "titles.h"
+#include "boot.h"
 
 #include "appshadow_bin.h"
 #include "appiconalphamask_bin.h"
@@ -431,6 +432,7 @@ void initMenu(menu_s* m)
     animatedGrids = getConfigBoolForKey("animatedGrids", true, configTypeMain);
     show3DSFolder = getConfigBoolForKey("show3DSFolder", true, configTypeMain);
     preloadTitles = getConfigBoolForKey("preloadTitles", true, configTypeMain);
+    hansTitleBoot = getConfigBoolForKey("hansTitleBoot", false, configTypeMain);
 
     loadThemeConfig();
 
@@ -1143,6 +1145,7 @@ void quitSettings(menu_s* m) {
     setConfigBool("randomiseThemeOnWake", randomiseThemeOnWake, configTypeMain);
     setConfigBool("animatedGrids", animatedGrids, configTypeMain);
     setConfigBool("show3DSFolder", show3DSFolder, configTypeMain);
+    setConfigBool("hansTitleBoot", hansTitleBoot, configTypeMain);
 
     setConfigBool("waterEnabled", waterEnabled, configTypeTheme);
     setConfigBool("showLogo", showLogo, configTypeTheme);

@@ -47,6 +47,8 @@ bool dieImmediately = false;
 bool showRebootMenu = false;
 bool startRebootProcess = false;
 
+char HansArg[ENTRY_PATHLENGTH+1];
+
 //Handle threadHandle, threadRequest;
 //#define STACKSIZE (4 * 1024)
 
@@ -146,9 +148,18 @@ void launchTitleFromMenu(menu_s* m) {
                 ret = getTitleWithID(&titleBrowser, me->title_id);
 
                 if (ret) {
+                    target_title = *ret;
+                    targetProcessId = -2;
                     exitServices();
-                    regionFreeRun2(ret->title_id & 0xffffffff, (ret->title_id >> 32) & 0xffffffff, ret->mediatype, 0x1);
                     dieImmediately = true;
+
+                    if (hansTitleBoot) {
+                        bootApp("/gridlauncher/hans/hans.3dsx", NULL, HansArg);
+                    }
+
+                    else {
+                        regionFreeRun2(ret->title_id & 0xffffffff, (ret->title_id >> 32) & 0xffffffff, ret->mediatype, 0x1);
+                    }
                 }
             }
         }
@@ -345,7 +356,11 @@ void renderFrame()
             else if (menuStatus == menuStatusHansMissingError) {
                 char buttonTitles[3][32];
                 strcpy(buttonTitles[0], "OK");
-                drawAlert("Hans isn't here...", "Please copy hans.3dsx and hans.xml in /gridlauncher/hans/ on your 3ds SD card.", NULL, 1, buttonTitles);
+                alertSelectedButton = 0;
+                int selectedButton = drawAlert("Hans isn't here...", "Please copy hans.3dsx and hans.xml in /gridlauncher/hans/ on your 3ds SD card.", NULL, 1, buttonTitles);
+                if (selectedButton == 0 || selectedButton == alertButtonKeyB) {
+                    setMenuStatus(menuStatusSettings);
+                }
             }
             else {
                 drawMenu(&menu);
@@ -843,6 +858,10 @@ int main(int argc, char *argv[])
                 }
             }
 
+            else if (menuStatus == menuStatusHansMissingError) {
+
+            }
+
             else if(updateMenu(&menu))
             {
                 menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
@@ -950,8 +969,15 @@ int main(int argc, char *argv[])
     exitServices();
 
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
-        return regionFreeRun();
-//        return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
+        if (hansTitleBoot) {
+            regionFreeExit();
+            return bootApp("/gridlauncher/hans/hans.3dsx", NULL, HansArg);
+        }
+        else {
+            return regionFreeRun();
+        }
+
+        return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
     }
 
 	regionFreeExit();

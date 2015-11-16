@@ -1946,10 +1946,6 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
             numTitleLines = MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
         }
 
-        char s[8];
-        sprintf(s, "%d", numTitleLines);
-        MADrawText(GFX_TOP, GFX_LEFT, 0, 0, s, &MAFontRobotoRegular10, 255, 255, 255);
-
         /*
          Draw the app author
          */

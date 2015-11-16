@@ -974,6 +974,20 @@ int main(int argc, char *argv[])
 
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
         if (hansTitleBoot) {
+            if (me->isRegionFreeEntry) {
+                titleList_s* tl = &(titleBrowser.lists[0]);
+                titleInfo_s *titles = tl->titles;
+                titleInfo_s * aTitle = &(titles[0]);
+                target_title = *aTitle;
+            }
+            else {
+                titleInfo_s* ret = NULL;
+                ret = getTitleWithID(&titleBrowser, me->title_id);
+                target_title = *ret;
+            }
+
+            targetProcessId = -2;
+
             regionFreeExit();
             return bootApp("/gridlauncher/hans/hans.3dsx", NULL, HansArg);
         }

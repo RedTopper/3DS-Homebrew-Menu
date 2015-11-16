@@ -34,6 +34,8 @@ extern int menuStatusHansMissingError;
 extern int menuStatusPanelSettingsTop;
 extern int menuStatusPanelSettingsBottom;
 
+extern int menuStatusBootOptions;
+
 //Checked by main.c so that the menu can force the title browser to close
 extern bool killTitleBrowser;
 
@@ -132,13 +134,14 @@ typedef struct
 	s32 currentScrollBarSize;
 	s32 scrollBarPos;
 	touchPosition previousTouch, firstTouch;
-	u16 touchTimer;
+	u64 touchDownTime;
 	bool atEquilibrium;
     int totalPages, rowPosition, colPosition, pagePosition; //totalRows
 }menu_s;
 
 extern menuEntry_s regionfreeEntry;
 extern menu_s menu;
+extern menu_s * bootOptionsMenu;
 
 //menu stuff
 void initMenu(menu_s* m);

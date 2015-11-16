@@ -176,6 +176,8 @@ void putTitleMenu(char * barTitle) {
 
 #include "progresswheel.h"
 
+void handleMenuSelection();
+
 void renderFrame()
 {
 	// background stuff
@@ -366,6 +368,49 @@ void renderFrame()
                     setMenuStatus(menuStatusSettings);
                 }
             }
+            else if (menuStatus == menuStatusBootOptions) {
+                char buttonTitles[3][32];
+                strcpy(buttonTitles[0], "HANS");
+                strcpy(buttonTitles[1], "Region4");
+                strcpy(buttonTitles[2], "Cancel");
+
+                int selectedButton = drawAlert("Select boot method", "Please choose how you want to boot the app.", NULL, 3, buttonTitles);
+
+                if (selectedButton == 0) {
+                    hansTitleBoot = true;
+
+                    if(bootOptionsMenu == &titleMenu) {
+                        //HANS boot from title menu
+                        launchTitleFromMenu(bootOptionsMenu);
+                    }
+                    else {
+                        //HANS boot from main menu
+                        handleMenuSelection();
+                    }
+                }
+
+                else if (selectedButton == 1) {
+                    hansTitleBoot = false;
+
+                    if(bootOptionsMenu == &titleMenu) {
+                        //R4 boot from title menu
+                        launchTitleFromMenu(bootOptionsMenu);
+                    }
+                    else {
+                        //R4 boot from main menu
+                        handleMenuSelection();
+                    }
+                }
+
+                else if (selectedButton == 2 || selectedButton == alertButtonKeyB) {
+                    if(bootOptionsMenu == &titleMenu) {
+                        setMenuStatus(menuStatusHomeMenuApps);
+                    }
+                    else {
+                        setMenuStatus(menuStatusIcons);
+                    }
+                }
+            }
             else {
                 drawMenu(&menu);
             }
@@ -481,7 +526,60 @@ void randomiseTheme() {
     setTheme(randomEntry->executablePath);
 }
 
-#include "MAFontRobotoRegular.h"
+void handleMenuSelection() {
+    menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
+    if(me && !strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)
+    {
+        regionFreeUpdate();
+
+        if (regionFreeGamecardIn) {
+            die = true;
+        }
+    }else
+    {
+
+
+        // if appropriate, look for specified titles in list
+        if(me->descriptor.numTargetTitles)
+        {
+            // first refresh list (for sd/gamecard)
+//                        updateTitleBrowser(&titleBrowser);
+
+            // go through target title list in order so that first ones on list have priority
+            int i;
+            titleInfo_s* ret = NULL;
+            for(i=0; i<me->descriptor.numTargetTitles; i++)
+            {
+                ret = findTitleBrowser(&titleBrowser, me->descriptor.targetTitles[i].mediatype, me->descriptor.targetTitles[i].tid);
+                if(ret)break;
+            }
+
+            if(ret)
+            {
+                targetProcessId = -2;
+                target_title = *ret;
+                die = true;
+            }
+
+            // if we get here, we aint found shit
+            // if appropriate, let user select target title
+            if(me->descriptor.selectTargetProcess) hbmenu_state = HBMENU_TITLESELECT;
+            else hbmenu_state = HBMENU_TITLETARGET_ERROR;
+        }
+
+        else
+        {
+            if(me->descriptor.selectTargetProcess) {
+                showSVDTTitleSelect();
+            }
+            else {
+                die = true;
+            }
+        }
+
+
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -866,60 +964,13 @@ int main(int argc, char *argv[])
 
             }
 
+            else if (menuStatus == menuStatusBootOptions) {
+
+            }
+
             else if(updateMenu(&menu))
             {
-                menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
-                if(me && !strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)
-                {
-                    regionFreeUpdate();
-
-                    if (regionFreeGamecardIn) {
-                        break;
-                    }
-                }else
-                {
-
-
-                    // if appropriate, look for specified titles in list
-                    if(me->descriptor.numTargetTitles)
-                    {
-                        // first refresh list (for sd/gamecard)
-//                        updateTitleBrowser(&titleBrowser);
-
-                        // go through target title list in order so that first ones on list have priority
-                        int i;
-                        titleInfo_s* ret = NULL;
-                        for(i=0; i<me->descriptor.numTargetTitles; i++)
-                        {
-                            ret = findTitleBrowser(&titleBrowser, me->descriptor.targetTitles[i].mediatype, me->descriptor.targetTitles[i].tid);
-                            if(ret)break;
-                        }
-
-                        if(ret)
-                        {
-                            targetProcessId = -2;
-                            target_title = *ret;
-                            break;
-                        }
-
-                        // if we get here, we aint found shit
-                        // if appropriate, let user select target title
-                        if(me->descriptor.selectTargetProcess) hbmenu_state = HBMENU_TITLESELECT;
-                        else hbmenu_state = HBMENU_TITLETARGET_ERROR;
-                    }
-
-                    else
-                    {
-                        if(me->descriptor.selectTargetProcess) {
-                            showSVDTTitleSelect();
-                        }
-                        else {
-                            break;
-                        }
-                    }
-
-
-                }
+                handleMenuSelection();
             }
 		}
 

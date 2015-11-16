@@ -492,7 +492,7 @@ void initConfigMenu() {
         strcpy(updateEntry->author, "By ihaveamac on GBATemp");
     }
 
-    addSettingsMenuEntry("HANS title booting", "Boot titles using HANS rather than Region4", (u8*)settingsIconHansTitleBooting_bin, &hansTitleBoot, &settingsMenu, &toggleHansBoot, NULL, NULL);
+    addSettingsMenuEntry("HANS title booting", "Boot titles using HANS rather than Region4. Hold down on app icons to manually override this setting.", (u8*)settingsIconHansTitleBooting_bin, &hansTitleBoot, &settingsMenu, &toggleHansBoot, NULL, NULL);
 }
 
 void handleSettingsMenuSelection(menu_s *m) {

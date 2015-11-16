@@ -73,6 +73,8 @@ int menuStatusHansMissingError = 21;
 int menuStatusPanelSettingsTop = 13;
 int menuStatusPanelSettingsBottom = 22;
 
+int menuStatusBootOptions = 23;
+
 bool killTitleBrowser = false;
 //bool thirdRowVisible = false;
 bool dPadNavigation = true;
@@ -96,6 +98,7 @@ int dPadSelectedToolbarButton = -1;
 
 menuEntry_s regionfreeEntry;
 menu_s menu;
+menu_s * bootOptionsMenu;
 
 //int rowPosition = 0;
 //int colPosition = 0;
@@ -228,8 +231,15 @@ void handleMenuTopLeftActions(int source) {
         }
     }
     else if (menuStatus == menuStatusTitleFiltering) {
-        cancelTitleLoading();
-        saveIgnoredTitleIDs();
+        if (titlemenuIsUpdating) {
+            cancelTitleLoading();
+        }
+        else {
+            saveIgnoredTitleIDs();
+        }
+
+        titleMenuInitialLoadDone = false;
+
         setMenuStatus(menuStatusSettings);
 
         if (animatedGrids) {
@@ -281,6 +291,9 @@ void handleMenuTopLeftActions(int source) {
         if (animatedGrids) {
             startTransition(transitionDirectionUp, waterMenu.pagePosition, &waterMenu);
         }
+    }
+    else if (menuStatus == menuStatusBootOptions) {
+        setMenuStatus(menuStatusIcons);
     }
     else {
         playBackSound = false;
@@ -998,26 +1011,28 @@ void checkGotoNextPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
             startTransition(transitionDirectionLeft, previousPage, m);
         }
 
-        btnListUnHighlight(&toolbarButtons);
-        dPadSelectedToolbarButton = -1;
+        if (dPadSelectedToolbarButton == -1) {
+//            btnListUnHighlight(&toolbarButtons);
+//            dPadSelectedToolbarButton = -1;
 
-        if (preserveCursorPosition) {
-            int firstIndex = indexOfFirstVisibleMenuEntryOnPage(m->pagePosition, m);
-            int indexOffset = (m->rowPosition * totalCols) + m->colPosition;
-            int newIndex = firstIndex + indexOffset;
-            *move += (newIndex - m->selectedEntry);
-        }
-        else {
-            int oldRowPosition = m->rowPosition;
-            m->rowPosition = 0;
-            m->colPosition = 0;
-            int newSelectedIndex = indexOfMenuEntryAtPageRowColInMenu(m->pagePosition, 0, 0, m);
-            m->selectedEntry = newSelectedIndex;
-
-            if ((m->selectedEntry + (4*oldRowPosition)) <= (m->numEntries - 1)) {
-                *move += (4*oldRowPosition);
+            if (preserveCursorPosition) {
+                int firstIndex = indexOfFirstVisibleMenuEntryOnPage(m->pagePosition, m);
+                int indexOffset = (m->rowPosition * totalCols) + m->colPosition;
+                int newIndex = firstIndex + indexOffset;
+                *move += (newIndex - m->selectedEntry);
+            }
+            else {
+                int oldRowPosition = m->rowPosition;
+                m->rowPosition = 0;
                 m->colPosition = 0;
-                m->rowPosition = oldRowPosition;
+                int newSelectedIndex = indexOfMenuEntryAtPageRowColInMenu(m->pagePosition, 0, 0, m);
+                m->selectedEntry = newSelectedIndex;
+
+                if ((m->selectedEntry + (4*oldRowPosition)) <= (m->numEntries - 1)) {
+                    *move += (4*oldRowPosition);
+                    m->colPosition = 0;
+                    m->rowPosition = oldRowPosition;
+                }
             }
         }
     }
@@ -1054,57 +1069,59 @@ void checkGotoPreviousPage(menu_s* m, s8 *move, bool preserveCursorPosition) {
             startTransition(transitionDirectionRight, previousPage, m);
         }
 
-        btnListUnHighlight(&toolbarButtons);
-        dPadSelectedToolbarButton = -1;
+        if (dPadSelectedToolbarButton == -1) {
+            //btnListUnHighlight(&toolbarButtons);
+            //dPadSelectedToolbarButton = -1;
 
-        if (preserveCursorPosition) {
-            int firstIndex = indexOfFirstVisibleMenuEntryOnPage(m->pagePosition, m);
-            int indexOffset = (m->rowPosition * totalCols) + m->colPosition;
-            int newIndex = firstIndex + indexOffset;
-            *move += (newIndex - m->selectedEntry);
-        }
-        else {
-            //Store the old row which was selected
-            int oldRowPosition = m->rowPosition;
+            if (preserveCursorPosition) {
+                int firstIndex = indexOfFirstVisibleMenuEntryOnPage(m->pagePosition, m);
+                int indexOffset = (m->rowPosition * totalCols) + m->colPosition;
+                int newIndex = firstIndex + indexOffset;
+                *move += (newIndex - m->selectedEntry);
+            }
+            else {
+                //Store the old row which was selected
+                int oldRowPosition = m->rowPosition;
 
-            //Move the selection to the first icon on this page
-            m->rowPosition = 0;
-            m->colPosition = 0;
-            int newSelectedIndex = indexOfMenuEntryAtPageRowColInMenu(m->pagePosition, 0, 0, m);
-            m->selectedEntry = newSelectedIndex;
+                //Move the selection to the first icon on this page
+                m->rowPosition = 0;
+                m->colPosition = 0;
+                int newSelectedIndex = indexOfMenuEntryAtPageRowColInMenu(m->pagePosition, 0, 0, m);
+                m->selectedEntry = newSelectedIndex;
 
-            //Move the selection to the same position on the new page
-            *move += (3 + (4*oldRowPosition));
-            m->colPosition = 3;
-            m->rowPosition = oldRowPosition;
+                //Move the selection to the same position on the new page
+                *move += (3 + (4*oldRowPosition));
+                m->colPosition = 3;
+                m->rowPosition = oldRowPosition;
 
-            //If we moved back to the last page
-            if (m->pagePosition == (m->totalPages - 1)) {
+                //If we moved back to the last page
+                if (m->pagePosition == (m->totalPages - 1)) {
 
-                //If the current position on the last page is not occupied by an app icon
-                if (*move + m->selectedEntry >= m->numEntries) {
+                    //If the current position on the last page is not occupied by an app icon
+                    if (*move + m->selectedEntry >= m->numEntries) {
 
-                    //While the current position on the page is still not occupied by an icon
-                    while (*move + m->selectedEntry >= m->numEntries) {
-                        //Go left by one icon
-                        *move -= 1;
-                        m->colPosition = m->colPosition - 1;
+                        //While the current position on the page is still not occupied by an icon
+                        while (*move + m->selectedEntry >= m->numEntries) {
+                            //Go left by one icon
+                            *move -= 1;
+                            m->colPosition = m->colPosition - 1;
 
-                        //If we have got to the beginning of the row, go to the end of the next row up
-                        if (m->colPosition < 0) {
-                            m->colPosition = 3;
-                            m->rowPosition = m->rowPosition - 1;
-                        }
+                            //If we have got to the beginning of the row, go to the end of the next row up
+                            if (m->colPosition < 0) {
+                                m->colPosition = 3;
+                                m->rowPosition = m->rowPosition - 1;
+                            }
 
-                        //If we have dropped off the left and edge of the first row then we must be on an empty page
-                        //This really shouldn't ever happen, but just in case, this code will reset back to the first
-                        //icon on the page and break out of the while loop so we don't hang here
-                        if (m->rowPosition < 0) {
-                            m->colPosition = 0;
-                            m->rowPosition = 0;
-                            int newSelectedIndex = indexOfMenuEntryAtPageRowColInMenu(m->pagePosition, 0, 0, m);
-                            m->selectedEntry = newSelectedIndex;
-                            break;
+                            //If we have dropped off the left and edge of the first row then we must be on an empty page
+                            //This really shouldn't ever happen, but just in case, this code will reset back to the first
+                            //icon on the page and break out of the while loop so we don't hang here
+                            if (m->rowPosition < 0) {
+                                m->colPosition = 0;
+                                m->rowPosition = 0;
+                                int newSelectedIndex = indexOfMenuEntryAtPageRowColInMenu(m->pagePosition, 0, 0, m);
+                                m->selectedEntry = newSelectedIndex;
+                                break;
+                            }
                         }
                     }
                 }
@@ -1359,6 +1376,47 @@ void setPositionsToCurrentMenuSelection(menu_s* m) {
     m->colPosition = me->col;
 }
 
+bool touchWithinMenuEntryIcon(menu_s * m, touchPosition *touch, int * i, int * newRow, int * newCol) {
+    menuEntry_s* me=m->entries;
+    bool gotAppMatch = false;
+
+    while(me) {
+        if (me->page == m->pagePosition) {
+            if (newRow != NULL) {
+                *newRow = me->row;
+            }
+
+            if (newCol != NULL) {
+                *newCol = me->col;
+            }
+
+            int iconX = me->iconX;
+            int iconY = me->iconY;
+            int iconW = me->iconW;
+            int iconH = me->iconH;
+
+            if (touchWithin(touch->px, touch->py, iconX, iconY, iconW, iconH)) {
+                gotAppMatch = true;
+                break;
+            }
+        }
+
+        me=me->next;
+        *i = *i + 1;
+    }
+
+    return gotAppMatch;
+}
+
+void enterCornerButtons(menu_s* m) {
+    m->rowPosition = -1;
+    m->selectedEntry = -1;
+}
+
+void exitCornerButtons(menu_s* m) {
+
+}
+
 bool updateGrid(menu_s* m) {
     if (transitionFromPage > -1) {
         return false;
@@ -1428,13 +1486,11 @@ bool updateGrid(menu_s* m) {
         if (dPadNavigation && m->rowPosition == 0) {
             if (toolbarButtons.buttons[1]->visible && m->colPosition > 1) {
                 dPadSelectedToolbarButton = 1;
-                m->rowPosition = -1;
-                m->selectedEntry = -1;
+                enterCornerButtons(m);
             }
             else {
                 dPadSelectedToolbarButton = 0;
-                m->rowPosition = -1;
-                m->selectedEntry = -1;
+                enterCornerButtons(m);
             }
 
             return false;
@@ -1509,13 +1565,11 @@ bool updateGrid(menu_s* m) {
 
             if (toolbarButtons.buttons[2]->visible && m->colPosition > 1) {
                 dPadSelectedToolbarButton = 2;
-                m->rowPosition = -1;
-                m->selectedEntry = -1;
+                enterCornerButtons(m);
             }
             if (toolbarButtons.buttons[3]->visible && m->colPosition < 2) {
                 dPadSelectedToolbarButton = 3;
-                m->rowPosition = -1;
-                m->selectedEntry = -1;
+                enterCornerButtons(m);
             }
 
             return false;
@@ -1539,39 +1593,21 @@ bool updateGrid(menu_s* m) {
 
     if (hidKeysDown()&KEY_TOUCH) {
         m->firstTouch=touch;
+        m->touchDownTime = osGetTime();
 
-        menuEntry_s* me=m->entries;
-        int i=0;
         int newRow = 0;
         int newCol = 0;
-        bool gotAppMatch = false;
-        while(me) {
-            if (me->page == m->pagePosition) {
-                newRow = me->row;
-                newCol = me->col;
+        int i=0;
 
-                int iconX = me->iconX;
-                int iconY = me->iconY;
-                int iconW = me->iconW;
-                int iconH = me->iconH;
-
-                if (touchWithin(touchX, touchY, iconX, iconY, iconW, iconH)) {
-                    gotAppMatch = true;
-                    break;
-                }
-            }
-
-            me=me->next;
-            i++;
-        }
+        bool gotAppMatch = touchWithinMenuEntryIcon(m, &touch, &i, &newRow, &newCol);
 
         if (gotAppMatch) {
             btnListUnHighlight(&toolbarButtons);
             dPadSelectedToolbarButton = -1;
 
             if(m->selectedEntry==i) {
-                audioPlay(&themeSoundSelect, false);
-                return true;
+//                audioPlay(&themeSoundSelect, false);
+//                return true;
             }
 
             else {
@@ -1579,6 +1615,8 @@ bool updateGrid(menu_s* m) {
                 m->selectedEntry=i;
                 m->rowPosition = newRow;
                 m->colPosition = newCol;
+
+                startBlockingTouches();
             }
         }
         else {
@@ -1596,13 +1634,34 @@ bool updateGrid(menu_s* m) {
 
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
 
-        //condition to make sure previousTouch is valid
-        //cstick.dy+=(touch.py-m->previousTouch.py)*16;
-        m->touchTimer++;
+        if (menuStatus == menuStatusIcons || menuStatus == menuStatusHomeMenuApps) {
+            u64 currentTime = osGetTime();
+            u64 timeDiff = (currentTime - m->touchDownTime)/1000;
+
+            if (timeDiff > 1) {
+                int i=0;
+                bool gotAppMatch = touchWithinMenuEntryIcon(m, &(m->previousTouch), &i, NULL, NULL);
+
+                if (gotAppMatch) {
+                    bootOptionsMenu = m;
+                    alertSelectedButton = 0;
+                    setMenuStatus(menuStatusBootOptions);
+                }
+            }
+        }
     }
-    else if (hidKeysUp()&KEY_TOUCH) {
+    else if (!touchesAreBlocked && hidKeysUp()&KEY_TOUCH) {
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
         btnListCheckRunCallback(&toolbarButtons, m->previousTouch.px, m->previousTouch.py);
+
+        int i=0;
+
+        bool gotAppMatch = touchWithinMenuEntryIcon(m, &(m->previousTouch), &i, NULL, NULL);
+
+        if (gotAppMatch && m->selectedEntry==i) {
+            audioPlay(&themeSoundSelect, false);
+            return true;
+        }
     }
 
     if (move + m->selectedEntry < 0) {

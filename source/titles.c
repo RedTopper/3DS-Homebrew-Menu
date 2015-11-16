@@ -10,6 +10,7 @@
 #include "filesystem.h"
 #include "MAGFX.h"
 #include "config.h"
+#include "regionfree.h"
 
 extern int debugValues[100];
 
@@ -343,6 +344,20 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
     aTitleMenu->scrollTarget=0;
     aTitleMenu->atEquilibrium=false;
 
+    /*
+    If there is no game cart in right now but there needs to be one shown if a cart is inserted,
+    add a hidden dummy entry to the menu. This entry will be updated with the cart details
+    and shown if a cart is inserted.
+    */
+
+    if (!regionFreeGamecardIn && !forceHideRegionFree) {
+        static menuEntry_s rfEntry;
+        rfEntry.hidden = true;
+        rfEntry.isTitleEntry = false;
+        rfEntry.isRegionFreeEntry = true;
+        addMenuEntryCopy(aTitleMenu, &rfEntry);
+    }
+
     int i;
 
     for(i=0; i<3; i++) {
@@ -368,16 +383,20 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
                 return;
             }
 
-            titleInfo_s aTitle = titles[titleNum];
+            /*
+            If a game card is not inserted, we do not need to add the first title.
+            This is because a dummy entry for the cart was already added above.
+            */
 
-            if (i==0 && titleNum == 0 && forceHideRegionFree) {
+            if (i==0 && titleNum == 0 && (!regionFreeGamecardIn || forceHideRegionFree)) {
                 continue;
             }
+
+            titleInfo_s aTitle = titles[titleNum];
 
             if (filter && titleIgnored(aTitle.title_id)) {
                 continue;
             }
-
 
             if (!aTitle.icon) {
                 loadTitleInfoIcon(&aTitle);
@@ -393,7 +412,13 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             me.isTitleEntry = false;
             me.isRegionFreeEntry = false;
 
-            if (i==0 && titleNum == 0) {
+            /*
+            If adding the title for the inserted cart, set its isRegionFreeEntry flag.
+            We need to do this here because it won't have been done by adding the dummy
+            entry above.
+            */
+
+            if (i==0 && titleNum == 0 && regionFreeGamecardIn) {
                 me.isRegionFreeEntry = true;
             }
 
@@ -420,20 +445,6 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
 
             addMenuEntryCopy(aTitleMenu, &me);
 
-            if (0) {
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-                addMenuEntryCopy(aTitleMenu, &me);
-            }
-
-
 //                titleMenu->numEntries = titleMenu->numEntries + 1;
             updateMenuIconPositions(aTitleMenu);
 
@@ -442,7 +453,6 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             }
         }
     }
-
 
     updateMenuIconPositions(aTitleMenu);
 }

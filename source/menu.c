@@ -1591,7 +1591,7 @@ bool updateGrid(menu_s* m) {
 
     u16 oldEntry=m->selectedEntry;
 
-    if (hidKeysDown()&KEY_TOUCH) {
+    if (hidKeysDown()&KEY_TOUCH && !touchesAreBlocked) {
         m->firstTouch=touch;
         m->touchDownTime = osGetTime();
 
@@ -1630,7 +1630,7 @@ bool updateGrid(menu_s* m) {
             btnListCheckHighlight(&toolbarButtons, touchX, touchY);
         }
     }
-    else if(hidKeysHeld()&KEY_TOUCH){
+    else if(hidKeysHeld()&KEY_TOUCH && !touchesAreBlocked){
 
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
 
@@ -1650,7 +1650,7 @@ bool updateGrid(menu_s* m) {
             }
         }
     }
-    else if (!touchesAreBlocked && hidKeysUp()&KEY_TOUCH) {
+    else if (hidKeysUp()&KEY_TOUCH && !touchesAreBlocked) {
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
         btnListCheckRunCallback(&toolbarButtons, m->previousTouch.px, m->previousTouch.py);
 

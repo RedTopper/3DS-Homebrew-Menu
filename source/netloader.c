@@ -44,7 +44,7 @@ static char progress[256];
 static int netloader_draw_progress(void) {
 	char info[1024];
 	sprintf(info, "Transferring: %s\n\n%s",netloadedPath,progress);
-    
+
     drawAlert("NetLoader", info, NULL, 0, NULL);
 	gfxFlushBuffers();
 	gfxSwapBuffers();

@@ -150,7 +150,7 @@ public:
         _start = const_cast<char*>(str);
     }
 
-    void SetStr( const char* str, int flags=0 );
+//    void SetStr( const char* str, int flags=0 );
 
     char* ParseText( char* in, const char* endTag, int strFlags );
     char* ParseName( char* in );
@@ -742,36 +742,36 @@ public:
     /** Get the last child element or optionally the last child
         element with the specified name.
     */
-    const XMLElement* LastChildElement( const char* name = 0 ) const;
+//    const XMLElement* LastChildElement( const char* name = 0 ) const;
 
-    XMLElement* LastChildElement( const char* name = 0 )	{
-        return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->LastChildElement(name) );
-    }
+//    XMLElement* LastChildElement( const char* name = 0 )	{
+//        return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->LastChildElement(name) );
+//    }
 
     /// Get the previous (left) sibling node of this node.
-    const XMLNode*	PreviousSibling() const					{
-        return _prev;
-    }
+//    const XMLNode*	PreviousSibling() const					{
+//        return _prev;
+//    }
 
-    XMLNode*	PreviousSibling()							{
-        return _prev;
-    }
+//    XMLNode*	PreviousSibling()							{
+//        return _prev;
+//    }
 
     /// Get the previous (left) sibling element of this node, with an optionally supplied name.
-    const XMLElement*	PreviousSiblingElement( const char* name = 0 ) const ;
+//    const XMLElement*	PreviousSiblingElement( const char* name = 0 ) const ;
 
-    XMLElement*	PreviousSiblingElement( const char* name = 0 ) {
-        return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->PreviousSiblingElement( name ) );
-    }
+//    XMLElement*	PreviousSiblingElement( const char* name = 0 ) {
+//        return const_cast<XMLElement*>(const_cast<const XMLNode*>(this)->PreviousSiblingElement( name ) );
+//    }
 
     /// Get the next (right) sibling node of this node.
-    const XMLNode*	NextSibling() const						{
-        return _next;
-    }
+//    const XMLNode*	NextSibling() const						{
+//        return _next;
+//    }
 
-    XMLNode*	NextSibling()								{
-        return _next;
-    }
+//    XMLNode*	NextSibling()								{
+//        return _next;
+//    }
 
     /// Get the next (right) sibling element of this node, with an optionally supplied name.
     const XMLElement*	NextSiblingElement( const char* name = 0 ) const;
@@ -799,7 +799,7 @@ public:
 		Returns the addThis argument or 0 if the node does not
 		belong to the same document.
     */
-    XMLNode* InsertFirstChild( XMLNode* addThis );
+//    XMLNode* InsertFirstChild( XMLNode* addThis );
     /**
     	Add a node after the specified child node.
 		If the child node is already part of the document,
@@ -808,7 +808,7 @@ public:
 		is not a child of this node, or if the node does not
 		belong to the same document.
     */
-    XMLNode* InsertAfterChild( XMLNode* afterThis, XMLNode* addThis );
+//    XMLNode* InsertAfterChild( XMLNode* afterThis, XMLNode* addThis );
 
     /**
     	Delete all the children of this node.
@@ -838,7 +838,7 @@ public:
 
     	Note: if called on a XMLDocument, this will return false.
     */
-    virtual bool ShallowEqual( const XMLNode* compare ) const = 0;
+//    virtual bool ShallowEqual( const XMLNode* compare ) const = 0;
 
     /** Accept a hierarchical visit of the nodes in the TinyXML-2 DOM. Every node in the
     	XML tree will be conditionally visited and the host will be called back
@@ -862,7 +862,7 @@ public:
     	const char* xmlcstr = printer.CStr();
     	@endverbatim
     */
-    virtual bool Accept( XMLVisitor* visitor ) const = 0;
+//    virtual bool Accept( XMLVisitor* visitor ) const = 0;
 
 protected:
     XMLNode( XMLDocument* );
@@ -908,7 +908,7 @@ class TINYXML2_LIB XMLText : public XMLNode
     friend class XMLBase;
     friend class XMLDocument;
 public:
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
     virtual XMLText* ToText()			{
         return this;
@@ -928,7 +928,7 @@ public:
 
 //Removed by mashers
     //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+//    virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     XMLText( XMLDocument* doc )	: XMLNode( doc ), _isCData( false )	{}
@@ -956,10 +956,10 @@ public:
         return this;
     }
 
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 //Removed by mashers
     //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+//    virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     XMLComment( XMLDocument* doc );
@@ -995,11 +995,11 @@ public:
         return this;
     }
 
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
 //Removed by mashers
     //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+//    virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     XMLDeclaration( XMLDocument* doc );
@@ -1031,11 +1031,11 @@ public:
         return this;
     }
 
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
 //Removed by mashers
     //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+//    virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     XMLUnknown( XMLDocument* doc );
@@ -1142,7 +1142,7 @@ private:
 
     XMLAttribute( const XMLAttribute& );	// not supported
     void operator=( const XMLAttribute& );	// not supported
-    void SetName( const char* name );
+//    void SetName( const char* name );
 
     char* ParseDeep( char* p, bool processEntities );
 
@@ -1179,7 +1179,7 @@ public:
     virtual const XMLElement* ToElement() const {
         return this;
     }
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
     /** Given an attribute name, Attribute() returns the value
     	for the attribute of that name, or null if none
@@ -1514,7 +1514,7 @@ public:
     }
     //Removed by mashers
     //virtual XMLNode* ShallowClone( XMLDocument* document ) const;
-    virtual bool ShallowEqual( const XMLNode* compare ) const;
+//    virtual bool ShallowEqual( const XMLNode* compare ) const;
 
 protected:
     char* ParseDeep( char* p, StrPair* endTag );
@@ -1528,7 +1528,7 @@ private:
     XMLAttribute* FindAttribute( const char* name ) {
         return const_cast<XMLAttribute*>(const_cast<const XMLElement*>(this)->FindAttribute( name ));
     }
-    XMLAttribute* FindOrCreateAttribute( const char* name );
+//    XMLAttribute* FindOrCreateAttribute( const char* name );
     //void LinkAttribute( XMLAttribute* attrib );
     char* ParseAttributes( char* p );
     static void DeleteAttribute( XMLAttribute* attribute );
@@ -1664,7 +1664,7 @@ public:
     	@endverbatim
     */
 //    void Print( XMLPrinter* streamer=0 ) const;
-    virtual bool Accept( XMLVisitor* visitor ) const;
+//    virtual bool Accept( XMLVisitor* visitor ) const;
 
     /**
     	Create a new Element associated with
@@ -1750,9 +1750,9 @@ public:
     //    return 0;
     //}
 
-    virtual bool ShallowEqual( const XMLNode* /*compare*/ ) const	{
-        return false;
-    }
+//    virtual bool ShallowEqual( const XMLNode* /*compare*/ ) const	{
+//        return false;
+//    }
 
 private:
     XMLDocument( const XMLDocument& );	// not supported
@@ -1866,21 +1866,21 @@ public:
         return XMLHandle( _node ? _node->LastChild() : 0 );
     }
     /// Get the last child element of this handle.
-    XMLHandle LastChildElement( const char* name = 0 )						{
-        return XMLHandle( _node ? _node->LastChildElement( name ) : 0 );
-    }
+//    XMLHandle LastChildElement( const char* name = 0 )						{
+//        return XMLHandle( _node ? _node->LastChildElement( name ) : 0 );
+//    }
     /// Get the previous sibling of this handle.
-    XMLHandle PreviousSibling()												{
-        return XMLHandle( _node ? _node->PreviousSibling() : 0 );
-    }
+//    XMLHandle PreviousSibling()												{
+//        return XMLHandle( _node ? _node->PreviousSibling() : 0 );
+//    }
     /// Get the previous sibling element of this handle.
-    XMLHandle PreviousSiblingElement( const char* name = 0 )				{
-        return XMLHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
-    }
+//    XMLHandle PreviousSiblingElement( const char* name = 0 )				{
+//        return XMLHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
+//    }
     /// Get the next sibling of this handle.
-    XMLHandle NextSibling()													{
-        return XMLHandle( _node ? _node->NextSibling() : 0 );
-    }
+//    XMLHandle NextSibling()													{
+//        return XMLHandle( _node ? _node->NextSibling() : 0 );
+//    }
     /// Get the next sibling element of this handle.
     XMLHandle NextSiblingElement( const char* name = 0 )					{
         return XMLHandle( _node ? _node->NextSiblingElement( name ) : 0 );
@@ -1943,18 +1943,18 @@ public:
     const XMLConstHandle LastChild()	const										{
         return XMLConstHandle( _node ? _node->LastChild() : 0 );
     }
-    const XMLConstHandle LastChildElement( const char* name = 0 ) const				{
-        return XMLConstHandle( _node ? _node->LastChildElement( name ) : 0 );
-    }
-    const XMLConstHandle PreviousSibling() const									{
-        return XMLConstHandle( _node ? _node->PreviousSibling() : 0 );
-    }
-    const XMLConstHandle PreviousSiblingElement( const char* name = 0 ) const		{
-        return XMLConstHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
-    }
-    const XMLConstHandle NextSibling() const										{
-        return XMLConstHandle( _node ? _node->NextSibling() : 0 );
-    }
+//    const XMLConstHandle LastChildElement( const char* name = 0 ) const				{
+//        return XMLConstHandle( _node ? _node->LastChildElement( name ) : 0 );
+//    }
+//    const XMLConstHandle PreviousSibling() const									{
+//        return XMLConstHandle( _node ? _node->PreviousSibling() : 0 );
+//    }
+//    const XMLConstHandle PreviousSiblingElement( const char* name = 0 ) const		{
+//        return XMLConstHandle( _node ? _node->PreviousSiblingElement( name ) : 0 );
+//    }
+//    const XMLConstHandle NextSibling() const										{
+//        return XMLConstHandle( _node ? _node->NextSibling() : 0 );
+//    }
     const XMLConstHandle NextSiblingElement( const char* name = 0 ) const			{
         return XMLConstHandle( _node ? _node->NextSiblingElement( name ) : 0 );
     }

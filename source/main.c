@@ -453,29 +453,13 @@ void __appExit()
 
 void showTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, int newMenuStatus, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
     if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-
         updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", filter, forceHideRegionFree, setFilterTicks);
-//        titleMenuInitialLoadDone = true;
     }
-
-//    if (forceHideRegionFree) {
-//        menuEntry_s *first = getMenuEntry(aTitleMenu, 0);
-//        strcpy(first->name, "foo");
-//        first->hidden = true;
-//    }
-    //    updateMenuIconPositions(aTitleMenu);
-    //    gotoFirstIcon(aTitleMenu);
-
 
     setMenuStatus(newMenuStatus);
 }
 
 void showSVDTTitleSelect() {
-//    if (!titleMenuInitialLoadDone && !titlemenuIsUpdating) {
-//        updateTitleMenu(&titleBrowser, &titleMenu, "Loading titles", true, false, false);
-//        titleMenuInitialLoadDone = true;
-//    }
-//
     showTitleMenu(&titleBrowser, &titleMenu, menuStatusTitleBrowser, true, false, false);
     hbmenu_state = HBMENU_TITLESELECT;
 
@@ -514,20 +498,6 @@ void closeTitleBrowser() {
 
 bool gamecardWasIn;
 bool gamecardStatusChanged;
-
-//void threadMain(void *arg) {
-//
-//    while(1) {
-//        svcWaitSynchronization(threadRequest, U64_MAX);
-//        svcClearEvent(threadRequest);
-//
-//        updateTitleMenu(&titleBrowser, &titleMenu, NULL, true, false);
-//
-//        titleMenuInitialLoadDone = true;
-//
-//        svcExitThread();
-//    }
-//}
 
 void randomiseTheme() {
     buildThemesList();
@@ -575,7 +545,10 @@ void handleMenuSelection() {
 
             // if we get here, we aint found shit
             // if appropriate, let user select target title
-            if(me->descriptor.selectTargetProcess) hbmenu_state = HBMENU_TITLESELECT;
+            if(me->descriptor.selectTargetProcess) {
+                showSVDTTitleSelect();
+                //hbmenu_state = HBMENU_TITLESELECT;
+            }
             else hbmenu_state = HBMENU_TITLETARGET_ERROR;
         }
 

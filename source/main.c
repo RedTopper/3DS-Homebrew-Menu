@@ -434,7 +434,7 @@ void renderFrame()
     drawBackground();
 
     if (showLogo) {
-        gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)logo_bin, 20, 214, 0, 400-214);
+        gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)logo_bin, 54, 161, 0, 400-161);
     }
 
     drawStatusBar(wifiStatus, charging, batteryLevel);

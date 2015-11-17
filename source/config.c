@@ -40,6 +40,7 @@
 #include "settingsIconUpdate_bin.h"
 #include "settingsIconWaitForSounds_bin.h"
 #include "settingsIconHansTitleBooting_bin.h"
+#include "settingsIconShowDate_bin.h"
 
 #include "titles.h"
 #include "themegfx.h"
@@ -484,6 +485,8 @@ void initConfigMenu() {
     addSettingsMenuEntry("App sorting", "Toggle alphabetic sorting in the main menu grid", (u8*)settingsIconAlphaSort_bin, &sortAlpha, &settingsMenu, &settingsToggleSortAlpha, NULL, NULL);
 
     addSettingsMenuEntry("24 hour clock", "Displays the clock in 24 hour format", (u8*)settingsIconClock24_bin, &clock24, &settingsMenu, &settingsToggleBool, &clock24, NULL);
+
+    addSettingsMenuEntry("Show date", "Displays the date on the status bar", (u8*)settingsIconShowDate_bin, &showDate, &settingsMenu, &settingsToggleBool, &showDate, NULL);
 
     addSettingsMenuEntry("Background title loading", "Load title menu entries in the background. Loading begins when the title menu is opened. May be unstable with many titles", (u8*)settingsIconPreloadTitles_bin, &preloadTitles, &settingsMenu, &settingsToggleBool, &preloadTitles, NULL);
 

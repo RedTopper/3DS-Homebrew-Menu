@@ -448,6 +448,7 @@ void initMenu(menu_s* m)
     sortAlpha = getConfigBoolForKey("sortAlpha", false, configTypeMain);
     totalRows = getConfigIntForKey("totalRows", 3, configTypeMain);
     clock24 = getConfigBoolForKey("clock24", false, configTypeMain);
+    showDate = getConfigBoolForKey("showDate", true, configTypeMain);
     waterAnimated = getConfigBoolForKey("animatedWater", true, configTypeMain);
     showAppBackgrounds = getConfigBoolForKey("showAppBackgrounds", true, configTypeMain);
     wrapScrolling = getConfigBoolForKey("wrapScrolling", true, configTypeMain);
@@ -1165,6 +1166,7 @@ void quitSettings(menu_s* m) {
     setConfigBool("sortAlpha", sortAlpha, configTypeMain);
     setConfigInt("totalRows", totalRows, configTypeMain);
     setConfigBool("clock24", clock24, configTypeMain);
+    setConfigBool("showDate", showDate, configTypeMain);
     setConfigBool("animatedWater", waterAnimated, configTypeMain);
     setConfigBool("showAppBackgrounds", showAppBackgrounds, configTypeMain);
     setConfigBool("wrapScrolling", wrapScrolling, configTypeMain);

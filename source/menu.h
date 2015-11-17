@@ -134,7 +134,6 @@ typedef struct
 	s32 currentScrollBarSize;
 	s32 scrollBarPos;
 	touchPosition previousTouch, firstTouch;
-	u64 touchDownTime;
 	bool atEquilibrium;
     int totalPages, rowPosition, colPosition, pagePosition; //totalRows
 }menu_s;

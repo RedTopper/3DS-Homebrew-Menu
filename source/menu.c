@@ -1413,10 +1413,6 @@ void enterCornerButtons(menu_s* m) {
     m->selectedEntry = -1;
 }
 
-void exitCornerButtons(menu_s* m) {
-
-}
-
 bool updateGrid(menu_s* m) {
     if (transitionFromPage > -1) {
         return false;
@@ -1589,11 +1585,20 @@ bool updateGrid(menu_s* m) {
         checkGotoPreviousPage(m, &move, true);
     }
 
+    if(hidKeysDown()&KEY_SELECT) {
+        if (menuStatus == menuStatusIcons || menuStatus == menuStatusHomeMenuApps) {
+            if (dPadSelectedToolbarButton == -1) {
+                bootOptionsMenu = m;
+                alertSelectedButton = 0;
+                setMenuStatus(menuStatusBootOptions);
+            }
+        }
+    }
+
     u16 oldEntry=m->selectedEntry;
 
     if (hidKeysDown()&KEY_TOUCH && !touchesAreBlocked) {
         m->firstTouch=touch;
-        m->touchDownTime = osGetTime();
 
         int newRow = 0;
         int newCol = 0;
@@ -1606,8 +1611,8 @@ bool updateGrid(menu_s* m) {
             dPadSelectedToolbarButton = -1;
 
             if(m->selectedEntry==i) {
-//                audioPlay(&themeSoundSelect, false);
-//                return true;
+                audioPlay(&themeSoundSelect, false);
+                return true;
             }
 
             else {
@@ -1634,34 +1639,34 @@ bool updateGrid(menu_s* m) {
 
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
 
-        if (menuStatus == menuStatusIcons || menuStatus == menuStatusHomeMenuApps) {
-            u64 currentTime = osGetTime();
-            u64 timeDiff = (currentTime - m->touchDownTime)/1000;
-
-            if (timeDiff > 1) {
-                int i=0;
-                bool gotAppMatch = touchWithinMenuEntryIcon(m, &(m->previousTouch), &i, NULL, NULL);
-
-                if (gotAppMatch) {
-                    bootOptionsMenu = m;
-                    alertSelectedButton = 0;
-                    setMenuStatus(menuStatusBootOptions);
-                }
-            }
-        }
+//        if (menuStatus == menuStatusIcons || menuStatus == menuStatusHomeMenuApps) {
+//            u64 currentTime = osGetTime();
+//            u64 timeDiff = (currentTime - m->touchDownTime)/1000;
+//
+//            if (timeDiff > 1) {
+//                int i=0;
+//                bool gotAppMatch = touchWithinMenuEntryIcon(m, &(m->previousTouch), &i, NULL, NULL);
+//
+//                if (gotAppMatch) {
+//                    bootOptionsMenu = m;
+//                    alertSelectedButton = 0;
+//                    setMenuStatus(menuStatusBootOptions);
+//                }
+//            }
+//        }
     }
     else if (hidKeysUp()&KEY_TOUCH && !touchesAreBlocked) {
         btnListCheckHighlight(&toolbarButtons, touchX, touchY);
         btnListCheckRunCallback(&toolbarButtons, m->previousTouch.px, m->previousTouch.py);
 
-        int i=0;
-
-        bool gotAppMatch = touchWithinMenuEntryIcon(m, &(m->previousTouch), &i, NULL, NULL);
-
-        if (gotAppMatch && m->selectedEntry==i) {
-            audioPlay(&themeSoundSelect, false);
-            return true;
-        }
+//        int i=0;
+//
+//        bool gotAppMatch = touchWithinMenuEntryIcon(m, &(m->previousTouch), &i, NULL, NULL);
+//
+//        if (gotAppMatch && m->selectedEntry==i) {
+//            audioPlay(&themeSoundSelect, false);
+//            return true;
+//        }
     }
 
     if (move + m->selectedEntry < 0) {

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include "statusbar.h"
 #include "gfx.h"
@@ -20,6 +21,8 @@
 
 #include "MAGFX.h"
 #include "menu.h"
+#include "logText.h"
+
 
 u8* batteryLevels[] = {
 	(u8*)battery_lowest_bin,
@@ -38,17 +41,6 @@ u8 topBar[18*400*4];
 bool statusbarNeedsUpdate = true;
 
 u64 lastTimeInSeconds = 0; //Used for calculating if the lid has been shut.
-
-/*
-void randomiseThemeToolbar() { //No different then main.c's
-    buildThemesList();
-    int minimum_number = 2;
-    int max_number = themesMenu.numEntries - 1;
-    int r = rand() % (max_number + 1 - minimum_number) + minimum_number;
-    menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
-    setTheme(randomEntry->executablePath);
-}
-*/
 
 void drawStatusBar(bool wifiStatus, bool charging, int batteryLevel)
 {
@@ -73,37 +65,44 @@ void drawStatusBar(bool wifiStatus, bool charging, int batteryLevel)
 		}
 	}
 	lastTimeInSeconds = timeInSeconds;
-	u64 dayTime = timeInSeconds % SECONDS_IN_DAY;
-	u8 hour = dayTime / SECONDS_IN_HOUR;
-	u8 min = (dayTime % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
-	u8 seconds = dayTime % SECONDS_IN_MINUTE;
 
-    char *ampm = "";
+    u64 convert = ( (70*365+17) * 86400LLU );
+    time_t now = timeInSeconds- convert;
+    struct tm *ts = localtime(&now);
+    char datestring[80];
 
-    if (!clock24) {
-        if (hour == 12) {
-            ampm = " pm";
-        }
-        else if (hour == 0) {
-            hour = 12;
-            ampm = " am";
-        }
-        else if (hour > 12) {
-            hour -= 12;
-            ampm = " pm";
-        }
-        else {
-            ampm = " am";
-        }
+    int nMonth = ts->tm_mon;
+    char * month;
+    if (nMonth == 0) month = "Jan";
+    else if (nMonth == 1) month = "Feb";
+    else if (nMonth == 2) month = "Mar";
+    else if (nMonth == 3) month = "Apr";
+    else if (nMonth == 4) month = "May";
+    else if (nMonth == 5) month = "Jun";
+    else if (nMonth == 6) month = "Jul";
+    else if (nMonth == 7) month = "Aug";
+    else if (nMonth == 8) month = "Sep";
+    else if (nMonth == 9) month = "Oct";
+    else if (nMonth == 10) month = "Nov";
+    else if (nMonth == 11) month = "Dec";
+    else month = "";
+
+    int hour = ts->tm_hour;
+
+    char * ampm;
+
+    if (clock24) ampm = "";
+    else {
+        ampm = (hour > 12) ? " pm" : " am";
+        if (hour > 12) hour -= 12;
     }
+
+    sprintf(datestring, "%02d:%02d:%02d%s, %02d %s %d", hour, ts->tm_min, ts->tm_sec, ampm, ts->tm_mday, month, ts->tm_year+1900);
 
     rgbColour *light = lightTextColour();
 
-	char timeString[13];
-    memset(timeString, 0, 11);
-	sprintf(timeString, "%02d:%02d:%02d%s", hour, min, seconds, ampm);
-    int textWidth = MATextWidthInPixels(timeString, &MAFontRobotoRegular10);
-    MADrawText(GFX_TOP, GFX_LEFT, 240-20, (400/2) - (textWidth/2), timeString, &MAFontRobotoRegular10, light->r, light->g, light->b);
+    int textWidth = MATextWidthInPixels(datestring, &MAFontRobotoRegular10);
+    MADrawText(GFX_TOP, GFX_LEFT, 240-20, (400/2) - (textWidth/2), datestring, &MAFontRobotoRegular10, light->r, light->g, light->b);
 
 	if(wifiStatus)
 	{

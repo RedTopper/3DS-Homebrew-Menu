@@ -499,15 +499,6 @@ void closeTitleBrowser() {
 bool gamecardWasIn;
 bool gamecardStatusChanged;
 
-void randomiseTheme() {
-    buildThemesList();
-    int minimum_number = 2;
-    int max_number = themesMenu.numEntries - 1;
-    int r = rand() % (max_number + 1 - minimum_number) + minimum_number;
-    menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
-    setTheme(randomEntry->executablePath);
-}
-
 void handleMenuSelection() {
     menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
     if(me && !strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)

@@ -214,6 +214,15 @@ void buildThemesList() {
     free(contents);
 }
 
+void randomiseTheme() {
+    buildThemesList();
+    int minimum_number = 2;
+    int max_number = themesMenu.numEntries - 1;
+    int r = rand() % (max_number + 1 - minimum_number) + minimum_number;
+    menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
+    setTheme(randomEntry->executablePath);
+}
+
 void addSettingsMenuEntry(char * name, char * description, u8 * icon, bool * showTick, menu_s *m,  void (*callback)(), void *callbackObject1, void *callbackObject2) {
     static menuEntry_s settingsMenuEntry;
 

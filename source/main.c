@@ -232,7 +232,15 @@ void renderFrame()
             //about to reboot
             char buttonTitles[3][32];
 
+            bool drawRebootAlert = true;
+
             if (startRebootProcess) {
+                if (themeImageExists(themeImageTopWallpaperReboot) && themeImageExists(themeImageBottomWallpaperReboot)) {
+                    drawThemeImage(themeImageTopWallpaperReboot, GFX_TOP, 0, 0);
+                    drawThemeImage(themeImageBottomWallpaperReboot, GFX_BOTTOM, 0, 0);
+                    drawRebootAlert = false;
+                }
+
                 strcpy(buttonTitles[0], "Rebooting...");
             }
             else {
@@ -242,7 +250,10 @@ void renderFrame()
             strcpy(buttonTitles[1], "Power off");
             strcpy(buttonTitles[2], "Back");
 
-            int alertResult = drawAlert("Reboot", "You're about to reboot your console into the Home Menu.", NULL, 3, buttonTitles);
+            int alertResult = -1;
+
+            if (drawRebootAlert)
+                alertResult = drawAlert("Reboot", "You're about to reboot your console into the Home Menu.", NULL, 3, buttonTitles);
 
             if (startRebootProcess) {
                 doReboot();

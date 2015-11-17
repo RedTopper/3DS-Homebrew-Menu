@@ -34,6 +34,9 @@ extern int themeImageBottomWallpaperNonGrid;
 extern int themeImageSplashTop;
 extern int themeImageSplashBottom;
 
+extern int themeImageTopWallpaperReboot;
+extern int themeImageBottomWallpaperReboot;
+
 extern bool themeHasProgressWheel;
 extern int numProgressWheelImages;
 

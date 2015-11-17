@@ -43,6 +43,9 @@ int themeImageBottomWallpaperNonGrid = 20;
 int themeImageSplashTop = 21;
 int themeImageSplashBottom = 22;
 
+int themeImageTopWallpaperReboot = 23;
+int themeImageBottomWallpaperReboot = 24;
+
 bool themeHasProgressWheel = false;
 
 typedef struct themeImage {
@@ -52,7 +55,7 @@ typedef struct themeImage {
     int w, h;
 } themeImage;
 
-#define maxThemeImages 23
+#define maxThemeImages 25
 themeImage themeImages[maxThemeImages];
 
 #define maxProgressWheelImages 16
@@ -167,6 +170,12 @@ void initThemeImages() {
 
     sprintf(path, "%swallpaperbottomnongrid.png", themePath);
     loadThemeImage(path, "Bottom wallpaper (non grid)", 320, 240, NULL, themeImageBottomWallpaperNonGrid, themeImages);
+
+    sprintf(path, "%swallpaperbottomreboot.png", themePath);
+    loadThemeImage(path, "Bottom wallpaper (reboot)", 320, 240, NULL, themeImageBottomWallpaperReboot, themeImages);
+
+    sprintf(path, "%swallpapertopreboot.png", themePath);
+    loadThemeImage(path, "Top wallpaper (reboot)", 400, 240, NULL, themeImageTopWallpaperReboot, themeImages);
 
 
 

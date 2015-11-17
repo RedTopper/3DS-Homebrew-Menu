@@ -188,14 +188,14 @@ void renderFrame()
     gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
 
     //Wallpaper
-    if (themeImageExists(themeImageTopWallpaperInfo) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || showRebootMenu)) {
+    if (themeImageExists(themeImageTopWallpaperInfo) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || menuStatus == menuStatusHansMissingError || menuStatus == menuStatusBootOptions || hbmenu_state == HBMENU_NETLOADER_ACTIVE || showRebootMenu || !sdmcCurrent)) {
         drawThemeImage(themeImageTopWallpaperInfo, GFX_TOP, 0, 0);
     }
     else if (themeImageExists(themeImageTopWallpaper)) {
         drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
     }
 
-    if (themeImageExists(themeImageBottomWallpaperNonGrid) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || showRebootMenu)) {
+    if (themeImageExists(themeImageBottomWallpaperNonGrid) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || menuStatus == menuStatusHansMissingError || menuStatus == menuStatusBootOptions || hbmenu_state == HBMENU_NETLOADER_ACTIVE || showRebootMenu || !sdmcCurrent)) {
         drawThemeImage(themeImageBottomWallpaperNonGrid, GFX_BOTTOM, 0, 0);
     }
 

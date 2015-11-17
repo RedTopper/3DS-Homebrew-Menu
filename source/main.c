@@ -121,6 +121,18 @@ void launchSVDTFromTitleMenu() {
 }
 
 void exitServices() {
+    if (titlemenuIsUpdating) {
+        //Stop the title menu loading process, causing the thread to exit
+        cancelTitleLoading();
+
+        //Wait a little bit (two seconds) longer to allow the thread to actually terminate
+        svcSleepThread(2000000000ULL);
+    }
+
+    if (titleThreadNeedsRelease) {
+        releaseTitleThread();
+    }
+
     // cleanup whatever we have to cleanup
 	audio_stop();
 	csndExit();
@@ -1007,18 +1019,6 @@ int main(int argc, char *argv[])
 
     if (touchThreadNeedsRelease) {
         releaseTouchThread();
-    }
-
-    if (titlemenuIsUpdating) {
-        //Stop the title menu loading process, causing the thread to exit
-        cancelTitleLoading();
-
-        //Wait a little bit (two seconds) longer to allow the thread to actually terminate
-        svcSleepThread(2000000000ULL);
-    }
-
-    if (titleThreadNeedsRelease) {
-        releaseTitleThread();
     }
 
     exitServices();

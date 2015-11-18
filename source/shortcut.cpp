@@ -82,7 +82,7 @@ Result loadShortcut(shortcut_s* s, char* path)
         loadXmlString(&s->author, shortcut, "author");
 
 	} else return -4;
-    
+
     return 0;
 }
 

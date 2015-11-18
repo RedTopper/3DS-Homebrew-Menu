@@ -99,7 +99,7 @@ void addExecutableToMenu(menu_s* m, char* execPath)
 	xmlPath[l-2] = 'l';
 	xmlPath[l-3] = 'm';
 	xmlPath[l-4] = 'x';
-    
+
 	if(fileExists(xmlPath, &sdmcArchive)) loadDescriptor(&tmpEntry.descriptor, xmlPath);
 
 	addMenuEntryCopy(m, &tmpEntry);
@@ -132,7 +132,7 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	if(!icon && !(icon=fileExists(iconPath, &sdmcArchive)))snprintf(iconPath, 128, "%s/%s.icn", path, &path[l+1]);
 
 	int ret=loadFile(iconPath, &tmpSmdh, &sdmcArchive, sizeof(smdh_s));
-	
+
 	if(!ret)
 	{
 		initEmptyMenuEntry(&tmpEntry);
@@ -143,7 +143,7 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	if(ret)initMenuEntry(&tmpEntry, execPath, &path[l+1], execPath, "", (u8*)installerIcon_bin);
 
 	snprintf(xmlPath, 128, "%s/descriptor.xml", path);
-    
+
 	if(!fileExists(xmlPath, &sdmcArchive))snprintf(xmlPath, 128, "%s/%s.xml", path, &path[l+1]);
 	loadDescriptor(&tmpEntry.descriptor, xmlPath);
 
@@ -153,11 +153,11 @@ void addDirectoryToMenu(menu_s* m, char* path)
 
 void scanHomebrewDirectory(menu_s* m, char* path) {
     if(!path)return;
-    
+
     Handle dirHandle;
     FS_path dirPath=FS_makePath(PATH_CHAR, path);
     FSUSER_OpenDirectory(&dirHandle, sdmcArchive, dirPath);
-    
+
     static char fullPath[1024][1024];
     u32 entriesRead;
     int totalentries = 0;
@@ -189,12 +189,12 @@ void scanHomebrewDirectory(menu_s* m, char* path) {
             }
         }
     }while(entriesRead);
-    
+
     FSDIR_Close(dirHandle);
-    
+
     bool sortAlpha = getConfigBoolForKey("sortAlpha", false, configTypeMain);
     addMenuEntries(fullPath, totalentries, strlen(path), m, sortAlpha);
-    
+
     updateMenuIconPositions(m);
 }
 
@@ -218,14 +218,14 @@ void createMenuEntryShortcut(menu_s* m, shortcut_s* s)
     static smdh_s tmpSmdh;
 
     char* execPath = s->executable;
-    
+
     if(!fileExists(execPath, &sdmcArchive))return;
 
     int i, l=-1; for(i=0; execPath[i]; i++) if(execPath[i]=='/') l=i;
 
     char* iconPath = s->icon;
     int ret = loadFile(iconPath, &tmpSmdh, &sdmcArchive, sizeof(smdh_s));
-    
+
     if(!ret)
     {
         initEmptyMenuEntry(&tmpEntry);
@@ -234,7 +234,7 @@ void createMenuEntryShortcut(menu_s* m, shortcut_s* s)
     }
 
     if(ret) initMenuEntry(&tmpEntry, execPath, &execPath[l+1], execPath, "Unknown publisher", (u8*)installerIcon_bin);
-    
+
     if(s->name) strncpy(tmpEntry.name, s->name, ENTRY_NAMELENGTH);
     if(s->description) strncpy(tmpEntry.description, s->description, ENTRY_DESCLENGTH);
     if(s->author) strncpy(tmpEntry.author, s->author, ENTRY_AUTHORLENGTH);
@@ -265,13 +265,13 @@ int compareStrings(const void *stringA, const void *stringB) {
 
 directoryContents * contentsOfDirectoryAtPath(char * path, bool dirsOnly) {
     directoryContents * contents = malloc(sizeof(directoryContents));
-    
+
     int numPaths = 0;
-    
+
     Handle dirHandle;
     FS_path dirPath=FS_makePath(PATH_CHAR, path);
     FSUSER_OpenDirectory(&dirHandle, sdmcArchive, dirPath);
-    
+
     u32 entriesRead;
     do
     {
@@ -291,11 +291,11 @@ directoryContents * contentsOfDirectoryAtPath(char * path, bool dirsOnly) {
             }
         }
     }while(entriesRead);
-    
+
     FSDIR_Close(dirHandle);
-    
+
 //    qsort(contents->paths, numPaths, 1024, compareStrings);
-    
+
     contents->numPaths = numPaths;
     return contents;
 }

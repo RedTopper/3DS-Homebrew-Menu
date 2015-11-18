@@ -510,8 +510,22 @@ void closeTitleBrowser() {
 bool gamecardWasIn;
 bool gamecardStatusChanged;
 
+//bool endsWith(const char *str, const char *suffix) {
+//    if (!str || !suffix)
+//        return false;
+//    size_t lenstr = strlen(str);
+//    size_t lensuffix = strlen(suffix);
+//    if (lensuffix >  lenstr)
+//        return false;
+//    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
+//}
+
 void handleMenuSelection() {
+//    logText("Handle menu selection");
+
     menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
+//    logText(me->executablePath);
+
     if(me && !strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)
     {
         regionFreeUpdate();
@@ -519,10 +533,9 @@ void handleMenuSelection() {
         if (regionFreeGamecardIn) {
             die = true;
         }
-    }else
+    }
+    else
     {
-
-
         // if appropriate, look for specified titles in list
         if(me->descriptor.numTargetTitles)
         {
@@ -542,7 +555,9 @@ void handleMenuSelection() {
             {
                 targetProcessId = -2;
                 target_title = *ret;
+//                logText("Die 1");
                 die = true;
+                return;
             }
 
             // if we get here, we aint found shit
@@ -560,6 +575,7 @@ void handleMenuSelection() {
                 showSVDTTitleSelect();
             }
             else {
+//                logText("Die 2");
                 die = true;
             }
         }
@@ -731,6 +747,7 @@ int main(int argc, char *argv[])
 
 	while(aptMainLoop()) {
         if (die || dieImmediately) {
+//            logText("Die");
             break;
         }
 
@@ -971,9 +988,15 @@ int main(int argc, char *argv[])
         svcSleepThread(delayNs);
 	}
 
+//	logText("Left main loop");
+
     if (dieImmediately) {
+//        logText("Die immediately");
+
         return 0;
     }
+
+//    logText("About to try to boot app");
 
     menuEntry_s* me;
 
@@ -996,8 +1019,6 @@ int main(int argc, char *argv[])
         releaseTouchThread();
     }
 
-    exitServices();
-
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
         if (hansTitleBoot) {
             if (me->isRegionFreeEntry) {
@@ -1015,16 +1036,20 @@ int main(int argc, char *argv[])
             targetProcessId = -2;
 
             regionFreeExit();
+//            logText("About to boot app using HANS");
+            exitServices();
             return bootApp("/gridlauncher/hans/hans.3dsx", NULL, HansArg);
         }
         else {
+//            logText("About to boot app using R4");
+            exitServices();
             return regionFreeRun();
+            //return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
         }
-
-        return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
     }
 
 	regionFreeExit();
-
+//    logText("About to boot app normally");
+    exitServices();
 	return bootApp(me->executablePath, &me->descriptor.executableMetadata, me->arg);
 }

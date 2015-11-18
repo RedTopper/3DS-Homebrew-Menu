@@ -52,6 +52,25 @@ int drawAlert(char * title, char * body, u8 * image, int numButtons,  char butto
     rgbColour * dark = darkTextColour();
 
     MADrawTextWrap(GFX_TOP, GFX_LEFT, topOffset, leftOffset, body, &font, dark->r, dark->g, dark->b, totalWidthForText-(2*leftOffset), 0);
+    //MADrawTextWrap(GFX_TOP, GFX_LEFT, topOffset, leftOffset, body, &font, dark->r, dark->g, dark->b, totalWidthForText, 0);
+
+    /*
+        WEIRD BUG ALERT!
+
+        It was discovered that some alerts did not display their body text.
+        In the process of trying to work out what was happening, I created
+        a string containing the number of lines drawn by MADrawTextWrap and
+        drew this on the screen so I could see what was actually happening.
+        When I did this, the body text started appearing as well as the text
+        showing how many lines it had drawn. I then found that it was the
+        process of creating a string and putting something in it which was
+        allowing the text to be drawn. I actually have no idea why this fixes
+        the bug with drawing the body text. It feels like a memory management
+        thing, but I can't figure it out.
+    */
+
+    char s[8];
+    strcpy(s, "5");
 
     int screenHeight = 240;
     int screenWidth = 320;

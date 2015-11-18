@@ -253,7 +253,7 @@ void renderFrame()
             int alertResult = -1;
 
             if (drawRebootAlert)
-                alertResult = drawAlert("Reboot", "You're about to reboot your console into the Home Menu.", NULL, 3, buttonTitles);
+                alertResult = drawAlert("Power options", "Reboot:\nGo back to the system Home Menu\n\nPower off:\nShut down your 3DS", NULL, 3, buttonTitles);
 
             if (startRebootProcess) {
                 doReboot();
@@ -509,16 +509,6 @@ void closeTitleBrowser() {
 
 bool gamecardWasIn;
 bool gamecardStatusChanged;
-
-//bool endsWith(const char *str, const char *suffix) {
-//    if (!str || !suffix)
-//        return false;
-//    size_t lenstr = strlen(str);
-//    size_t lensuffix = strlen(suffix);
-//    if (lensuffix >  lenstr)
-//        return false;
-//    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
-//}
 
 void handleMenuSelection() {
 //    logText("Handle menu selection");

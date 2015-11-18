@@ -1345,6 +1345,10 @@ int indexOfFirstVisibleMenuEntryOnPage(int page, menu_s* m) {
         first++;
     }
 
+    else if (!show3DSFolder && menuStatus == menuStatusFolders) {
+        first++;
+    }
+
     if (first >= m->numEntries) {
         first = m->numEntries - 1;
     }

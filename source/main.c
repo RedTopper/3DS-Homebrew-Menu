@@ -40,9 +40,7 @@
 u8 sdmcCurrent = 0;
 u64 nextSdCheck = 0;
 
-u32 wifiStatus = 0;
-u8 batteryLevel = 5;
-u8 charging = 0;
+
 
 bool die = false;
 bool dieImmediately = false;

@@ -16,6 +16,9 @@
 #include "filesystem.h"
 #include "netloader.h"
 #include "alert.h"
+#include "themegfx.h"
+#include "colours.h"
+#include "statusbar.h"
 
 char *netloadedPath = NULL;
 char *netloaded_commandline = NULL;
@@ -41,15 +44,44 @@ static void netloader_socket_error(const char *func, int err) {
 
 static char progress[256];
 
+void drawNetloaderBackground() {
+    rgbColour * bgc = backgroundColour();
+
+    gfxFillColor(GFX_BOTTOM, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
+    gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
+
+    //Wallpaper
+    if (themeImageExists(themeImageTopWallpaperInfo)) {
+        drawThemeImage(themeImageTopWallpaperInfo, GFX_TOP, 0, 0);
+    }
+    else if (themeImageExists(themeImageTopWallpaper)) {
+        drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
+    }
+
+    if (themeImageExists(themeImageBottomWallpaperNonGrid)) {
+        drawThemeImage(themeImageBottomWallpaperNonGrid, GFX_BOTTOM, 0, 0);
+    }
+
+    else if (themeImageExists(themeImageBottomWallpaper)) {
+        drawThemeImage(themeImageBottomWallpaper, GFX_BOTTOM, 0, 0);
+    }
+
+    drawStatusBar(wifiStatus, charging, batteryLevel);
+}
+
 static int netloader_draw_progress(void) {
 	char info[1024];
 	sprintf(info, "Transferring: %s\n\n%s",netloadedPath,progress);
 
+    drawNetloaderBackground();
     drawAlert("NetLoader", info, NULL, 0, NULL);
-	gfxFlushBuffers();
-	gfxSwapBuffers();
 
-	gspWaitForVBlank();
+    gfxFlip();
+
+//	gfxFlushBuffers();
+//	gfxSwapBuffers();
+//
+//	gspWaitForVBlank();
 
 	return 0;
 }
@@ -167,6 +199,7 @@ static int decompress(int sock, FILE *fh, size_t filesize) {
 
 
 int netloader_draw_error(void) {
+    drawNetloaderBackground();
     drawAlert("NetLoader error", errbuf, NULL, 0, NULL);
 	return 0;
 }

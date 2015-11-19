@@ -23,6 +23,9 @@
 #include "menu.h"
 #include "logText.h"
 
+u32 wifiStatus = 0;
+u8 batteryLevel = 5;
+u8 charging = 0;
 
 u8* batteryLevels[] = {
 	(u8*)battery_lowest_bin,

@@ -69,7 +69,7 @@ int drawAlert(char * title, char * body, u8 * image, int numButtons,  char butto
         thing, but I can't figure it out.
     */
 
-    char s[8];
+    char s[32];
     strcpy(s, "5");
 
     int screenHeight = 240;

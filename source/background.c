@@ -189,4 +189,3 @@ void drawBackground()
         gfxDrawWave(GFX_TOP, GFX_LEFT, waterColor, waterBorderColor, lowerLevel, 20, 0, (gfxWaveCallback)&evaluateWater, &waterEffect);
     }
 }
-

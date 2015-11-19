@@ -386,6 +386,8 @@ void loadThemeConfig() {
     panelLeftOffsetTop = getConfigIntForKey("panelLeftOffsetTop", 0, configTypeTheme);
 
     waitForSounds = getConfigBoolForKey("waitForSounds", true, configTypeTheme);
+
+    logoType = getConfigIntForKey("logoType", logoTypeDefault, configTypeTheme);
 }
 
 void initMenu(menu_s* m)
@@ -1179,7 +1181,7 @@ void quitSettings(menu_s* m) {
     setConfigBool("hansTitleBoot", hansTitleBoot, configTypeMain);
 
     setConfigBool("waterEnabled", waterEnabled, configTypeTheme);
-    setConfigBool("showLogo", showLogo, configTypeTheme);
+    setConfigInt("logoType", logoType, configTypeTheme);
 
     setConfigInt("panelAlphaTop", panelAlphaTop, configTypeTheme);
     setConfigInt("panelAlphaBottom", panelAlphaBottom, configTypeTheme);

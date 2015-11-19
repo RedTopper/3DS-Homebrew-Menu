@@ -29,6 +29,13 @@ extern "C" {
 #define configTypeMain 10
 #define configTypeTheme 20
 
+#define logoTypeDefault 1
+#define logoTypeCompact 2
+#define logoTypeClassic 3
+#define logoTypeNone 4
+
+extern int logoType;
+
 //#define CONFIG_PATH_MAIN "sdmc:/hbl.cfg"
 //#define CONFIG_PATH_THEME "sdmc:/hbltheme.cfg"
 

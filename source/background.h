@@ -14,7 +14,6 @@
 extern bool hideWaves;
 extern bool waterAnimated;
 extern bool waterEnabled;
-extern bool showLogo;
 extern bool staticWaterDrawn;
 extern bool keysExciteWater;
 

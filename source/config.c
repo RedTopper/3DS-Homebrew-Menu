@@ -64,6 +64,8 @@ bool randomTheme = false;
 
 bool themesLoaded = false;
 
+int logoType = logoTypeDefault;
+
 void loadConfigWithType(int configType);
 
 void setTheme(char * themeName) {
@@ -363,6 +365,12 @@ void initGridSettingsMenu() {
 
 }
 
+void cycleLogoType() {
+    logoType++;
+    if (logoType > logoTypeNone)
+        logoType = logoTypeDefault;
+}
+
 bool themeSettingsMenuNeedsInit = true;
 
 void initThemeSettingsMenu() {
@@ -393,7 +401,7 @@ void initThemeSettingsMenu() {
     addSettingsMenuEntry("Top panels", "Show panels behind text to make it easier to read against wallpaper", (u8*)settingsIconPanelTop_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusPanelSettingsTop, NULL);
     addSettingsMenuEntry("Bottom panels", "Show panels behind text to make it easier to read against wallpaper", (u8*)settingsIconPanelBottom_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusPanelSettingsBottom, NULL);
 
-    addSettingsMenuEntry("Logo", "Show the 'Homebrew Launcher' logo at the bottom of the screen", (u8*)settingsIconLogo_bin, &showLogo, &themeSettingsMenu, &settingsToggleBool, &showLogo, NULL);
+    addSettingsMenuEntry("Logo", "Show a logo at the bottom of the screen. Tap to cycle between Gridlauncher default, Gridlauncher compact, HBL classic and None.", (u8*)settingsIconLogo_bin, NULL, &themeSettingsMenu, &cycleLogoType, NULL, NULL);
 
     addSettingsMenuEntry("Theme", "Select which theme to use in the launcher", (u8*)settingsIconTheme_bin, NULL, &themeSettingsMenu, &settingsSetMenuStatus, &menuStatusThemeSelect, NULL);
 

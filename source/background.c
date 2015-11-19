@@ -27,7 +27,6 @@
 bool hideWaves = false;
 bool waterAnimated = true;
 bool waterEnabled = true;
-bool showLogo = true;
 bool keysExciteWater = true;
 
 //static bubble_t bubbles[BUBBLE_COUNT];
@@ -36,8 +35,6 @@ static int backgroundCnt;
 
 void initBackground(void)
 {
-    showLogo = getConfigBoolForKey("showLogo", true, configTypeTheme);
-    
 //	int i = 0;
 //	for(i = 0;i < BUBBLE_COUNT;i += 1)
 //	{
@@ -81,8 +78,8 @@ void initBackground(void)
 //	for(i = 0;i < BUBBLE_COUNT;i += 1)
 //	{
 //		// Then draw (no point in separating more because then we go through them all twice).
-//		gfxDrawSpriteAlphaBlendFade((bubbles[i].y >= 240) ? (GFX_TOP) : (GFX_BOTTOM), GFX_LEFT, (u8*)bubble_bin, 32, 32, 
-//			((bubbles[i].y >= 240) ? -64 : 0) + bubbles[i].y % 240, 
+//		gfxDrawSpriteAlphaBlendFade((bubbles[i].y >= 240) ? (GFX_TOP) : (GFX_BOTTOM), GFX_LEFT, (u8*)bubble_bin, 32, 32,
+//			((bubbles[i].y >= 240) ? -64 : 0) + bubbles[i].y % 240,
 //			((bubbles[i].y >= 240) ? 0 : -40) + bubbles[i].x, bubbles[i].fade);
 //	}
 //}
@@ -97,7 +94,7 @@ void updateBackground(void)
     if (!waterAnimated) {
         return;
     }
-    
+
 //	int i;
 //	for(i = 0;i < BUBBLE_COUNT;i += 1)
 //	{
@@ -121,7 +118,7 @@ void updateBackground(void)
         }
 
     }
-    
+
 	updateWaterEffect(&waterEffect);
 
 	backgroundCnt++;
@@ -145,7 +142,7 @@ void drawBackground()
     if (waterEnabled) {
         rgbColour * waterTop = waterTopColour();
         rgbColour * waterBottom = waterBottomColour();
-        
+
         if (!waterAnimated) {
             if (hideWaves) {
                 if (staticWaterX > -70) {
@@ -157,20 +154,20 @@ void drawBackground()
                     staticWaterX += 2;
                 }
             }
-            
-            
+
+
             if (!staticWaterDrawn) {
                 MAGFXImageWithRGBAndAlphaMask(waterBottom->r, waterBottom->g, waterBottom->b, (u8*)stillwater_bin, tintedWater, 70, 400);
                 MAGFXImageWithRGBAndAlphaMask(waterTop->r, waterTop->g, waterTop->b, (u8*)stillwaterborder_bin, tintedWaterBorder, 70, 400);
                     staticWaterDrawn = true;
             }
-            
-            
+
+
             gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, tintedWater, 70, 400, staticWaterX, 0, translucencyWater);
             gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, tintedWaterBorder, 70, 400, staticWaterX, 0, translucencyWater);
             return;
         }
-        
+
         if (hideWaves) {
             if (lowerLevel > 0) {
                 topLevel -= 1;
@@ -183,11 +180,11 @@ void drawBackground()
                 lowerLevel += 1;
             }
         }
-        
-        
+
+
         u8 * waterBorderColor = (u8[]){waterTop->r, waterTop->g, waterTop->b};
         u8 * waterColor = (u8[]){waterBottom->r, waterBottom->g, waterBottom->b};
-        
+
         gfxDrawWave(GFX_TOP, GFX_LEFT, waterBorderColor, waterColor, topLevel, 20, 5, (gfxWaveCallback)&evaluateWater, &waterEffect);
         gfxDrawWave(GFX_TOP, GFX_LEFT, waterColor, waterBorderColor, lowerLevel, 20, 0, (gfxWaveCallback)&evaluateWater, &waterEffect);
     }

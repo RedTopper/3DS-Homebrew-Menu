@@ -15,7 +15,9 @@
 #include "boot.h"
 #include "titles.h"
 #include "folders.h"
-#include "logo_bin.h"
+#include "logodefault_bin.h"
+#include "logocompact_bin.h"
+#include "logoclassic_bin.h"
 #include "MAFontRobotoRegular.h"
 #include "alert.h"
 #include "logText.h"
@@ -444,8 +446,28 @@ void renderFrame()
 
     drawBackground();
 
-    if (showLogo) {
-        gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)logo_bin, 54, 161, 0, 400-161);
+    u8 * logoImage = NULL;
+    int logoWidth = 0;
+    int logoHeight = 0;
+
+    if (logoType == logoTypeDefault) {
+        logoImage = (u8*)logodefault_bin;
+        logoWidth = 54;
+        logoHeight = 161;
+    }
+    else if (logoType == logoTypeCompact) {
+        logoImage = (u8*)logocompact_bin;
+        logoWidth = 35;
+        logoHeight = 203;
+    }
+    else if (logoType == logoTypeClassic) {
+        logoImage = (u8*)logoclassic_bin;
+        logoWidth = 25;
+        logoHeight = 223;
+    }
+
+    if (logoImage) {
+        gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, logoImage, logoWidth, logoHeight, 0, 400-logoHeight);
     }
 
     drawStatusBar(wifiStatus, charging, batteryLevel);

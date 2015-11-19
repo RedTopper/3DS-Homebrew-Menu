@@ -748,6 +748,7 @@ int main(int argc, char *argv[])
         sprintf(glInfo, "sdmc:/boot.3dsx|%d", currentversion);
     }
 
+    remove("/gridlauncher/glinfo.txt");
     logTextP(glInfo, "/gridlauncher/glinfo.txt");
     free(glInfo);
 

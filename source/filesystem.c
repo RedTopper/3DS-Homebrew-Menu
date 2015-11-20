@@ -114,6 +114,7 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	static char execPath[128];
 	static char iconPath[128];
 	static char xmlPath[128];
+	static char bannerImagePath[128];
 
 	int i, l=-1; for(i=0; path[i]; i++) if(path[i]=='/') l=i;
 
@@ -147,6 +148,9 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	if(!fileExists(xmlPath, &sdmcArchive))snprintf(xmlPath, 128, "%s/%s.xml", path, &path[l+1]);
 	loadDescriptor(&tmpEntry.descriptor, xmlPath);
 
+	snprintf(bannerImagePath, 128, "%s/%s-banner.png", path, &path[l+1]);
+	if (fileExists(bannerImagePath, &sdmcArchive))
+        strncpy(tmpEntry.bannerImagePath, bannerImagePath, ENTRY_PATHLENGTH);
 
 	addMenuEntryCopy(m, &tmpEntry);
 }

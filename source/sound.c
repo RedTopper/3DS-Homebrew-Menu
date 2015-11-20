@@ -120,20 +120,20 @@ void loadThemeSoundOrDefault(char * filename, themeSound * aThemeSound, int chan
 
 void initThemeSounds() {
     if (audioActive) {
-        logTextP("Load BGM", "/bootlog.txt");
+        logTextP("Load BGM", "/bootlog.txt", true);
         loadThemeSoundOrDefault("BGM.bin", &themeSoundBGM, 8);
-        logTextP("Load move sound", "/bootlog.txt");
+        logTextP("Load move sound", "/bootlog.txt", true);
         loadThemeSoundOrDefault("movesound.bin", &themeSoundMove, 9);
-        logTextP("Load select sound", "/bootlog.txt");
+        logTextP("Load select sound", "/bootlog.txt", true);
         loadThemeSoundOrDefault("selectsound.bin", &themeSoundSelect, 10);
-        logTextP("Load back sound", "/bootlog.txt");
+        logTextP("Load back sound", "/bootlog.txt", true);
         loadThemeSoundOrDefault("backsound.bin", &themeSoundBack, 10);
     }
 }
 
 void startBGM() {
     if (audioActive) {
-        logTextP("Play music", "/bootlog.txt");
+        logTextP("Play music", "/bootlog.txt", true);
         audioPlay(&themeSoundBGM, true);
     }
 }

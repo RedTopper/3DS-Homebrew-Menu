@@ -9,8 +9,15 @@
 //#include <string>
 //#include <vector>
 
-void logTextP(char *text, char const * path) {
-    FILE* fSave = fopen( path, "a" );
+void logTextP(char *text, char const * path, bool append) {
+    char * mode;
+
+    if (append)
+        mode = "a";
+    else
+        mode = "w";
+
+    FILE* fSave = fopen( path, mode );
     if (fSave != NULL) {
         fprintf(fSave, "%s\n", text);
     }
@@ -54,7 +61,7 @@ void logTextP(char *text, char const * path) {
 void logIntP(int i, char * label, char const * path) {
     char s[strlen(label)+8];
     sprintf(s, "%s: %d", label, i);
-    logTextP(s, path);
+    logTextP(s, path, true);
 }
 
 void logInt(int i, char * label) {
@@ -65,5 +72,5 @@ void logInt(int i, char * label) {
 
 void logText(char *text) {
     char const * path = "sdmc:/log.txt";
-    logTextP(text, path);
+    logTextP(text, path, true);
 }

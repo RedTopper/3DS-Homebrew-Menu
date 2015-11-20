@@ -120,6 +120,11 @@ button pageArrowRight;
 
 buttonList toolbarButtons;
 
+u8 bannerImage[400*222*4];
+char bannerImagePath[ENTRY_PATHLENGTH+1];
+bool bannerHasAlpha;
+bool drawBannerImage = false;
+
 int indexOfFirstVisibleMenuEntry(menu_s *m) {
     if (!showRegionFree && menuStatus == menuStatusIcons) {
         return 1;
@@ -1838,6 +1843,7 @@ void initEmptyMenuEntry(menuEntry_s* me)
 	me->executablePath[0]=0x00;
     me->author[0]=0x00;
     me->arg[0]=0x00;
+    me->bannerImagePath[0]=0x00;
 
 	initDescriptor(&me->descriptor);
 
@@ -1859,6 +1865,31 @@ void initMenuEntry(menuEntry_s* me, char* execPath, char* name, char* descriptio
 	initDescriptor(&me->descriptor);
 
     me->title_id = 0;
+}
+
+#include "pngloader.h"
+#include "logText.h"
+
+void loadBannerImage(menuEntry_s * me) {
+    strcpy(bannerImagePath, me->bannerImagePath);
+    drawBannerImage = false;
+
+    bool success = read_png_file(bannerImagePath);
+
+    if (success) {
+        if (pngWidth != 400 || pngHeight != 222) {
+            logText("App banners must be 400x222 pixels");
+        }
+        else {
+            u8 * out = process_png_file();
+
+            if (out) {
+                drawBannerImage = true;
+                bannerHasAlpha = (bytesPerPixel == 4);
+                memcpy(&bannerImage, out, sizeof(bannerImage));
+            }
+        }
+    }
 }
 
 int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m, int pageYOffset, int pageXOffset, bool drawTopScreenInfo) {
@@ -1975,26 +2006,52 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         int displayIconX = (240-ENTRY_ICON_HEIGHT)/2;
         int displayIconY = 0;
 
-        /*
-         Draw the shadow
-         */
-        gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, (u8*)appshadow_bin, 27, 161, displayIconX-16, displayIconY-3, translucencyAppShadow);
-
-        displayIconY += (156-ENTRY_ICON_HEIGHT)/2;
 
         /*
-         Draw the app icon
-         */
-        u8 transparentIcon[48*48*4];
+            Draw app banner image (if it exists
+        */
+        bool entryHasBanner = (strlen(me->bannerImagePath) > 0);
 
-        if (me->isRegionFreeEntry && regionFreeGamecardIn) {
-            MAGFXApplyAlphaMask(gamecardMenuEntry.iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
-        }
-        else {
-            MAGFXApplyAlphaMask(me->iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
+        if (entryHasBanner) {
+            if (strcmp(bannerImagePath, me->bannerImagePath) != 0) {
+                loadBannerImage(me);
+            }
+
+            if (drawBannerImage) {
+                if (bannerHasAlpha) {
+                    gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)bannerImage, 222, 400, 0, 0);
+                }
+                else {
+                    gfxDrawSprite(GFX_TOP, GFX_LEFT, (u8*)bannerImage, 222, 400, 0, 0);
+                }
+            }
         }
 
-        gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, transparentIcon, ENTRY_ICON_WIDTH, ENTRY_ICON_HEIGHT, displayIconX, displayIconY);
+        /*
+            Draw app icon image if no banner was drawn
+        */
+        if (!drawBannerImage) {
+            /*
+             Draw the shadow
+             */
+            gfxDrawSpriteAlphaBlendFade(GFX_TOP, GFX_LEFT, (u8*)appshadow_bin, 27, 161, displayIconX-16, displayIconY-3, translucencyAppShadow);
+
+            displayIconY += (156-ENTRY_ICON_HEIGHT)/2;
+
+            /*
+             Draw the app icon
+             */
+            u8 transparentIcon[48*48*4];
+
+            if (me->isRegionFreeEntry && regionFreeGamecardIn) {
+                MAGFXApplyAlphaMask(gamecardMenuEntry.iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
+            }
+            else {
+                MAGFXApplyAlphaMask(me->iconData, (u8*)appiconalphamask_bin, transparentIcon, 48, 48, false);
+            }
+
+            gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, transparentIcon, ENTRY_ICON_WIDTH, ENTRY_ICON_HEIGHT, displayIconX, displayIconY);
+        }
 
         xPos += (ENTRY_ICON_WIDTH*2)+30;
 

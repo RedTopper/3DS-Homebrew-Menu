@@ -10,14 +10,14 @@
 int alertSelectedButton = 0;
 
 int drawAlert(char * title, char * body, u8 * image, int numButtons,  char buttonTitles[3][32]) {
-    int ret = alertButtonNone;
+    //int ret = alertButtonNone;
 
     if (hidKeysDown()&KEY_A) {
-        ret = alertSelectedButton;
+        return alertSelectedButton;
     }
 
     if (hidKeysDown()&KEY_B) {
-        ret = alertButtonKeyB;
+        return alertButtonKeyB;
     }
 
     if (hidKeysDown()&KEY_DOWN) {
@@ -106,7 +106,7 @@ int drawAlert(char * title, char * body, u8 * image, int numButtons,  char butto
 
         if (!touchesAreBlocked && hidKeysDown()&KEY_TOUCH && btnTouchWithin(touchX, touchY, aButton)) {
             if (i == alertSelectedButton) {
-                ret = alertSelectedButton;
+                return alertSelectedButton;
             }
             else {
                 alertSelectedButton = i;
@@ -118,6 +118,6 @@ int drawAlert(char * title, char * body, u8 * image, int numButtons,  char butto
 
     }
 
-    return ret;
+    return alertButtonNone;
 }
 

@@ -6,7 +6,6 @@
 #include "stdlib.h"
 #include "smdh.h"
 #include "defaultFolder_bin.h"
-#include "MAGFX.h"
 
 //buttonList folderButtons;
 menu_s foldersMenu;
@@ -28,7 +27,7 @@ char * currentFolder() {
 
 char * currentFolderName() {
     char * cf = currentFolder();
-    
+
     if (strcmp(cf, "/3ds/") == 0) {
         char * folderName = malloc(strlen("3ds"));
         strcpy(folderName, "3ds");
@@ -50,19 +49,19 @@ char * currentFolderName() {
 //        strcpy(folderPath, "/3ds/");
 //        return folderPath;
 //    }
-//    
+//
 //    char *folderPath = malloc(strlen(foldersPath) + strlen(folderName) + 2);
 //    strcpy(folderPath, foldersPath);
 //    strcat(folderPath, folderName);
-//    
+//
 //    strcat(folderPath, "/");
-//    
+//
 //    return folderPath;
 //}
 
 void setFolder(char * folderName) {
     char folderPath[256]; // = folderPathForFolderName(folderName);
-    
+
     if (strcmp(folderName, "3ds") == 0) {
         strcpy(folderPath, "/3ds/");
     }
@@ -75,28 +74,28 @@ void setFolder(char * folderName) {
     setConfigString("currentfolder", folderPath, configTypeMain);
     saveConfigWithType(configTypeMain);
     setMenuStatus(menuStatusFolderChanged);
-        
+
     if (animatedGrids) {
         startTransition(transitionDirectionUp, foldersMenu.pagePosition, &foldersMenu);
     }
 }
 
-void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int folderPathLen) {
+void addFolderToList(char * fullPath, menuEntry_s * me, int folderPathLen) {
     me->hidden = false;
     me->isTitleEntry = false;
     me->isRegionFreeEntry = false;
     me->showTick = NULL;
-    
-    char smdhPath[strlen(fullPath) + strlen(smdhName) + 1];
+
+    char smdhPath[128];
     strcpy(smdhPath, fullPath);
-    strcat(smdhPath, smdhName);
-        
+    strcat(smdhPath, "/folder.smdh");
+
     bool iconNeedsToBeGenerated = true;
-    
+
     if(fileExists(smdhPath, &sdmcArchive)) {
         static smdh_s tmpSmdh;
         int ret = loadFile(smdhPath, &tmpSmdh, &sdmcArchive, sizeof(smdh_s));
-        
+
         if (!ret) {
             ret = extractSmdhData(&tmpSmdh, me->name, me->description, me->author, me->iconData);
             if (!ret) {
@@ -104,23 +103,31 @@ void addFolderToList(char * fullPath, menuEntry_s * me, char * smdhName, int fol
             }
         }
     }
-    
+
+    char bannerImagePath[128];
+    strcpy(bannerImagePath, fullPath);
+    strcat(bannerImagePath, "/folder-banner.png");
+
+    if (fileExists(bannerImagePath, &sdmcArchive)) {
+        strcpy(me->bannerImagePath, bannerImagePath);
+    }
+
     if (iconNeedsToBeGenerated) {
         memcpy(me->iconData, defaultFolder_bin, 48*48*3);
     }
-    
+
     if (strcmp(fullPath, "/3ds") == 0) {
         strcpy(me->name, "3ds");
     }
     else {
         strcpy(me->name, fullPath+folderPathLen);
     }
-    
+
     strcpy(me->description, "");
     strcpy(me->author, "");
-    
+
     me->drawFirstLetterOfName = iconNeedsToBeGenerated;
-    
+
     addMenuEntryCopy(&foldersMenu, me);
 //    foldersMenu.numEntries = foldersMenu.numEntries + 1;
 }
@@ -131,11 +138,11 @@ void buildFoldersList() {
     if (foldersLoaded) {
         return;
     }
-    
+
     foldersLoaded = true;
-    
+
     directoryContents * contents = contentsOfDirectoryAtPath(foldersPath, true);
-    
+
     foldersMenu.entries=NULL;
     foldersMenu.numEntries=0;
     foldersMenu.selectedEntry=0;
@@ -145,24 +152,25 @@ void buildFoldersList() {
     foldersMenu.scrollBarPos=0;
     foldersMenu.scrollTarget=0;
     foldersMenu.atEquilibrium=false;
-    
-    char * smdhName = "/folder.smdh";
+
+//    char * smdhName = "/folder.smdh";
+//    char * bannerName = "/folder-banner.png";
     int folderPathLen = strlen(foldersPath);
-    
+
     menuEntry_s rootEntry;
-    addFolderToList("/3ds", &rootEntry, smdhName, folderPathLen);
-    
+    addFolderToList("/3ds", &rootEntry, folderPathLen);
+
     int i;
     for (i=0; i<contents->numPaths; i++) {
         char * fullPath = contents->paths[i];
         static menuEntry_s me;
-        addFolderToList(fullPath, &me, smdhName, folderPathLen);
+        addFolderToList(fullPath, &me, folderPathLen);
     }
-    
+
     foldersMenu.entries[0].hidden = !show3DSFolder;
-    
+
     updateMenuIconPositions(&foldersMenu);
-    
+
     free(contents);
 }
 

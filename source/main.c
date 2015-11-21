@@ -23,7 +23,7 @@
 #include "logText.h"
 #include "colours.h"
 
-#include "screenshot.h"
+//#include "screenshot.h"
 #include "config.h"
 
 #include "MAGFX.h"
@@ -696,7 +696,7 @@ int main(int argc, char *argv[])
     mkdir(themesPath, 777);
     mkdir(foldersPath, 777);
     mkdir(defaultThemePath, 777);
-    mkdir("/gridlauncher/screenshots/", 777);
+//    mkdir("/gridlauncher/screenshots/", 777);
 
     logTextP("APT Set CPU time limit", "/bootlog.txt", true);
 
@@ -879,9 +879,9 @@ int main(int argc, char *argv[])
 			if(hidKeysDown()&KEY_B)
 				hbmenu_state = HBMENU_DEFAULT;
         }else if (!showRebootMenu) {
-            if (hidKeysDown()&KEY_X) {
-                takeScreenshot();
-            }
+//            if (hidKeysDown()&KEY_X) {
+//                takeScreenshot();
+//            }
 
             if(hidKeysDown()&KEY_START) {
                 alertSelectedButton = 0;

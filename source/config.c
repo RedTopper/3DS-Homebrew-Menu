@@ -120,6 +120,7 @@ void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int fold
     me->hidden = false;
     me->isTitleEntry = false;
     me->isRegionFreeEntry = false;
+    me->isShortcut = false;
 
     char smdhPath[strlen(fullPath) + strlen(smdhName) + 1];
     strcpy(smdhPath, fullPath);
@@ -199,6 +200,7 @@ void buildThemesList() {
     memcpy(randomEntry.iconData, settingsIconRandomTheme_bin, sizeof(randomEntry.iconData));
     randomEntry.hidden = false;
     randomEntry.isTitleEntry = false;
+    randomEntry.isShortcut = false;
     randomEntry.isRegionFreeEntry = false;
     randomEntry.drawFirstLetterOfName = false;
     addMenuEntryCopy(&themesMenu, &randomEntry);

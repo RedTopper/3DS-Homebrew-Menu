@@ -491,6 +491,7 @@ void initMenu(menu_s* m)
      */
 	if(regionFreeAvailable) {
         regionfreeEntry.isRegionFreeEntry = true;
+        regionfreeEntry.isShortcut = false;
         regionfreeEntry.hidden = !showRegionFree;
 
 		extractSmdhData((smdh_s*)regionfree_bin, regionfreeEntry.name, regionfreeEntry.description, regionfreeEntry.author, regionfreeEntry.iconData);
@@ -1621,9 +1622,12 @@ bool updateGrid(menu_s* m) {
     if(hidKeysDown()&KEY_SELECT) {
         if (menuStatus == menuStatusIcons || menuStatus == menuStatusHomeMenuApps) {
             if (dPadSelectedToolbarButton == -1) {
-                bootOptionsMenu = m;
-                alertSelectedButton = 0;
-                setMenuStatus(menuStatusBootOptions);
+                menuEntry_s *me = getMenuEntry(m, m->selectedEntry);
+                if (me->title_id > 0 || me->isRegionFreeEntry || me->isShortcut) {
+                    bootOptionsMenu = m;
+                    alertSelectedButton = 0;
+                    setMenuStatus(menuStatusBootOptions);
+                }
             }
         }
     }

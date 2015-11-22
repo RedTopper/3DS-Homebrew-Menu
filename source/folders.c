@@ -84,6 +84,7 @@ void addFolderToList(char * fullPath, menuEntry_s * me, int folderPathLen) {
     me->hidden = false;
     me->isTitleEntry = false;
     me->isRegionFreeEntry = false;
+    me->isShortcut = false;
     me->showTick = NULL;
 
     char smdhPath[128];

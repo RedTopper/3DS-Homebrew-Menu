@@ -355,6 +355,7 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
         rfEntry.hidden = true;
         rfEntry.isTitleEntry = false;
         rfEntry.isRegionFreeEntry = true;
+        rfEntry.isShortcut = false;
         addMenuEntryCopy(aTitleMenu, &rfEntry);
     }
 
@@ -411,6 +412,7 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             me.hidden = false;
             me.isTitleEntry = false;
             me.isRegionFreeEntry = false;
+            me.isShortcut = false;
 
             /*
             If adding the title for the inserted cart, set its isRegionFreeEntry flag.

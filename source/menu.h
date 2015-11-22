@@ -121,6 +121,7 @@ typedef struct menuEntry_s
     void *callbackObject2;
     bool drawFirstLetterOfName;
     bool drawFullTitle;
+    bool isShortcut;
 }menuEntry_s;
 
 typedef struct

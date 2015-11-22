@@ -54,6 +54,7 @@ int drawAlert(char * title, char * body, u8 * image, int numButtons,  char butto
     MADrawTextWrap(GFX_TOP, GFX_LEFT, topOffset, leftOffset, body, &font, dark->r, dark->g, dark->b, totalWidthForText-(2*leftOffset), 0);
     //MADrawTextWrap(GFX_TOP, GFX_LEFT, topOffset, leftOffset, body, &font, dark->r, dark->g, dark->b, totalWidthForText, 0);
 
+
     /*
         WEIRD BUG ALERT!
 
@@ -69,7 +70,7 @@ int drawAlert(char * title, char * body, u8 * image, int numButtons,  char butto
         thing, but I can't figure it out.
     */
 
-    char s[32];
+    char s[64];
     strcpy(s, "5");
 
     int screenHeight = 240;

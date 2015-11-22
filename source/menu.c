@@ -1426,6 +1426,26 @@ void enterCornerButtons(menu_s* m) {
     m->selectedEntry = -1;
 }
 
+void checkPlaySelectSound(menu_s *m) {
+    bool playSelectSound = false;
+
+    menuEntry_s *me = getMenuEntry(m, m->selectedEntry);
+
+    if (me->isRegionFreeEntry) {
+        if (regionFreeGamecardIn)
+            playSelectSound = true;
+    }
+    else {
+        playSelectSound = true;
+    }
+
+    if (playSelectSound && themeSoundSelect.loaded) {
+        int time = osGetTime();
+        audioPlay(&themeSoundSelect, false);
+        waitForDurationOfSound(&themeSoundSelect, time);
+    }
+}
+
 bool updateGrid(menu_s* m) {
     if (transitionFromPage > -1) {
         return false;
@@ -1624,7 +1644,7 @@ bool updateGrid(menu_s* m) {
             dPadSelectedToolbarButton = -1;
 
             if(m->selectedEntry==i) {
-                audioPlay(&themeSoundSelect, false);
+                checkPlaySelectSound(m);
                 return true;
             }
 
@@ -1721,7 +1741,8 @@ bool updateGrid(menu_s* m) {
             return false;
         }
 
-        audioPlay(&themeSoundSelect, false);
+        checkPlaySelectSound(m);
+
         return true;
     }
 

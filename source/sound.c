@@ -150,8 +150,10 @@ void waitForDurationOfSound(themeSound * aThemeSound, int startMs) {
         int durationMs = aThemeSound->duration * 1000;
         int endMs = osGetTime();
 
-        while (endMs - startMs < durationMs) {
-            endMs = osGetTime();
+        u8 playing = 0;
+        csndIsPlaying(aThemeSound->channel, &playing);
+        while (playing == 1) {
+            csndIsPlaying(aThemeSound->channel, &playing);
         }
     }
 }

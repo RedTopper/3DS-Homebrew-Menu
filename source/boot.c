@@ -6,7 +6,6 @@
 #include "boot.h"
 #include "netloader.h"
 #include "filesystem.h"
-#include "sound.h"
 
 bool hansTitleBoot = false;
 

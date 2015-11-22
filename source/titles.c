@@ -413,6 +413,14 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             me.isTitleEntry = false;
             me.isRegionFreeEntry = false;
             me.isShortcut = false;
+            me.bannerImagePath[0] = '\0';
+
+            char bannerImagePath[128];
+            sprintf(bannerImagePath, "%s%llu-banner.png", titleBannersPath, aTitle.title_id);
+
+            if (fileExists(bannerImagePath, &sdmcArchive)) {
+                strcpy(me.bannerImagePath, bannerImagePath);
+            }
 
             /*
             If adding the title for the inserted cart, set its isRegionFreeEntry flag.

@@ -395,7 +395,11 @@ void renderFrame()
                 strcpy(buttonTitles[1], "Region4");
                 strcpy(buttonTitles[2], "Cancel");
 
-                int selectedButton = drawAlert("Select boot method", "Please choose how you want to boot the app.", NULL, 3, buttonTitles);
+                menuEntry_s *me = getMenuEntry(bootOptionsMenu, bootOptionsMenu->selectedEntry);
+                char text[128];
+                sprintf(text, "Please choose how you want to boot the app.\n\nTitle ID:\n%llu", me->title_id);
+
+                int selectedButton = drawAlert("Select boot method", text, NULL, 3, buttonTitles);
 
                 if (selectedButton == 0) {
                     hansTitleBoot = true;

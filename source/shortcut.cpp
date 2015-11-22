@@ -16,6 +16,7 @@ void initShortcut(shortcut_s* s)
     s->name = NULL;
     s->description = NULL;
     s->author = NULL;
+    s->bannerImagePath[0] = '\0';
 }
 
 Result createShortcut(shortcut_s* s, char* path)

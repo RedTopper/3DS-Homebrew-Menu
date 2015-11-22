@@ -11,6 +11,7 @@
 
 #include "addmenuentry.h"
 #include "config.h"
+#include "logText.h"
 
 FS_archive sdmcArchive;
 
@@ -114,7 +115,6 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	static char execPath[128];
 	static char iconPath[128];
 	static char xmlPath[128];
-	static char bannerImagePath[128];
 
 	int i, l=-1; for(i=0; path[i]; i++) if(path[i]=='/') l=i;
 
@@ -148,6 +148,7 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	if(!fileExists(xmlPath, &sdmcArchive))snprintf(xmlPath, 128, "%s/%s.xml", path, &path[l+1]);
 	loadDescriptor(&tmpEntry.descriptor, xmlPath);
 
+    static char bannerImagePath[128];
 	snprintf(bannerImagePath, 128, "%s/%s-banner.png", path, &path[l+1]);
 	if (fileExists(bannerImagePath, &sdmcArchive))
         strncpy(tmpEntry.bannerImagePath, bannerImagePath, ENTRY_PATHLENGTH);
@@ -209,7 +210,20 @@ void addShortcutToMenu(menu_s* m, char* shortcutPath)
     static shortcut_s tmpShortcut;
 
     Result ret = createShortcut(&tmpShortcut, shortcutPath);
-    if(!ret) createMenuEntryShortcut(m, &tmpShortcut);
+    if(!ret) {
+        int i, l=-1; for(i=0; shortcutPath[i]; i++) if(shortcutPath[i]=='.') l=i;
+
+        char bannerImagePath[128];
+        strcpy(bannerImagePath, "");
+        strncat(bannerImagePath, &shortcutPath[0], l);
+        strcat(bannerImagePath, "-banner.png");
+
+        if (fileExists(bannerImagePath, &sdmcArchive)) {
+            strcpy(tmpShortcut.bannerImagePath, bannerImagePath);
+        }
+
+        createMenuEntryShortcut(m, &tmpShortcut);
+    }
 
     freeShortcut(&tmpShortcut);
 }
@@ -251,6 +265,13 @@ void createMenuEntryShortcut(menu_s* m, shortcut_s* s)
     if(fileExists(s->descriptor, &sdmcArchive)) loadDescriptor(&tmpEntry.descriptor, s->descriptor);
 
     tmpEntry.isShortcut = true;
+
+    if (strlen(s->bannerImagePath) > 0) {
+        strcpy(tmpEntry.bannerImagePath, s->bannerImagePath);
+    }
+    else {
+        tmpEntry.bannerImagePath[0] = '\0';
+    }
 
     addMenuEntryCopy(m, &tmpEntry);
 }

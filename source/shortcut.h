@@ -16,6 +16,7 @@ typedef struct
     char* name;
     char* description;
     char* author;
+    char bannerImagePath[129];
 }shortcut_s;
 
 void initShortcut(shortcut_s* d);

@@ -10,6 +10,7 @@
 #define screenshotPath    "/gridlauncher/screenshots/"
 #define configFilePath    "/gridlauncher/hbl.cfg"
 #define ignoredTitlesPath "/gridlauncher/ignoredtitles.txt"
+#define titleBannersPath  "/gridlauncher/titlebanners/"
 
 typedef struct {
     int numPaths;

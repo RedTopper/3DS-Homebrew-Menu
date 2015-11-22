@@ -696,6 +696,7 @@ int main(int argc, char *argv[])
     mkdir(themesPath, 777);
     mkdir(foldersPath, 777);
     mkdir(defaultThemePath, 777);
+    mkdir(titleBannersPath, 777);
 //    mkdir("/gridlauncher/screenshots/", 777);
 
     logTextP("APT Set CPU time limit", "/bootlog.txt", true);

@@ -91,7 +91,6 @@ void setTheme(char * themeName) {
 
     gfxFlip();
 
-    int startMs = osGetTime();
     playBootSound();
 
     //Reload theme images
@@ -108,7 +107,7 @@ void setTheme(char * themeName) {
     toolbarNeedsUpdate = true;
     alphaImagesDrawn = false;
 
-    waitForDurationOfSound(&themeSoundBoot, startMs);
+    waitForSoundToFinishPlaying(&themeSoundBoot);
 
     startBGM();
 

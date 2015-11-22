@@ -1441,9 +1441,8 @@ void checkPlaySelectSound(menu_s *m) {
     }
 
     if (playSelectSound && themeSoundSelect.loaded) {
-        int time = osGetTime();
         audioPlay(&themeSoundSelect, false);
-        waitForDurationOfSound(&themeSoundSelect, time);
+        waitForSoundToFinishPlaying(&themeSoundSelect);
     }
 }
 

@@ -145,11 +145,8 @@ void playBootSound() {
     }
 }
 
-void waitForDurationOfSound(themeSound * aThemeSound, int startMs) {
+void waitForSoundToFinishPlaying(themeSound * aThemeSound) {
     if (waitForSounds && aThemeSound->loaded) {
-        int durationMs = aThemeSound->duration * 1000;
-        int endMs = osGetTime();
-
         u8 playing = 0;
         csndIsPlaying(aThemeSound->channel, &playing);
         while (playing == 1) {

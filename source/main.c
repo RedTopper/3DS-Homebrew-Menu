@@ -747,7 +747,7 @@ int main(int argc, char *argv[])
     logTextP(glInfo, "/gridlauncher/glinfo.txt", false);
     free(glInfo);
 
-    waitForDurationOfSound(&themeSoundBoot, startMs);
+    waitForSoundToFinishPlaying(&themeSoundBoot);
 
     startBGM();
 

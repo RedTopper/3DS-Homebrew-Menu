@@ -2030,7 +2030,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         /*
             Draw app icon image if no banner was drawn
         */
-        if (!drawBannerImage) {
+        if (!entryHasBanner || !drawBannerImage) {
             /*
              Draw the shadow
              */

@@ -108,10 +108,13 @@ void launchSVDTFromTitleMenu() {
     if (me) {
         if (me->title_id) {
             if (me->title_id > 0) {
-                titleInfo_s* ret = NULL;
-                ret = getTitleWithID(&titleBrowser, me->title_id);
-                targetProcessId = -2;
-                target_title = *ret;
+                createTitleInfoFromTitleID(me->title_id, me->mediatype, &target_title);
+
+//                titleInfo_s* ret = NULL;
+//                ret = getTitleWithID(&titleBrowser, me->title_id);
+//                targetProcessId = -2;
+//                target_title = *ret;
+
                 die = true;
             }
         }
@@ -154,11 +157,13 @@ void launchTitleFromMenu(menu_s* m) {
     if (me) {
         if (me->title_id) {
             if (me->title_id > 0) {
-                titleInfo_s* ret = NULL;
-                ret = getTitleWithID(&titleBrowser, me->title_id);
+                createTitleInfoFromTitleID(me->title_id, me->mediatype, &target_title);
 
-                if (ret) {
-                    target_title = *ret;
+//                titleInfo_s* ret = NULL;
+//                ret = getTitleWithID(&titleBrowser, me->title_id);
+
+//                if (ret) {
+//                    target_title = *ret;
                     targetProcessId = -2;
                     exitServices();
                     dieImmediately = true;
@@ -168,9 +173,9 @@ void launchTitleFromMenu(menu_s* m) {
                     }
 
                     else {
-                        regionFreeRun2(ret->title_id & 0xffffffff, (ret->title_id >> 32) & 0xffffffff, ret->mediatype, 0x1);
+                        regionFreeRun2(me->title_id & 0xffffffff, (me->title_id >> 32) & 0xffffffff, me->mediatype, 0x1);
                     }
-                }
+//                }
             }
         }
         else {
@@ -731,7 +736,8 @@ int main(int argc, char *argv[])
 	nextSdCheck = osGetTime()+250;
 //	srand(svcGetSystemTick());
 
-    gamecardWasIn = regionFreeGamecardIn;
+    //Negate this to force an update of the cart title id on first boot
+    gamecardWasIn = !regionFreeGamecardIn;
 
 
 
@@ -771,14 +777,40 @@ int main(int argc, char *argv[])
 //            svcSignalEvent(threadRequest);
 //        }
 
-        if (titleMenuInitialLoadDone && gamecardWasIn != regionFreeGamecardIn) {
+        if (gamecardWasIn != regionFreeGamecardIn) {
             gamecardWasIn = regionFreeGamecardIn;
 
-            if (titleMenu.numEntries > 0) {
+            u64 currentTitleID = 0;
+
+            if (regionFreeGamecardIn) {
+                int num = 1;
+                u64* tmp = (u64*)malloc(sizeof(u64) * num);
+                u8 mediatype = 2;
+                Result ret = AM_GetTitleIdList(mediatype, num, tmp);
+
+                if (ret) {
+                    logText("Error getting title");
+                }
+                else {
+                    currentTitleID = tmp[0];
+                }
+            }
+
+            menuEntry_s *me = getMenuEntry(&menu, 0);
+            if (me) {
+                me->title_id = currentTitleID;
+                me->mediatype = 2;
+            }
+
+            if (titleMenuInitialLoadDone && titleMenu.numEntries > 0) {
                 menuEntry_s * gcme = getMenuEntry(&titleMenu, 0);
                 gcme->hidden = !regionFreeGamecardIn;
+                gcme->title_id = currentTitleID;
+                gcme->mediatype = 2;
                 updateMenuIconPositions(&titleMenu);
                 gotoFirstIcon(&titleMenu);
+
+
             }
         }
 
@@ -1034,17 +1066,19 @@ int main(int argc, char *argv[])
 
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot) {
         if (hansTitleBoot) {
-            if (me->isRegionFreeEntry) {
-                titleList_s* tl = &(titleBrowser.lists[0]);
-                titleInfo_s *titles = tl->titles;
-                titleInfo_s * aTitle = &(titles[0]);
-                target_title = *aTitle;
-            }
-            else {
-                titleInfo_s* ret = NULL;
-                ret = getTitleWithID(&titleBrowser, me->title_id);
-                target_title = *ret;
-            }
+            createTitleInfoFromTitleID(me->title_id, me->mediatype, &target_title);
+
+//            if (me->isRegionFreeEntry) {
+//                titleList_s* tl = &(titleBrowser.lists[0]);
+//                titleInfo_s *titles = tl->titles;
+//                titleInfo_s * aTitle = &(titles[0]);
+//                target_title = *aTitle;
+//            }
+//            else {
+//                titleInfo_s* ret = NULL;
+//                ret = getTitleWithID(&titleBrowser, me->title_id);
+//                target_title = *ret;
+//            }
 
             targetProcessId = -2;
 

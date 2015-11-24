@@ -435,6 +435,7 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             extractSmdhData(aTitle.icon, me.name, me.description, me.author, me.iconData);
 
             me.title_id = aTitle.title_id;
+            me.mediatype = aTitle.mediatype;
 
             if (me.title_id == 1125968626461184) {
                 strcpy(me.name, "System Transfer");
@@ -467,26 +468,26 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
     updateMenuIconPositions(aTitleMenu);
 }
 
-titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid) {
-    int i;
-    for(i=0; i<3; i++) {
-        const titleList_s* tl = &tb->lists[i];
-        titleInfo_s *titles = tl->titles;
-
-        int titleNum;
-        int count = tl->num;// sizeof(titles) / sizeof(titleInfo_s);
-
-        for (titleNum = 0; titleNum < count; titleNum++) {
-            titleInfo_s * aTitle = &titles[titleNum];
-            if (aTitle->title_id == tid) {
-                return aTitle;
-            }
-        }
-
-    }
-
-    return NULL;
-}
+//titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid) {
+//    int i;
+//    for(i=0; i<3; i++) {
+//        const titleList_s* tl = &tb->lists[i];
+//        titleInfo_s *titles = tl->titles;
+//
+//        int titleNum;
+//        int count = tl->num;// sizeof(titles) / sizeof(titleInfo_s);
+//
+//        for (titleNum = 0; titleNum < count; titleNum++) {
+//            titleInfo_s * aTitle = &titles[titleNum];
+//            if (aTitle->title_id == tid) {
+//                return aTitle;
+//            }
+//        }
+//
+//    }
+//
+//    return NULL;
+//}
 
 Handle titleLoadThreadHandle, titleLoadThreadRequest;
 u32 *titleLoadThreadStack;
@@ -610,7 +611,13 @@ void toggleTitleFilter(menuEntry_s *me, menu_s * m) {
     }
 }
 
+void createTitleInfoFromTitleID(u64 title_id, u8 mediaType, titleInfo_s *info) {
+    if (!info)
+        return;
 
+    info->title_id = title_id;
+    info->mediatype = mediaType;
+}
 
 
 

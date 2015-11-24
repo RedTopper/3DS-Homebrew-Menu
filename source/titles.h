@@ -59,7 +59,7 @@ titleInfo_s* findTitleBrowser(titleBrowser_s* tb, u8 mediatype, u64 tid);
 void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree, bool setFilterTicks);
 //void drawTitleMenu(menuEntry_s* titleMenu);
 
-titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid);
+//titleInfo_s* getTitleWithID(titleBrowser_s* tb, u64 tid);
 
 void refreshTitleBrowser(titleBrowser_s* tb);
 
@@ -78,5 +78,7 @@ extern bool titleLoadPaused;
 void resumeTitleLoading();
 void pauseTitleLoading();
 void cancelTitleLoading();
+
+void createTitleInfoFromTitleID(u64 title_id, u8 mediaType, titleInfo_s *info);
 
 #endif

@@ -115,6 +115,7 @@ typedef struct menuEntry_s
     bool isRegionFreeEntry;
     bool isTitleEntry;
     u64 title_id;
+    u8 mediatype;
     bool * showTick;
     void (*callback)();
     void *callbackObject1;

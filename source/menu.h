@@ -123,6 +123,8 @@ typedef struct menuEntry_s
     bool drawFirstLetterOfName;
     bool drawFullTitle;
     bool isShortcut;
+    bool bannerIsFullScreen;
+    bool hasBanner;
 }menuEntry_s;
 
 typedef struct

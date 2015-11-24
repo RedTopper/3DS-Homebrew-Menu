@@ -10,7 +10,7 @@
 #define screenshotPath    "/gridlauncher/screenshots/"
 #define configFilePath    "/gridlauncher/hbl.cfg"
 #define ignoredTitlesPath "/gridlauncher/ignoredtitles.txt"
-#define titleBannersPath  "/gridlauncher/titlebanners/"
+#define titleBannersPath  "/gridlauncher/titlebanners"
 
 typedef struct {
     int numPaths;
@@ -36,6 +36,7 @@ void addExecutableToMenu(menu_s* m, char* execPath);
 void addShortcutToMenu(menu_s* m, char* shortcutPath);
 void scanHomebrewDirectory(menu_s* m, char* path);
 directoryContents * contentsOfDirectoryAtPath(char * path, bool dirsOnly);
+void addBannerPathToMenuEntry(char *dst, char * path, char * filenamePrefix, bool * isFullScreen, bool * hasBanner);
 
 char * currentThemePath();
 

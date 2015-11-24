@@ -328,12 +328,24 @@ bool titleIgnored(u64 titleID) {
 //#include "MAFontRobotoRegular.h"
 
 void addTitleBannerImagePathToMenuEntry(menuEntry_s *me, u64 title_id) {
-    char bannerImagePath[128];
-    sprintf(bannerImagePath, "%s%llu-banner.png", titleBannersPath, title_id);
+    char sTitleID[32];
+    sprintf(sTitleID, "%llu", title_id);
 
-    if (fileExists(bannerImagePath, &sdmcArchive)) {
-        strcpy(me->bannerImagePath, bannerImagePath);
-    }
+    addBannerPathToMenuEntry(me->bannerImagePath, titleBannersPath, sTitleID, &me->bannerIsFullScreen, &me->hasBanner);
+
+//    char bannerImagePath[128];
+//    sprintf(bannerImagePath, "%s%llu-banner-fullscreen.png", titleBannersPath, title_id);
+//
+//    if (fileExists(bannerImagePath, &sdmcArchive)) {
+//        strcpy(me->bannerImagePath, bannerImagePath);
+//    }
+//    else {
+//        sprintf(bannerImagePath, "%s%llu-banner.png", titleBannersPath, title_id);
+//
+//        if (fileExists(bannerImagePath, &sdmcArchive)) {
+//            strcpy(me->bannerImagePath, bannerImagePath);
+//        }
+//    }
 }
 
 void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree, bool setFilterTicks) {

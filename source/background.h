@@ -15,7 +15,7 @@ extern bool hideWaves;
 extern bool waterAnimated;
 extern bool waterEnabled;
 extern bool staticWaterDrawn;
-extern bool keysExciteWater;
+//extern bool keysExciteWater;
 
 //typedef struct
 //{

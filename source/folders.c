@@ -105,13 +105,7 @@ void addFolderToList(char * fullPath, menuEntry_s * me, int folderPathLen) {
         }
     }
 
-    char bannerImagePath[128];
-    strcpy(bannerImagePath, fullPath);
-    strcat(bannerImagePath, "/folder-banner.png");
-
-    if (fileExists(bannerImagePath, &sdmcArchive)) {
-        strcpy(me->bannerImagePath, bannerImagePath);
-    }
+    addBannerPathToMenuEntry(me->bannerImagePath, fullPath, "folder", &me->bannerIsFullScreen, &me->hasBanner);
 
     if (iconNeedsToBeGenerated) {
         memcpy(me->iconData, defaultFolder_bin, 48*48*3);
@@ -154,8 +148,6 @@ void buildFoldersList() {
     foldersMenu.scrollTarget=0;
     foldersMenu.atEquilibrium=false;
 
-//    char * smdhName = "/folder.smdh";
-//    char * bannerName = "/folder-banner.png";
     int folderPathLen = strlen(foldersPath);
 
     menuEntry_s rootEntry;

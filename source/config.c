@@ -24,7 +24,7 @@
 #include "settingsIconTranslucencyTop_bin.h"
 #include "settingsIconTranslucencyBottom_bin.h"
 #include "settingsIconLogo_bin.h"
-#include "settingsIconKeysExciteWater_bin.h"
+//#include "settingsIconKeysExciteWater_bin.h"
 #include "settingsIconPanelTop_bin.h"
 #include "settingsIconPanelBottom_bin.h"
 #include "settingsIconPreloadTitles_bin.h"
@@ -315,7 +315,7 @@ void initWaterMenu() {
 
     addSettingsMenuEntry("Animated water", "Toggle the animated water effect", (u8*)settingsIconWaterAnimated_bin, &waterAnimated, &waterMenu, &settingsToggleBool, &waterAnimated, NULL);
 
-    addSettingsMenuEntry("Keys excite water", "Pressing D-Pad keys makes the water excite", (u8*)settingsIconKeysExciteWater_bin, &keysExciteWater, &waterMenu, &settingsToggleBool, &keysExciteWater, NULL);
+//    addSettingsMenuEntry("Keys excite water", "Pressing D-Pad keys makes the water excite", (u8*)settingsIconKeysExciteWater_bin, &keysExciteWater, &waterMenu, &settingsToggleBool, &keysExciteWater, NULL);
 }
 
 void cycleRows() {

@@ -459,7 +459,7 @@ void initMenu(menu_s* m)
     waterAnimated = getConfigBoolForKey("animatedWater", true, configTypeMain);
     showAppBackgrounds = getConfigBoolForKey("showAppBackgrounds", true, configTypeMain);
     wrapScrolling = getConfigBoolForKey("wrapScrolling", true, configTypeMain);
-    keysExciteWater = getConfigBoolForKey("keysExciteWater", true, configTypeMain);
+//    keysExciteWater = getConfigBoolForKey("keysExciteWater", true, configTypeMain);
     dPadNavigation = getConfigBoolForKey("dPadNavigation", true, configTypeMain);
     randomiseThemeOnWake = getConfigBoolForKey("randomiseThemeOnWake", false, configTypeMain);
     animatedGrids = getConfigBoolForKey("animatedGrids", true, configTypeMain);
@@ -651,8 +651,10 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
     }
 
     if (!gridOnly) {
-        //Draw top screen translucent panel
-        MAGFXDrawPanel(GFX_TOP, false);
+        menuEntry_s *me = getMenuEntry(m, m->selectedEntry);
+        if (!me->hasBanner || !me->bannerIsFullScreen) {
+            MAGFXDrawPanel(GFX_TOP, false);
+        }
     }
 
     int totalDrawn = 0;
@@ -1178,7 +1180,7 @@ void quitSettings(menu_s* m) {
     setConfigBool("animatedWater", waterAnimated, configTypeMain);
     setConfigBool("showAppBackgrounds", showAppBackgrounds, configTypeMain);
     setConfigBool("wrapScrolling", wrapScrolling, configTypeMain);
-    setConfigBool("keysExciteWater", keysExciteWater, configTypeMain);
+//    setConfigBool("keysExciteWater", keysExciteWater, configTypeMain);
     setConfigBool("dPadNavigation", dPadNavigation, configTypeMain);
     setConfigBool("randomTheme", randomTheme, configTypeMain);
     setConfigBool("randomiseThemeOnWake", randomiseThemeOnWake, configTypeMain);
@@ -2034,9 +2036,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         /*
             Draw app banner image (if it exists
         */
-        bool entryHasBanner = (strlen(me->bannerImagePath) > 0);
-
-        if (entryHasBanner) {
+        if (me->hasBanner) {
             if (strcmp(bannerImagePath, me->bannerImagePath) != 0) {
                 loadBannerImage(me);
             }
@@ -2054,7 +2054,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         /*
             Draw app icon image if no banner was drawn
         */
-        if (!entryHasBanner || !drawBannerImage) {
+        if (!me->hasBanner || !drawBannerImage) {
             /*
              Draw the shadow
              */
@@ -2083,54 +2083,56 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
 
         int maximumTextWidth = 400-xPos-20;
 
-        /*
-         Draw the app title
-         */
+        if (!me->hasBanner || !me->bannerIsFullScreen) {
+            /*
+             Draw the app title
+             */
 
-        rgbColour *titleColour = titleTextColour();
+            rgbColour *titleColour = titleTextColour();
 
-        int maxLines = (me->drawFullTitle) ? 100 : 1;
-        int numTitleLines;
+            int maxLines = (me->drawFullTitle) ? 100 : 1;
+            int numTitleLines;
 
-        if (me == &gamecardMenuEntry || (me->isRegionFreeEntry && regionFreeGamecardIn)) {
-            numTitleLines = MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
-        }
-        else {
-            numTitleLines = MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
-        }
-
-        /*
-         Draw the app author
-         */
-
-        if (me->isRegionFreeEntry && regionFreeGamecardIn) {
-            yAdjust += (numTitleLines * 25);
-            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.author, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
-        }
-        else if (strlen(me->author) > 0) {
-            yAdjust += (numTitleLines * 25);
-            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->author, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
-        }
-
-        yAdjust += 25;
-
-        /*
-         Draw the app description
-         */
-
-        int descriptionMaxWidth = 400-xPos-20;
-        int descriptionMaxLines = 4;
-
-        if (me->isRegionFreeEntry && regionFreeGamecardIn) {
-            MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.description, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
-        }
-        else {
-            if (me->isRegionFreeEntry) {
-                char * insert = "Insert a game cart to play region free";
-                MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, insert, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
+            if (me == &gamecardMenuEntry || (me->isRegionFreeEntry && regionFreeGamecardIn)) {
+                numTitleLines = MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
             }
             else {
-                MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->description, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
+                numTitleLines = MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->name, &MAFontRobotoRegular14, titleColour->r, titleColour->g, titleColour->b, maximumTextWidth, maxLines);
+            }
+
+            /*
+             Draw the app author
+             */
+
+            if (me->isRegionFreeEntry && regionFreeGamecardIn) {
+                yAdjust += (numTitleLines * 25);
+                MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.author, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
+            }
+            else if (strlen(me->author) > 0) {
+                yAdjust += (numTitleLines * 25);
+                MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->author, &MAFontRobotoRegular12, dark->r, dark->g, dark->b, maximumTextWidth, 1);
+            }
+
+            yAdjust += 25;
+
+            /*
+             Draw the app description
+             */
+
+            int descriptionMaxWidth = 400-xPos-20;
+            int descriptionMaxLines = 4;
+
+            if (me->isRegionFreeEntry && regionFreeGamecardIn) {
+                MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, gamecardMenuEntry.description, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
+            }
+            else {
+                if (me->isRegionFreeEntry) {
+                    char * insert = "Insert a game cart to play region free";
+                    MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, insert, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
+                }
+                else {
+                    MADrawTextWrap(GFX_TOP, GFX_LEFT, top-yAdjust, xPos, me->description, &MAFontRobotoRegular10, dark->r, dark->g, dark->b, descriptionMaxWidth, descriptionMaxLines);
+                }
             }
         }
     }

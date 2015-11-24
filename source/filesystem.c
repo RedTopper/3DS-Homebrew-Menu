@@ -106,6 +106,44 @@ void addExecutableToMenu(menu_s* m, char* execPath)
 	addMenuEntryCopy(m, &tmpEntry);
 }
 
+bool checkAddBannerPathToMenuEntry(char *dst, char * path, char *filenamePrefix, bool fullscreen, bool * isFullScreen) {
+    static char bannerImagePath[128];
+    strcpy(bannerImagePath, "");
+    strcat(bannerImagePath, path);
+    if (filenamePrefix) {
+        strcat(bannerImagePath, "/");
+        strcat(bannerImagePath, filenamePrefix);
+    }
+    if (fullscreen)
+        strcat(bannerImagePath, "-banner-fullscreen.png");
+    else
+        strcat(bannerImagePath, "-banner.png");
+
+    logText(bannerImagePath);
+
+	if (fileExists(bannerImagePath, &sdmcArchive)) {
+        strncpy(dst, bannerImagePath, ENTRY_PATHLENGTH);
+        return true;
+    }
+
+    return false;
+}
+
+void addBannerPathToMenuEntry(char *dst, char * path, char * filenamePrefix, bool * isFullScreen, bool * hasBanner) {
+    if (checkAddBannerPathToMenuEntry(dst, path, filenamePrefix, true, isFullScreen)) {
+        *hasBanner = true;
+        *isFullScreen = true;
+    }
+
+    else if (checkAddBannerPathToMenuEntry(dst, path, filenamePrefix, false, isFullScreen)) {
+        *hasBanner = true;
+        *isFullScreen = false;
+    }
+    else {
+        *hasBanner = false;
+    }
+}
+
 void addDirectoryToMenu(menu_s* m, char* path)
 {
 	if(!m || !path)return;
@@ -148,10 +186,7 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	if(!fileExists(xmlPath, &sdmcArchive))snprintf(xmlPath, 128, "%s/%s.xml", path, &path[l+1]);
 	loadDescriptor(&tmpEntry.descriptor, xmlPath);
 
-    static char bannerImagePath[128];
-	snprintf(bannerImagePath, 128, "%s/%s-banner.png", path, &path[l+1]);
-	if (fileExists(bannerImagePath, &sdmcArchive))
-        strncpy(tmpEntry.bannerImagePath, bannerImagePath, ENTRY_PATHLENGTH);
+	addBannerPathToMenuEntry(tmpEntry.bannerImagePath, path, &path[l+1], &tmpEntry.bannerIsFullScreen, &tmpEntry.hasBanner);
 
 	addMenuEntryCopy(m, &tmpEntry);
 }
@@ -213,14 +248,12 @@ void addShortcutToMenu(menu_s* m, char* shortcutPath)
     if(!ret) {
         int i, l=-1; for(i=0; shortcutPath[i]; i++) if(shortcutPath[i]=='.') l=i;
 
-        char bannerImagePath[128];
-        strcpy(bannerImagePath, "");
-        strncat(bannerImagePath, &shortcutPath[0], l);
-        strcat(bannerImagePath, "-banner.png");
+        char bannerPath[128];
+        strcpy(bannerPath, "");
+        strncat(bannerPath, &shortcutPath[0], l);
+        strcat(bannerPath, "");
 
-        if (fileExists(bannerImagePath, &sdmcArchive)) {
-            strcpy(tmpShortcut.bannerImagePath, bannerImagePath);
-        }
+        addBannerPathToMenuEntry(tmpShortcut.bannerImagePath, bannerPath, NULL, &tmpShortcut.bannerIsFullScreen, &tmpShortcut.hasBanner);
 
         createMenuEntryShortcut(m, &tmpShortcut);
     }
@@ -266,12 +299,15 @@ void createMenuEntryShortcut(menu_s* m, shortcut_s* s)
 
     tmpEntry.isShortcut = true;
 
-    if (strlen(s->bannerImagePath) > 0) {
+    if (s->hasBanner) {
         strcpy(tmpEntry.bannerImagePath, s->bannerImagePath);
+        tmpEntry.bannerIsFullScreen = s->bannerIsFullScreen;
     }
     else {
         tmpEntry.bannerImagePath[0] = '\0';
     }
+
+    tmpEntry.hasBanner = s->hasBanner;
 
     addMenuEntryCopy(m, &tmpEntry);
 }

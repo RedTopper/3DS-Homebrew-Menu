@@ -27,7 +27,7 @@
 bool hideWaves = false;
 bool waterAnimated = true;
 bool waterEnabled = true;
-bool keysExciteWater = true;
+//bool keysExciteWater = true;
 
 //static bubble_t bubbles[BUBBLE_COUNT];
 static waterEffect_s waterEffect;
@@ -105,19 +105,19 @@ void updateBackground(void)
 	exciteWater(&waterEffect, sin(backgroundCnt*0.1f)*2.0f, 0, true);
 
 	//TODO : improve
-    if (keysExciteWater) {
-        if((hidKeysDown()&KEY_UP) || hidKeysDown()&KEY_DOWN)
-        {
-            exciteWater(&waterEffect, 0.2f+randomFloat()*2.0f, rand()%BG_WATER_CONTROLPOINTS, false);
-        }else if((hidKeysDown()&KEY_LEFT) || hidKeysDown()&KEY_RIGHT)
-        {
-            float v=3.0f+randomFloat()*1.0f;
-            if(rand()%2)v=-v;
-            int l=rand()%BG_WATER_CONTROLPOINTS;
-            int i; for(i=0;i<5;i++)exciteWater(&waterEffect, v, l-2+i, false);
-        }
-
-    }
+//    if (keysExciteWater) {
+//        if((hidKeysDown()&KEY_UP) || hidKeysDown()&KEY_DOWN)
+//        {
+//            exciteWater(&waterEffect, 0.2f+randomFloat()*2.0f, rand()%BG_WATER_CONTROLPOINTS, false);
+//        }else if((hidKeysDown()&KEY_LEFT) || hidKeysDown()&KEY_RIGHT)
+//        {
+//            float v=3.0f+randomFloat()*1.0f;
+//            if(rand()%2)v=-v;
+//            int l=rand()%BG_WATER_CONTROLPOINTS;
+//            int i; for(i=0;i<5;i++)exciteWater(&waterEffect, v, l-2+i, false);
+//        }
+//
+//    }
 
 	updateWaterEffect(&waterEffect);
 

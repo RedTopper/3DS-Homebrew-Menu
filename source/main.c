@@ -800,6 +800,12 @@ int main(int argc, char *argv[])
             if (me) {
                 me->title_id = currentTitleID;
                 me->mediatype = 2;
+
+                me->bannerImagePath[0] = '\0';
+
+                if (currentTitleID > 0) {
+                    addTitleBannerImagePathToMenuEntry(me, currentTitleID);
+                }
             }
 
             if (titleMenuInitialLoadDone && titleMenu.numEntries > 0) {
@@ -810,7 +816,11 @@ int main(int argc, char *argv[])
                 updateMenuIconPositions(&titleMenu);
                 gotoFirstIcon(&titleMenu);
 
+                gcme->bannerImagePath[0] = '\0';
 
+                if (currentTitleID > 0) {
+                    addTitleBannerImagePathToMenuEntry(gcme, currentTitleID);
+                }
             }
         }
 

@@ -64,6 +64,7 @@ void populateTitleMenu(menu_s* titleMenu, titleBrowser_s *tb, bool filter, bool 
 void refreshTitleBrowser(titleBrowser_s* tb);
 
 void updateTitleMenu(titleBrowser_s * aTitleBrowser, menu_s * aTitleMenu, char * titleText, bool filter, bool forceHideRegionFree, bool setFilterTicks);
+void addTitleBannerImagePathToMenuEntry(menuEntry_s *me, u64 title_id);
 
 //void updateFilterTicks(menu_s * aTitleMenu);
 

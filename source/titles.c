@@ -327,6 +327,15 @@ bool titleIgnored(u64 titleID) {
 
 //#include "MAFontRobotoRegular.h"
 
+void addTitleBannerImagePathToMenuEntry(menuEntry_s *me, u64 title_id) {
+    char bannerImagePath[128];
+    sprintf(bannerImagePath, "%s%llu-banner.png", titleBannersPath, title_id);
+
+    if (fileExists(bannerImagePath, &sdmcArchive)) {
+        strcpy(me->bannerImagePath, bannerImagePath);
+    }
+}
+
 void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool forceHideRegionFree, bool setFilterTicks) {
     getIgnoredTitleIDs();
 
@@ -415,12 +424,7 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             me.isShortcut = false;
             me.bannerImagePath[0] = '\0';
 
-            char bannerImagePath[128];
-            sprintf(bannerImagePath, "%s%llu-banner.png", titleBannersPath, aTitle.title_id);
-
-            if (fileExists(bannerImagePath, &sdmcArchive)) {
-                strcpy(me.bannerImagePath, bannerImagePath);
-            }
+            addTitleBannerImagePathToMenuEntry(&me, aTitle.title_id);
 
             /*
             If adding the title for the inserted cart, set its isRegionFreeEntry flag.

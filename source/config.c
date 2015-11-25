@@ -12,6 +12,7 @@
 #include "filesystem.h"
 #include "sound.h"
 #include "boot.h"
+#include "help.h"
 
 #include "settingsIconAlphaSort_bin.h"
 #include "settingsIconWaterAnimated_bin.h"
@@ -328,8 +329,14 @@ void cycleRows() {
         totalRows = minRows;
     }
 
+    updateMenuIconPositions(&colourSelectMenu);
+    updateMenuIconPositions(&foldersMenu);
     updateMenuIconPositions(&gridSettingsMenu);
     updateMenuIconPositions(&settingsMenu);
+    updateMenuIconPositions(&themeSettingsMenu);
+    updateMenuIconPositions(&themesMenu);
+    updateMenuIconPositions(&titleMenu);
+    updateMenuIconPositions(&waterMenu);
 }
 
 bool gridSettingsMenuNeedsInit = true;

@@ -1,6 +1,6 @@
 #include "help.h"
-#include "config.h"
 #include "menu.h"
+#include "config.h"
 #include "alert.h"
 #include "string.h"
 #include "background.h"

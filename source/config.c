@@ -170,6 +170,15 @@ void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int fold
 
     strcpy(me->executablePath, fullPath+folderPathLen);
 
+    int i, l=-1; for(i=0; fullPath[i]; i++) if(fullPath[i]=='.') l=i;
+
+    char bannerPath[128];
+    strcpy(bannerPath, "");
+    strncat(bannerPath, &fullPath[0], l);
+    strcat(bannerPath, "");
+
+    addBannerPathToMenuEntry(me->bannerImagePath, bannerPath, "theme", &me->bannerIsFullScreen, &me->hasBanner);
+
     addMenuEntryCopy(&themesMenu, me);
 //    themesMenu.numEntries = themesMenu.numEntries + 1;
 }

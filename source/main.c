@@ -109,6 +109,7 @@ void launchSVDTFromTitleMenu() {
         if (me->title_id) {
             if (me->title_id > 0) {
                 createTitleInfoFromTitleID(me->title_id, me->mediatype, &target_title);
+                targetProcessId = -2;
 
 //                titleInfo_s* ret = NULL;
 //                ret = getTitleWithID(&titleBrowser, me->title_id);

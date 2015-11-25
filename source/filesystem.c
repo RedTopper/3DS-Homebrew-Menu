@@ -130,6 +130,9 @@ bool checkAddBannerPathToMenuEntry(char *dst, char * path, char *filenamePrefix,
 }
 
 void addBannerPathToMenuEntry(char *dst, char * path, char * filenamePrefix, bool * isFullScreen, bool * hasBanner) {
+//    *hasBanner = false;
+//    return;
+
     if (checkAddBannerPathToMenuEntry(dst, path, filenamePrefix, true, isFullScreen)) {
         *hasBanner = true;
         *isFullScreen = true;

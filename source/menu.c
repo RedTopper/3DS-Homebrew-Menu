@@ -651,10 +651,19 @@ void drawGridWithPage(menu_s* m, int page, int pageYOffset, int pageXOffset, boo
     }
 
     if (!gridOnly) {
-        menuEntry_s *me = getMenuEntry(m, m->selectedEntry);
-        if (!me->hasBanner || !me->bannerIsFullScreen) {
-            MAGFXDrawPanel(GFX_TOP, false);
+        bool drawPanel = true;
+
+        if (m && m->selectedEntry > -1) {
+            menuEntry_s *me = getMenuEntry(m, m->selectedEntry);
+            if (me && me->hasBanner && me->bannerIsFullScreen) {
+                drawPanel = false;
+            }
         }
+
+        if (drawPanel)
+            MAGFXDrawPanel(GFX_TOP, false);
+
+
     }
 
     int totalDrawn = 0;
@@ -2037,6 +2046,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
             Draw app banner image (if it exists
         */
         if (me->hasBanner) {
+//        if (0) {
             if (strcmp(bannerImagePath, me->bannerImagePath) != 0) {
                 loadBannerImage(me);
             }
@@ -2055,6 +2065,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
             Draw app icon image if no banner was drawn
         */
         if (!me->hasBanner || !drawBannerImage) {
+//        if (1) {
             /*
              Draw the shadow
              */
@@ -2084,6 +2095,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
         int maximumTextWidth = 400-xPos-20;
 
         if (!me->hasBanner || !me->bannerIsFullScreen) {
+//        if(1) {
             /*
              Draw the app title
              */

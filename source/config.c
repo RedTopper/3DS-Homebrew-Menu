@@ -95,7 +95,6 @@ void setTheme(char * themeName) {
 
     gfxFlip();
 
-    int startMs = osGetTime();
     playBootSound();
 
     //Reload theme images

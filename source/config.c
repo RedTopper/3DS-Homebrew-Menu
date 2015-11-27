@@ -70,6 +70,9 @@ int logoType = logoTypeDefault;
 void loadConfigWithType(int configType);
 
 void setTheme(char * themeName) {
+    logTextBoot("Selected theme: ");
+    logTextBootln(themeName);
+    logTextBootln("Stopping current audio.");
     audio_stop();
 
     //Save the selected theme in main config
@@ -92,6 +95,7 @@ void setTheme(char * themeName) {
 
     gfxFlip();
 
+    int startMs = osGetTime();
     playBootSound();
 
     //Reload theme images
@@ -114,6 +118,7 @@ void setTheme(char * themeName) {
 
     panelsDrawn = false;
     pageControlPanelsDrawn = false;
+    logTextBootln("Finished loading theme.");
 }
 
 void addThemeToList(char * fullPath, menuEntry_s * me, char * smdhName, int folderPathLen) {
@@ -229,11 +234,13 @@ void buildThemesList() {
 }
 
 void randomiseTheme() {
+    logTextBootln("Building theme list.");
     buildThemesList();
     int minimum_number = 2;
     int max_number = themesMenu.numEntries - 1;
     int r = rand() % (max_number + 1 - minimum_number) + minimum_number;
     menuEntry_s * randomEntry = getMenuEntry(&themesMenu, r);
+    logTextBootln("Done randomizing.");
     setTheme(randomEntry->executablePath);
 }
 
@@ -662,7 +669,10 @@ void loadConfig() {
 }
 
 void saveConfigWithType(int configType) {
-    logIntP(configType, "Saving config with type", "/c.txt");
+    logTextBoot("Saving configuration with type: ");
+    char str[15];
+    sprintf(str, "%d", configType);
+    logTextBootln(str);
 
     configData *data = configDataForType(configType);
     if (!data) {

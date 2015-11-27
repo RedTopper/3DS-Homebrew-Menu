@@ -9,6 +9,41 @@
 //#include <string>
 //#include <vector>
 
+FILE* fSave;
+
+char* logpath = "/bootgrid.log";
+
+void logInit() {
+	char old[128]; //plenty long
+	sprintf(old,"%s.lastlaunch",logpath); 
+	remove(old);
+	rename(logpath, old);
+	FILE* logfile = fopen( logpath, "w" );
+	fclose(logfile); //quickly clears the new file.
+	fSave = fopen( logpath, "a" );
+	logTextBootln("****************BEGIN LOG************************");
+	logTextBootln("Done initializing file system!");
+}
+
+void logTextBootln(char *text) {
+    if (fSave != NULL) {
+        fprintf(fSave, "%s\n", text);
+    }
+}
+
+void logTextBoot(char *text) {
+    if (fSave != NULL) {
+        fprintf(fSave, "%s", text);
+    }
+}
+
+void logQuit() {
+	logTextBootln("******************END LOG************************");
+	logTextBootln("Masher's log closed cleanly.");
+	fclose(fSave);
+}
+
+#warning Depricated, Try to use logTextBoot or LogTextBootln instead.
 void logTextP(char *text, char const * path, bool append) {
     char * mode;
 

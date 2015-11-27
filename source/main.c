@@ -146,6 +146,7 @@ void exitServices() {
     acExit();
     hidExit();
     gfxExit();
+    logQuit();
     closeSDArchive();
     exitFilesystem();
     aptExit();
@@ -602,13 +603,33 @@ void handleMenuSelection() {
     }
 }
 
+Result logService(Result r, char* serviceName) {
+    logTextBoot("Starting service ");
+    logTextBoot(serviceName);
+    logTextBoot("...");
+    if(r != 0) {
+        logTextBootln(" failed!");
+        logTextBoot("FAILED TO START ");
+        logTextBoot(serviceName);
+        logTextBootln("System error code: ");
+        char res[9];
+        sprintf(&res[0], "%x", (int)r);
+        logTextBootln(res);
+        char endMessage[1000] = {}; //1000 characters max
+        snprintf(endMessage, sizeof endMessage, "Sorry, but %s will be unused for this session.",serviceName);
+        logTextBootln(endMessage);
+        return r;
+    } else {
+        logTextBootln(" done!");
+        return r;
+    }
+}
+
 int main(int argc, char *argv[])
 {
 	srvInit();
 	aptInit();
 	gfxInitDefault();
-
-    logTextP("Clear background", "/bootlog.txt", true);
 
 	u8* framebuf_top;
 	u8* framebuf_bot;
@@ -616,18 +637,22 @@ int main(int argc, char *argv[])
 	framebuf_bot = gfxGetFramebuffer(GFX_BOTTOM, GFX_LEFT, NULL, NULL);
 	memset(framebuf_top, 0, 400 * 240 * 3); //clear the screen to black
 	memset(framebuf_bot, 0, 320 * 240 * 3); //ensures no graphical glitching shows.
+    
+    gfxFlip(); //need to actually clear the screen.
 
 	initFilesystem();
 
     openSDArchive();
+    
+    logInit(); //Init log file.
 
-	Result r = csndInit();//start Audio Lib
+	Result r = logService(csndInit(),"CSND (Sound)");//start Audio Lib
 	audioActive = (r == 0);
 
     int bootAttempts = getConfigIntForKey("bootAttempts", 0, configTypeMain);
 
     if (!audioActive) {
-        if (bootAttempts < 5) {
+        if (bootAttempts < 2) { //Should only need to reboot, like, 2 times.
             bootAttempts++;
             setConfigInt("bootAttempts", bootAttempts, configTypeMain);
             saveConfigWithType(configTypeMain);
@@ -657,7 +682,10 @@ int main(int argc, char *argv[])
         randomiseTheme();
     }
     else {
+        logTextBootln("Attempting to load theme manually.");
         audio_stop();
+        
+        //Do we need to load theme config?
 
         loadSplashImages();
 
@@ -677,6 +705,13 @@ int main(int argc, char *argv[])
         initThemeImages();
         initThemeSounds();
         initColours();
+        
+        //Do we need to reload the GUI elements?
+        
+        waitForSoundToFinishPlaying(&themeSoundBoot);
+
+        startBGM();
+        logTextBootln("Done loading theme manually.");
     }
 
 
@@ -687,20 +722,18 @@ int main(int argc, char *argv[])
 
 	startMs = osGetTime();
 
-    logTextP("Init services", "/bootlog.txt", true);
+    logTextBootln("Initializing services...");
 
-	hidInit();
-	acInit();
-	ptmInit();
+	logService(hidInit(),"Input");
+	logService(acInit(),"AC");
+	logService(ptmInit(),"PTM");
 	titlesInit();
 	regionFreeInit();
 	netloader_init();
 
-	logTextP("Set CPU speed", "/bootlog.txt", true);
-
 	osSetSpeedupEnable(true);
 
-	logTextP("Create folders", "/bootlog.txt", true);
+	logTextBootln("Creating folders.");
 
     mkdir(rootPath, 777);
     mkdir(themesPath, 777);
@@ -709,14 +742,14 @@ int main(int argc, char *argv[])
     mkdir(titleBannersPath, 777);
 //    mkdir("/gridlauncher/screenshots/", 777);
 
-    logTextP("APT Set CPU time limit", "/bootlog.txt", true);
+    logTextBootln("APT Set CPU time limit.");
 
 	// offset potential issues caused by homebrew that just ran
 	aptOpenSession();
 	APT_SetAppCpuTimeLimit(0);
 	aptCloseSession();
 
-    logTextP("Init background, menu and title browser", "/bootlog.txt", true);
+    logTextBootln("Initializing background, menu and title browser.");
 
     initBackground();
     //	initErrors();
@@ -724,7 +757,7 @@ int main(int argc, char *argv[])
 	initMenu(&menu);
 	initTitleBrowser(&titleBrowser, NULL);
 
-    logTextP("Scan HB directory", "/bootlog.txt", true);
+    logTextBootln("Scanning HB directory.");
 
 	u8 sdmcPrevious = 0;
 	FSUSER_IsSdmcDetected(&sdmcCurrent);
@@ -745,7 +778,7 @@ int main(int argc, char *argv[])
     int frameRate = 60;
     int frameMs = 1000 / frameRate;
 
-    logTextP("Log launcher info", "/bootlog.txt", true);
+    logTextBootln("Launcher info:");
 
     char * glInfo = (char*)malloc(1024);
 
@@ -757,13 +790,10 @@ int main(int argc, char *argv[])
     }
 
     logTextP(glInfo, "/gridlauncher/glinfo.txt", false);
+    logTextBootln(glInfo);
     free(glInfo);
 
-    waitForSoundToFinishPlaying(&themeSoundBoot);
-
-    startBGM();
-
-    logTextP("Enter main loop", "/bootlog.txt", true);
+    logTextBootln("Boot completed.");
 
 	while(aptMainLoop()) {
         if (die || dieImmediately) {

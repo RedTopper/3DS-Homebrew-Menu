@@ -66,6 +66,7 @@ void audioFree(themeSound * aThemeSound) {
         memset(aThemeSound->sndbuffer, 0, aThemeSound->sndsize);
         GSPGPU_FlushDataCache(aThemeSound->sndbuffer, aThemeSound->sndsize);
         linearFree(aThemeSound->sndbuffer);
+        aThemeSound->loaded = false;
     }
 }
 

@@ -37,6 +37,16 @@ extern int themeImageSplashBottom;
 extern int themeImageTopWallpaperReboot;
 extern int themeImageBottomWallpaperReboot;
 
+extern int themeImageAppOverlay;
+extern int themeImageAppOverlaySelected;
+
+extern int themeImageCartOverlay;
+extern int themeImageCartOverlaySelected;
+
+
+
+
+
 extern bool themeHasProgressWheel;
 extern int numProgressWheelImages;
 

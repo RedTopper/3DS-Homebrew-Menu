@@ -81,7 +81,7 @@ void initHelpMenu() {
     helpMenu.atEquilibrium=false;
 
     char * titleTextFull = malloc(64);
-    sprintf(titleTextFull, "Homebrew Grid Launcher beta %d", currentversion);
+    sprintf(titleTextFull, "Homebrew Grid Launcher %s", currentversion);
 
     addSettingsMenuEntry("About", "Details of the Homebrew Launcher and the Grid Launcher.", (u8*)helpIconAbout_bin, false, &helpMenu, &showHelpDetails, titleTextFull, "Original homebrew launcher by smealum.\nhttp://smealum.github.io/3ds/\n\nThis grid layout version by mashers.\nhttps://gbatemp.net/members/mashers.366855/");
 

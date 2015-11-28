@@ -1949,12 +1949,16 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
     //Draw backgrounds for the icons if they haven't been drawn by drawMenu
     //(i.e. if showing app backgrounds for empty slots has been disabled)
 
+    bool entryIsCart = false;
+
     /*
      Draw the icon on the bottom screen (if necessary)
      */
 
     if (me != &gamecardMenuEntry && !me->isTitleEntry) {
         if (me->isRegionFreeEntry) {
+            entryIsCart = true;
+
             if (selected) {
                 if (themeImageExists(themeImageCartBackgroundSelected)) {
                     drawThemeImage(themeImageCartBackgroundSelected, screen, x+3, y+4);
@@ -2026,6 +2030,31 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, bool selected, menu_s *m,
     if (me->showTick != NULL && *(me->showTick)) {
         gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)tick_bin, 48, 48, x+7, y+8);
 //        gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, tick, 48, 48, x+7, y+8);
+    }
+
+    if (entryIsCart) {
+        if (selected) {
+            if (themeImageExists(themeImageCartOverlaySelected)) {
+                drawThemeImage(themeImageCartOverlaySelected, screen, x, y);
+            }
+        }
+        else {
+            if (themeImageExists(themeImageCartOverlay)) {
+                drawThemeImage(themeImageCartOverlay, screen, x, y);
+            }
+        }
+    }
+    else {
+        if (selected) {
+            if (themeImageExists(themeImageAppOverlaySelected)) {
+                drawThemeImage(themeImageAppOverlaySelected, screen, x, y);
+            }
+        }
+        else {
+            if (themeImageExists(themeImageAppOverlay)) {
+                drawThemeImage(themeImageAppOverlay, screen, x, y);
+            }
+        }
     }
 
     /*

@@ -662,7 +662,10 @@ void loadConfig() {
 }
 
 void saveConfigWithType(int configType) {
-    logIntP(configType, "Saving config with type", "/c.txt");
+    //This doesn't actually need to log the type
+    //It's only here because there's a weird bug with saving the config,
+    //which adding a log seems to resolve
+    logTextP("Saving config", "/c.txt", false);
 
     configData *data = configDataForType(configType);
     if (!data) {

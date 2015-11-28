@@ -119,7 +119,7 @@ bool checkAddBannerPathToMenuEntry(char *dst, char * path, char *filenamePrefix,
     else
         strcat(bannerImagePath, "-banner.png");
 
-    logText(bannerImagePath);
+//    logText(bannerImagePath);
 
 	if (fileExists(bannerImagePath, &sdmcArchive)) {
         strncpy(dst, bannerImagePath, ENTRY_PATHLENGTH);

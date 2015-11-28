@@ -58,17 +58,17 @@ void logTextP(char *text, char const * path, bool append) {
 //    logText(s);
 //}
 
-void logIntP(int i, char * label, char const * path) {
-    char s[strlen(label)+8];
-    sprintf(s, "%s: %d", label, i);
-    logTextP(s, path, true);
-}
-
-void logInt(int i, char * label) {
-    char s[strlen(label)+8];
-    sprintf(s, "%s: %d", label, i);
-    logText(s);
-}
+//void logIntP(int i, char * label, char const * path) {
+//    char s[strlen(label)+8];
+//    sprintf(s, "%s: %d", label, i);
+//    logTextP(s, path, true);
+//}
+//
+//void logInt(int i, char * label) {
+//    char s[strlen(label)+8];
+//    sprintf(s, "%s: %d", label, i);
+//    logText(s);
+//}
 
 void logText(char *text) {
     char const * path = "sdmc:/log.txt";

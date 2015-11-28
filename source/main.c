@@ -35,8 +35,6 @@
 #include "version.h"
 #include "sound.h"
 
-#include "logText.h"
-
 u8 sdmcCurrent = 0;
 u64 nextSdCheck = 0;
 
@@ -608,7 +606,7 @@ int main(int argc, char *argv[])
 	aptInit();
 	gfxInitDefault();
 
-    logTextP("Clear background", "/bootlog.txt", true);
+//    logTextP("Clear background", "/bootlog.txt", true);
 
 	u8* framebuf_top;
 	u8* framebuf_bot;
@@ -687,7 +685,7 @@ int main(int argc, char *argv[])
 
 	startMs = osGetTime();
 
-    logTextP("Init services", "/bootlog.txt", true);
+//    logTextP("Init services", "/bootlog.txt", true);
 
 	hidInit();
 	acInit();
@@ -696,11 +694,11 @@ int main(int argc, char *argv[])
 	regionFreeInit();
 	netloader_init();
 
-	logTextP("Set CPU speed", "/bootlog.txt", true);
+//	logTextP("Set CPU speed", "/bootlog.txt", true);
 
 	osSetSpeedupEnable(true);
 
-	logTextP("Create folders", "/bootlog.txt", true);
+//	logTextP("Create folders", "/bootlog.txt", true);
 
     mkdir(rootPath, 777);
     mkdir(themesPath, 777);
@@ -709,14 +707,14 @@ int main(int argc, char *argv[])
     mkdir(titleBannersPath, 777);
 //    mkdir("/gridlauncher/screenshots/", 777);
 
-    logTextP("APT Set CPU time limit", "/bootlog.txt", true);
+//    logTextP("APT Set CPU time limit", "/bootlog.txt", true);
 
 	// offset potential issues caused by homebrew that just ran
 	aptOpenSession();
 	APT_SetAppCpuTimeLimit(0);
 	aptCloseSession();
 
-    logTextP("Init background, menu and title browser", "/bootlog.txt", true);
+//    logTextP("Init background, menu and title browser", "/bootlog.txt", true);
 
     initBackground();
     //	initErrors();
@@ -724,7 +722,7 @@ int main(int argc, char *argv[])
 	initMenu(&menu);
 	initTitleBrowser(&titleBrowser, NULL);
 
-    logTextP("Scan HB directory", "/bootlog.txt", true);
+//    logTextP("Scan HB directory", "/bootlog.txt", true);
 
 	u8 sdmcPrevious = 0;
 	FSUSER_IsSdmcDetected(&sdmcCurrent);
@@ -745,15 +743,15 @@ int main(int argc, char *argv[])
     int frameRate = 60;
     int frameMs = 1000 / frameRate;
 
-    logTextP("Log launcher info", "/bootlog.txt", true);
+//    logTextP("Log launcher info", "/bootlog.txt", true);
 
     char * glInfo = (char*)malloc(1024);
 
     if (argc > 0) {
-        sprintf(glInfo, "%s|%d", argv[0], currentversion);
+        sprintf(glInfo, "%s|%s", argv[0], currentversion);
     }
     else {
-        sprintf(glInfo, "sdmc:/boot.3dsx|%d", currentversion);
+        sprintf(glInfo, "sdmc:/boot.3dsx|%s", currentversion);
     }
 
     logTextP(glInfo, "/gridlauncher/glinfo.txt", false);
@@ -763,7 +761,7 @@ int main(int argc, char *argv[])
 
     startBGM();
 
-    logTextP("Enter main loop", "/bootlog.txt", true);
+//    logTextP("Enter main loop", "/bootlog.txt", true);
 
 	while(aptMainLoop()) {
         if (die || dieImmediately) {

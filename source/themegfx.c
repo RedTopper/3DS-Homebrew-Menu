@@ -46,6 +46,12 @@ int themeImageSplashBottom = 22;
 int themeImageTopWallpaperReboot = 23;
 int themeImageBottomWallpaperReboot = 24;
 
+int themeImageAppOverlay = 25;
+int themeImageAppOverlaySelected = 26;
+
+int themeImageCartOverlay = 27;
+int themeImageCartOverlaySelected = 28;
+
 bool themeHasProgressWheel = false;
 
 typedef struct themeImage {
@@ -55,7 +61,7 @@ typedef struct themeImage {
     int w, h;
 } themeImage;
 
-#define maxThemeImages 25
+#define maxThemeImages 29
 themeImage themeImages[maxThemeImages];
 
 #define maxProgressWheelImages 16
@@ -156,6 +162,23 @@ void initThemeImages() {
 
     sprintf(path, "%scartbackgroundselected.png", themePath);
     loadThemeImage(path, "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackgroundSelected, themeImages);
+
+
+
+    sprintf(path, "%sappoverlay.png", themePath);
+    loadThemeImage(path, "App overlay", 64, 64, NULL, themeImageAppOverlay, themeImages);
+
+    sprintf(path, "%sappoverlayselected.png", themePath);
+    loadThemeImage(path, "Selected app overlay", 64, 64, NULL, themeImageAppOverlaySelected, themeImages);
+
+
+
+
+    sprintf(path, "%scartoverlay.png", themePath);
+    loadThemeImage(path, "Cart overlay", 64, 64, NULL, themeImageCartOverlay, themeImages);
+
+    sprintf(path, "%scartoverlayselected.png", themePath);
+    loadThemeImage(path, "Selected cart overlay", 64, 64, NULL, themeImageCartOverlaySelected, themeImages);
 
 
 

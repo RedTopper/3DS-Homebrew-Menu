@@ -422,6 +422,8 @@ void populateTitleMenu(menu_s* aTitleMenu, titleBrowser_s *tb, bool filter, bool
             me.bannerImagePath[0] = '\0';
 
             addTitleBannerImagePathToMenuEntry(&me, aTitle.title_id);
+//            addTitleBannerImagePathToMenuEntry(&me, 1125899907535104);
+
 
             /*
             If adding the title for the inserted cart, set its isRegionFreeEntry flag.

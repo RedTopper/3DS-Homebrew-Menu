@@ -600,13 +600,23 @@ void handleMenuSelection() {
     }
 }
 
+void enterNetloader() {
+    if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
+    else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
+}
+
 int main(int argc, char *argv[])
 {
-	srvInit();
+    srvInit();
 	aptInit();
 	gfxInitDefault();
+	hidInit();
 
-//    logTextP("Clear background", "/bootlog.txt", true);
+    hidScanInput();
+
+//    if (hidKeysDown()&KEY_Y || hidKeysHeld()&KEY_Y) {
+//        netloaderShortcut = true;
+//    }
 
 	u8* framebuf_top;
 	u8* framebuf_bot;
@@ -615,79 +625,88 @@ int main(int argc, char *argv[])
 	memset(framebuf_top, 0, 400 * 240 * 3); //clear the screen to black
 	memset(framebuf_bot, 0, 320 * 240 * 3); //ensures no graphical glitching shows.
 
+	gfxFlip();
+
 	initFilesystem();
 
     openSDArchive();
 
-	Result r = csndInit();//start Audio Lib
-	audioActive = (r == 0);
-
-    int bootAttempts = getConfigIntForKey("bootAttempts", 0, configTypeMain);
-
-    if (!audioActive) {
-        if (bootAttempts < 5) {
-            bootAttempts++;
-            setConfigInt("bootAttempts", bootAttempts, configTypeMain);
-            saveConfigWithType(configTypeMain);
-
-            menuEntry_s* me = malloc(sizeof(menuEntry_s));
-            initMenuEntry(me, "/boot.3dsx", "launcher", "", "", NULL);
-            scanMenuEntry(me);
-            exitServices();
-            regionFreeExit();
-            return bootApp(me->executablePath, &me->descriptor.executableMetadata, me->arg);
-        }
-    }
-
-    if (bootAttempts > 0) {
-        setConfigInt("bootAttempts", 0, configTypeMain);
-        saveConfigWithType(configTypeMain);
-    }
-
-	// Moved this here as rand() is used for choosing a random theme
+    // Moved this here as rand() is used for choosing a random theme
     srand(svcGetSystemTick());
 
-    randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
-
     int startMs = 0;
-
-    if (randomTheme) {
-        randomiseTheme();
-    }
-    else {
-        audio_stop();
-
-        loadSplashImages();
-
-        if (themeImageExists(themeImageSplashTop)) {
-            drawThemeImage(themeImageSplashTop, GFX_TOP, 0, 0);
-        }
-
-        if (themeImageExists(themeImageSplashBottom)) {
-            drawThemeImage(themeImageSplashBottom, GFX_BOTTOM, 0, 0);
-        }
-
-        gfxFlip();
-
-        startMs = osGetTime();
-        playBootSound();
-
-        initThemeImages();
-        initThemeSounds();
-        initColours();
-    }
-
-
-
     int endMs = 0;
     int delayMs = 0;
     unsigned long long int delayNs = 0;
+
+    if (!netloaderShortcut) {
+        Result r = csndInit();//start Audio Lib
+        audioActive = (r == 0);
+
+        int bootAttempts = getConfigIntForKey("bootAttempts", 0, configTypeMain);
+
+        if (!audioActive) {
+            if (bootAttempts < 5) {
+                bootAttempts++;
+                setConfigInt("bootAttempts", bootAttempts, configTypeMain);
+                saveConfigWithType(configTypeMain);
+
+                menuEntry_s* me = malloc(sizeof(menuEntry_s));
+                initMenuEntry(me, "/boot.3dsx", "launcher", "", "", NULL);
+                scanMenuEntry(me);
+                exitServices();
+                regionFreeExit();
+                return bootApp(me->executablePath, &me->descriptor.executableMetadata, me->arg);
+            }
+        }
+
+        if (bootAttempts > 0) {
+            setConfigInt("bootAttempts", 0, configTypeMain);
+            saveConfigWithType(configTypeMain);
+        }
+
+        randomTheme = getConfigBoolForKey("randomTheme", false, configTypeMain);
+
+        if (randomTheme) {
+            randomiseTheme();
+        }
+        else {
+            audio_stop();
+
+            loadSplashImages();
+
+            if (themeImageExists(themeImageSplashTop)) {
+                drawThemeImage(themeImageSplashTop, GFX_TOP, 0, 0);
+            }
+
+            if (themeImageExists(themeImageSplashBottom)) {
+                drawThemeImage(themeImageSplashBottom, GFX_BOTTOM, 0, 0);
+            }
+
+            gfxFlip();
+
+            startMs = osGetTime();
+            playBootSound();
+
+            initThemeImages();
+            initThemeSounds();
+            initColours();
+        }
+
+        mkdir(rootPath, 777);
+        mkdir(themesPath, 777);
+        mkdir(foldersPath, 777);
+        mkdir(defaultThemePath, 777);
+        mkdir(titleBannersPath, 777);
+
+        initBackground();
+    }
 
 	startMs = osGetTime();
 
 //    logTextP("Init services", "/bootlog.txt", true);
 
-	hidInit();
+//	hidInit();
 	acInit();
 	ptmInit();
 	titlesInit();
@@ -700,11 +719,7 @@ int main(int argc, char *argv[])
 
 //	logTextP("Create folders", "/bootlog.txt", true);
 
-    mkdir(rootPath, 777);
-    mkdir(themesPath, 777);
-    mkdir(foldersPath, 777);
-    mkdir(defaultThemePath, 777);
-    mkdir(titleBannersPath, 777);
+
 //    mkdir("/gridlauncher/screenshots/", 777);
 
 //    logTextP("APT Set CPU time limit", "/bootlog.txt", true);
@@ -716,17 +731,21 @@ int main(int argc, char *argv[])
 
 //    logTextP("Init background, menu and title browser", "/bootlog.txt", true);
 
-    initBackground();
+
     //	initErrors();
 
-	initMenu(&menu);
-	initTitleBrowser(&titleBrowser, NULL);
+    if (!netloaderShortcut) {
+        initMenu(&menu);
+        initTitleBrowser(&titleBrowser, NULL);
+    }
+
+
 
 //    logTextP("Scan HB directory", "/bootlog.txt", true);
 
 	u8 sdmcPrevious = 0;
 	FSUSER_IsSdmcDetected(&sdmcCurrent);
-	if(sdmcCurrent == 1)
+	if(sdmcCurrent == 1 && !netloaderShortcut)
 	{
 		scanHomebrewDirectory(&menu, currentFolder());
 	}
@@ -738,28 +757,34 @@ int main(int argc, char *argv[])
     //Negate this to force an update of the cart title id on first boot
     gamecardWasIn = !regionFreeGamecardIn;
 
-
-
     int frameRate = 60;
     int frameMs = 1000 / frameRate;
 
 //    logTextP("Log launcher info", "/bootlog.txt", true);
 
-    char * glInfo = (char*)malloc(1024);
-
-    if (argc > 0) {
-        sprintf(glInfo, "%s|%s", argv[0], currentversion);
+    if (netloaderShortcut) {
+        enterNetloader();
     }
+
     else {
-        sprintf(glInfo, "sdmc:/boot.3dsx|%s", currentversion);
+        char * glInfo = (char*)malloc(1024);
+
+        if (argc > 0) {
+            sprintf(glInfo, "%s|%s", argv[0], currentversion);
+        }
+        else {
+            sprintf(glInfo, "sdmc:/boot.3dsx|%s", currentversion);
+        }
+
+        logTextP(glInfo, "/gridlauncher/glinfo.txt", false);
+        free(glInfo);
+
+        waitForSoundToFinishPlaying(&themeSoundBoot);
+
+        startBGM();
     }
 
-    logTextP(glInfo, "/gridlauncher/glinfo.txt", false);
-    free(glInfo);
 
-    waitForSoundToFinishPlaying(&themeSoundBoot);
-
-    startBGM();
 
 //    logTextP("Enter main loop", "/bootlog.txt", true);
 
@@ -935,8 +960,7 @@ int main(int argc, char *argv[])
             }
 			if(hidKeysDown()&KEY_Y)
 			{
-				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
-				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
+                enterNetloader();
 			}
 
             if (menuStatus == menuStatusHomeMenuApps) {

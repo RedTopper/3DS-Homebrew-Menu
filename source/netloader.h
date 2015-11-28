@@ -2,6 +2,8 @@
 
 #define NETLOADER_PORT 17491
 
+extern bool netloaderShortcut;
+
 extern char *netloadedPath;
 extern char *netloaded_commandline;
 extern int netloaded_cmdlen;

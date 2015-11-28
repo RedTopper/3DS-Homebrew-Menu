@@ -20,6 +20,8 @@
 #include "colours.h"
 #include "statusbar.h"
 
+bool netloaderShortcut = false;
+
 char *netloadedPath = NULL;
 char *netloaded_commandline = NULL;
 bool netloader_boot = false;

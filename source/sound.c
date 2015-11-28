@@ -10,7 +10,7 @@ themeSound themeSoundSelect;
 themeSound themeSoundBack;
 themeSound themeSoundBoot;
 
-bool audioActive;
+bool audioActive = false;
 bool waitForSounds = true;
 
 #include "logText.h"

@@ -1099,7 +1099,8 @@ int main(int argc, char *argv[])
         else {
 //            logText("About to boot app using R4");
             exitServices();
-            return regionFreeRun();
+//            return regionFreeRun();
+            return regionFreeRun2(0x00000000, 0x00000000, 0x2, 0x1);
             //return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
         }
     }

@@ -83,11 +83,11 @@ void initBackground(void)
 //			((bubbles[i].y >= 240) ? 0 : -40) + bubbles[i].x, bubbles[i].fade);
 //	}
 //}
-
-float randomFloat()
-{
-	return (float)rand()/(float)(RAND_MAX);
-}
+//
+//float randomFloat()
+//{
+//	return (float)rand()/(float)(RAND_MAX);
+//}
 
 void updateBackground(void)
 {

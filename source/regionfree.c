@@ -71,14 +71,14 @@ Result NSS_Reboot(u32 pid_low, u32 pid_high, u8 mediatype, u8 flag)
 	return (Result)cmdbuf[1];
 }
 
-Result regionFreeRun()
-{
-	Result ret = NSS_Reboot(0x00000000, 0x00000000, 0x2, 0x1);
-
-	regionFreeExit();
-
-	return ret;
-}
+//Result regionFreeRun()
+//{
+//	Result ret = NSS_Reboot(0x00000000, 0x00000000, 0x2, 0x1);
+//
+//	regionFreeExit();
+//
+//	return ret;
+//}
 
 /*
  regionFreeRun2() by suloku. Thank you very much for this!!!

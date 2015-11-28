@@ -252,7 +252,7 @@ void handleMenuTopLeftActions(int source) {
         }
     }
     else if (menuStatus == menuStatusColourAdjust) {
-        saveColour(settingsColour);
+        saveColour(settingsColour, false);
         setMenuStatus(menuStatusColourSettings);
     }
     else if (menuStatus == menuStatusColourSettings) {
@@ -500,15 +500,15 @@ void initMenu(menu_s* m)
 	}
 }
 
-static inline s16 getEntryLocationPx(menu_s* m, int px)
-{
-	return 240-px+fptToInt(m->scrollLocation);
-}
-
-static inline s16 getEntryLocation(menu_s* m, int n)
-{
-	return getEntryLocationPx(m, (n+1)*ENTRY_WIDTH);
-}
+//static inline s16 getEntryLocationPx(menu_s* m, int px)
+//{
+//	return 240-px+fptToInt(m->scrollLocation);
+//}
+//
+//static inline s16 getEntryLocation(menu_s* m, int n)
+//{
+//	return getEntryLocationPx(m, (n+1)*ENTRY_WIDTH);
+//}
 
 u8 bottomBar[18*320*4];
 

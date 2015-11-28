@@ -85,7 +85,10 @@ void freeThemeImages() {
     freeThemeImagesArray(progressWheelImages, maxProgressWheelImages);
 }
 
-bool loadThemeImage(char * path, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID, themeImage images[]) {
+bool loadThemeImage(char * themePath, char * filename, char * description, int expectedWidth, int expectedHeight, u8 * alphaMask, int imageID, themeImage images[]) {
+    char path[128];
+    sprintf(path, "%s%s", themePath, filename);
+
     themeImage * aThemeImage = &(images[imageID]);
     aThemeImage->exists = false;
 
@@ -145,126 +148,53 @@ bool loadThemeImage(char * path, char * description, int expectedWidth, int expe
 
 void initThemeImages() {
     char * themePath = currentThemePath();
-    char path[128];
 
 
-    sprintf(path, "%sappbackground.png", themePath);
-    loadThemeImage(path, "App background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackground, themeImages);
+    loadThemeImage(themePath, "appbackground.png",  "App background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackground, themeImages);
+    loadThemeImage(themePath, "appbackgroundselected.png", "Selected app background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackgroundSelected, themeImages);
 
-    sprintf(path, "%sappbackgroundselected.png", themePath);
-    loadThemeImage(path, "Selected app background", 56, 56, (u8*)appbackgroundalphamask_bin, themeImageAppBackgroundSelected, themeImages);
+    loadThemeImage(themePath, "cartbackground.png", "Cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackground, themeImages);
+    loadThemeImage(themePath, "cartbackgroundselected.png", "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackgroundSelected, themeImages);
 
+    loadThemeImage(themePath, "appoverlay.png", "App overlay", 64, 64, NULL, themeImageAppOverlay, themeImages);
+    loadThemeImage(themePath, "appoverlayselected.png", "Selected app overlay", 64, 64, NULL, themeImageAppOverlaySelected, themeImages);
 
+    loadThemeImage(themePath, "cartoverlay.png", "Cart overlay", 64, 64, NULL, themeImageCartOverlay, themeImages);
+    loadThemeImage(themePath, "cartoverlayselected.png", "Selected cart overlay", 64, 64, NULL, themeImageCartOverlaySelected, themeImages);
 
+    loadThemeImage(themePath, "wallpapertop.png", "Top wallpaper", 400, 240, NULL, themeImageTopWallpaper, themeImages);
+    loadThemeImage(themePath, "wallpapertopinfo.png", "Top info wallpaper", 400, 240, NULL, themeImageTopWallpaperInfo, themeImages);
 
-    sprintf(path, "%scartbackground.png", themePath);
-    loadThemeImage(path, "Cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackground, themeImages);
+    loadThemeImage(themePath, "wallpaperbottom.png", "Bottom wallpaper", 320, 240, NULL, themeImageBottomWallpaper, themeImages);
+    loadThemeImage(themePath, "wallpaperbottomnongrid.png", "Bottom wallpaper (non grid)", 320, 240, NULL, themeImageBottomWallpaperNonGrid, themeImages);
 
-    sprintf(path, "%scartbackgroundselected.png", themePath);
-    loadThemeImage(path, "Selected cart background", 59, 59, (u8*)cartbackgroundalphamask_bin, themeImageCartBackgroundSelected, themeImages);
+    loadThemeImage(themePath, "wallpaperbottomreboot.png", "Bottom wallpaper (reboot)", 320, 240, NULL, themeImageBottomWallpaperReboot, themeImages);
+    loadThemeImage(themePath, "wallpapertopreboot.png", "Top wallpaper (reboot)", 400, 240, NULL, themeImageTopWallpaperReboot, themeImages);
 
+    loadThemeImage(themePath, "buttontopleft.png", "Top left button", 36, 36, NULL, themeImageTopLeftButton, themeImages);
+    loadThemeImage(themePath, "buttontopright.png", "Top right button", 36, 36, NULL, themeImageTopRightButton, themeImages);
+    loadThemeImage(themePath, "buttonbottomleft.png", "Bottom left button", 36, 36, NULL, themeImageBottomLeftButton, themeImages);
+    loadThemeImage(themePath, "buttonbottomright.png", "Bottom right button", 36, 36, NULL, themeImageBottomRightButton, themeImages);
 
+    loadThemeImage(themePath, "buttontopleftselected.png", "Top left selected button", 36, 36, NULL, themeImageTopLeftButtonSelected, themeImages);
+    loadThemeImage(themePath, "buttontoprightselected.png", "Top right selected button", 36, 36, NULL, themeImageTopRightButtonSelected, themeImages);
+    loadThemeImage(themePath, "buttonbottomleftselected.png", "Bottom left selected button", 36, 36, NULL, themeImageBottomLeftButtonSelected, themeImages);
+    loadThemeImage(themePath, "buttonbottomrightselected.png", "Bottom right selected button", 36, 36, NULL, themeImageBottomRightButtonSelected, themeImages);
 
-    sprintf(path, "%sappoverlay.png", themePath);
-    loadThemeImage(path, "App overlay", 64, 64, NULL, themeImageAppOverlay, themeImages);
-
-    sprintf(path, "%sappoverlayselected.png", themePath);
-    loadThemeImage(path, "Selected app overlay", 64, 64, NULL, themeImageAppOverlaySelected, themeImages);
-
-
-
-
-    sprintf(path, "%scartoverlay.png", themePath);
-    loadThemeImage(path, "Cart overlay", 64, 64, NULL, themeImageCartOverlay, themeImages);
-
-    sprintf(path, "%scartoverlayselected.png", themePath);
-    loadThemeImage(path, "Selected cart overlay", 64, 64, NULL, themeImageCartOverlaySelected, themeImages);
-
-
-
-    sprintf(path, "%swallpapertop.png", themePath);
-    loadThemeImage(path, "Top wallpaper", 400, 240, NULL, themeImageTopWallpaper, themeImages);
-
-    sprintf(path, "%swallpapertopinfo.png", themePath);
-    loadThemeImage(path, "Top info wallpaper", 400, 240, NULL, themeImageTopWallpaperInfo, themeImages);
-
-    sprintf(path, "%swallpaperbottom.png", themePath);
-    loadThemeImage(path, "Bottom wallpaper", 320, 240, NULL, themeImageBottomWallpaper, themeImages);
-
-    sprintf(path, "%swallpaperbottomnongrid.png", themePath);
-    loadThemeImage(path, "Bottom wallpaper (non grid)", 320, 240, NULL, themeImageBottomWallpaperNonGrid, themeImages);
-
-    sprintf(path, "%swallpaperbottomreboot.png", themePath);
-    loadThemeImage(path, "Bottom wallpaper (reboot)", 320, 240, NULL, themeImageBottomWallpaperReboot, themeImages);
-
-    sprintf(path, "%swallpapertopreboot.png", themePath);
-    loadThemeImage(path, "Top wallpaper (reboot)", 400, 240, NULL, themeImageTopWallpaperReboot, themeImages);
-
-
-
-
-
-    sprintf(path, "%sbuttontopleft.png", themePath);
-    loadThemeImage(path, "Top left button", 36, 36, NULL, themeImageTopLeftButton, themeImages);
-
-    sprintf(path, "%sbuttontopright.png", themePath);
-    loadThemeImage(path, "Top right button", 36, 36, NULL, themeImageTopRightButton, themeImages);
-
-    sprintf(path, "%sbuttonbottomleft.png", themePath);
-    loadThemeImage(path, "Bottom left button", 36, 36, NULL, themeImageBottomLeftButton, themeImages);
-
-    sprintf(path, "%sbuttonbottomright.png", themePath);
-    loadThemeImage(path, "Bottom right button", 36, 36, NULL, themeImageBottomRightButton, themeImages);
-
-
-
-
-
-    sprintf(path, "%sbuttontopleftselected.png", themePath);
-    loadThemeImage(path, "Top left selected button", 36, 36, NULL, themeImageTopLeftButtonSelected, themeImages);
-
-    sprintf(path, "%sbuttontoprightselected.png", themePath);
-    loadThemeImage(path, "Top right selected button", 36, 36, NULL, themeImageTopRightButtonSelected, themeImages);
-
-    sprintf(path, "%sbuttonbottomleftselected.png", themePath);
-    loadThemeImage(path, "Bottom left selected button", 36, 36, NULL, themeImageBottomLeftButtonSelected, themeImages);
-
-    sprintf(path, "%sbuttonbottomrightselected.png", themePath);
-    loadThemeImage(path, "Bottom right selected button", 36, 36, NULL, themeImageBottomRightButtonSelected, themeImages);
-
-
-
-
-
-
-    sprintf(path, "%shelpicon.png", themePath);
-    loadThemeImage(path, "Help icon", 36, 36, NULL, themeImageHelpSymbol, themeImages);
-
-    sprintf(path, "%sbackicon.png", themePath);
-    loadThemeImage(path, "Back icon", 36, 36, NULL, themeImageBackSymbol, themeImages);
-
-    sprintf(path, "%shomeicon.png", themePath);
-    loadThemeImage(path, "Home icon", 36, 36, NULL, themeImageHomeSymbol, themeImages);
-
-    sprintf(path, "%ssettingsicon.png", themePath);
-    loadThemeImage(path, "Settings icon", 36, 36, NULL, themeImageSettingsSymbol, themeImages);
-
-    sprintf(path, "%sfoldersicon.png", themePath);
-    loadThemeImage(path, "Folders icon", 36, 36, NULL, themeImageFoldersSymbol, themeImages);
-
-
-
-
-
+    loadThemeImage(themePath, "helpicon.png", "Help icon", 36, 36, NULL, themeImageHelpSymbol, themeImages);
+    loadThemeImage(themePath, "backicon.png", "Back icon", 36, 36, NULL, themeImageBackSymbol, themeImages);
+    loadThemeImage(themePath, "homeicon.png", "Home icon", 36, 36, NULL, themeImageHomeSymbol, themeImages);
+    loadThemeImage(themePath, "settingsicon.png", "Settings icon", 36, 36, NULL, themeImageSettingsSymbol, themeImages);
+    loadThemeImage(themePath, "foldersicon.png", "Folders icon", 36, 36, NULL, themeImageFoldersSymbol, themeImages);
 
     numProgressWheelImages = 0;
 
     int frame;
     for (frame = 0; frame < maxProgressWheelImages; frame++) {
         char progressWheelFrameFilename[128];
-        sprintf(progressWheelFrameFilename, "%sprogressWheelFrame%d.png", themePath, frame+1);
+        sprintf(progressWheelFrameFilename, "progressWheelFrame%d.png",frame+1);
 
-        bool loadSuccess = loadThemeImage(progressWheelFrameFilename, "Progress wheel frame", 36, 36, NULL, frame, progressWheelImages);
+        bool loadSuccess = loadThemeImage(themePath, progressWheelFrameFilename, "Progress wheel frame", 36, 36, NULL, frame, progressWheelImages);
         if (loadSuccess) {
             numProgressWheelImages++;
         }
@@ -280,20 +210,13 @@ void initThemeImages() {
 
 void loadSplashImages() {
     char * themePath = currentThemePath();
-    char path[128];
 
-    sprintf(path, "%ssplashtop.png", themePath);
-    if(!loadThemeImage(path, "Top splash screen", 400, 240, NULL, themeImageSplashTop, themeImages)) {
-		char emergencyPath[128];
-		sprintf(emergencyPath, "%ssplashtop.png", defaultThemePath);
-		loadThemeImage(emergencyPath, "Top splash screen", 400, 240, NULL, themeImageSplashTop, themeImages);
+    if(!loadThemeImage(themePath, "splashtop.png", "Top splash screen", 400, 240, NULL, themeImageSplashTop, themeImages)) {
+		loadThemeImage(defaultThemePath, "splashtop.png", "Top splash screen", 400, 240, NULL, themeImageSplashTop, themeImages);
 	}
 
-    sprintf(path, "%ssplashbottom.png", themePath);
-    if(!loadThemeImage(path, "Bottom splash screen", 320, 240, NULL, themeImageSplashBottom, themeImages)) {
-		char emergencyPath[128];
-		sprintf(emergencyPath, "%ssplashbottom.png", defaultThemePath);
-		loadThemeImage(emergencyPath, "Bottom splash screen", 320, 240, NULL, themeImageSplashBottom, themeImages);
+    if(!loadThemeImage(themePath, "splashbottom.png", "Bottom splash screen", 320, 240, NULL, themeImageSplashBottom, themeImages)) {
+		loadThemeImage(defaultThemePath, "splashbottom.png", "Bottom splash screen", 320, 240, NULL, themeImageSplashBottom, themeImages);
 	}
 
     free(themePath);

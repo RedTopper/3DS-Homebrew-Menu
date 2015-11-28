@@ -181,7 +181,7 @@ rgbColour * titleTextColour() {
     return colourForKey("titleTextColour");
 }
 
-void saveColourDefault(rgbColour *colour) {
+void saveColour(rgbColour * colour, bool setToDefault) {
     char * key = colour->key;
     int len = strlen(key) + 2;
 
@@ -194,27 +194,21 @@ void saveColourDefault(rgbColour *colour) {
     char blueKey[len];
     sprintf(blueKey, "%sB", key);
 
-    setConfigInt(redKey, -1, configTypeTheme);
-    setConfigInt(greenKey, -1, configTypeTheme);
-    setConfigInt(blueKey, -1, configTypeTheme);
-}
-
-void saveColour(rgbColour * colour) {
-    char * key = colour->key;
-    int len = strlen(key) + 2;
-
-    char redKey[len];
-    sprintf(redKey, "%sR", key);
-
-    char greenKey[len];
-    sprintf(greenKey, "%sG", key);
-
-    char blueKey[len];
-    sprintf(blueKey, "%sB", key);
+    if (setToDefault) {
+        colour->r = -1;
+        colour->g = -1;
+        colour->b = -1;
+    }
 
     setConfigInt(redKey, colour->r, configTypeTheme);
     setConfigInt(greenKey, colour->g, configTypeTheme);
     setConfigInt(blueKey, colour->b, configTypeTheme);
+
+    if (setToDefault) {
+        colour->r = colour->defR;
+        colour->g = colour->defG;
+        colour->b = colour->defB;
+    }
 }
 
 void checkRedrawGraphics(rgbColour * changedColour) {
@@ -229,16 +223,6 @@ void checkRedrawGraphics(rgbColour * changedColour) {
     else if (changedColour == inactiveColour()) {
         alphaImagesDrawn = false;
     }
-}
-
-void setColourToDefault(rgbColour * colour) {
-    colour->r = colour->defR;
-    colour->g = colour->defG;
-    colour->b = colour->defB;
-
-    saveColourDefault(colour);
-
-    checkRedrawGraphics(colour);
 }
 
 void addSlider(int xPos, char * shortText1, buttonList *aButtonList) {
@@ -316,7 +300,8 @@ void drawColourAdjuster() {
         if (hidKeysUp()&KEY_TOUCH) {
             if (btnTouchWithin(previousTouchX, previousTouchY, &defaultButton)) {
                 defaultButton.highlighted = false;
-                setColourToDefault(settingsColour);
+                saveColour(settingsColour, true);
+                checkRedrawGraphics(settingsColour);
             }
         }
     }

@@ -24,8 +24,7 @@ rgbColour * lightTextColour();
 rgbColour * darkTextColour();
 rgbColour * titleTextColour();
 
-void setColourToDefault(rgbColour * colour);
-void saveColour(rgbColour * colour);
+void saveColour(rgbColour * colour, bool setToDefault);
 void drawColourAdjuster();
 void handleColourSelectMenuSelection();
 void initColourSelectMenu();

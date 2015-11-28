@@ -85,8 +85,8 @@ extern bool randomiseThemeOnWake;
 #define ENTRY_BGCOLOR (u8[]){246, 252, 255}
 #define ENTRY_BGCOLOR_SHADOW (u8[]){34, 153, 183}
 
-#define fptToInt(v) ((v)>>10)
-#define intToFpt(v) ((v)<<10)
+//#define fptToInt(v) ((v)>>10)
+//#define intToFpt(v) ((v)<<10)
 
 #define transitionDirectionLeft 10
 #define transitionDirectionRight 20

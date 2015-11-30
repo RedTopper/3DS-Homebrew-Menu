@@ -51,7 +51,6 @@ char HansArg[ENTRY_PATHLENGTH+1];
 static enum
 {
 	HBMENU_DEFAULT,
-	HBMENU_REGIONFREE,
 	HBMENU_TITLESELECT,
 	HBMENU_TITLETARGET_ERROR,
 	HBMENU_NETLOADER_ACTIVE,
@@ -202,14 +201,14 @@ void renderFrame()
     gfxFillColor(GFX_TOP, GFX_LEFT, (u8[]){bgc->r, bgc->g, bgc->b});
 
     //Wallpaper
-    if (themeImageExists(themeImageTopWallpaperInfo) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || menuStatus == menuStatusHansMissingError || menuStatus == menuStatusBootOptions || hbmenu_state == HBMENU_NETLOADER_ACTIVE || hbmenu_state == HBMENU_TITLETARGET_ERROR || showRebootMenu || !sdmcCurrent)) {
+    if (themeImageExists(themeImageTopWallpaperInfo) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || menuStatus == menuStatusHansMissingError || menuStatus == menuStatusBootOptions || hbmenu_state == HBMENU_NETLOADER_ACTIVE || hbmenu_state == HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2 || hbmenu_state == HBMENU_TITLETARGET_ERROR || showRebootMenu || !sdmcCurrent)) {
         drawThemeImage(themeImageTopWallpaperInfo, GFX_TOP, 0, 0);
     }
     else if (themeImageExists(themeImageTopWallpaper)) {
         drawThemeImage(themeImageTopWallpaper, GFX_TOP, 0, 0);
     }
 
-    if (themeImageExists(themeImageBottomWallpaperNonGrid) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || menuStatus == menuStatusHansMissingError || menuStatus == menuStatusBootOptions || hbmenu_state == HBMENU_NETLOADER_ACTIVE || hbmenu_state == HBMENU_TITLETARGET_ERROR || showRebootMenu || !sdmcCurrent)) {
+    if (themeImageExists(themeImageBottomWallpaperNonGrid) && ((menuStatus == menuStatusHelp && showingHelpDetails) || menuStatus == menuStatusColourAdjust || menuStatus == menuStatusTranslucencyTop || menuStatus == menuStatusTranslucencyBottom || menuStatus == menuStatusPanelSettingsTop || menuStatus == menuStatusPanelSettingsBottom || menuStatus == menuStatusHansMissingError || menuStatus == menuStatusBootOptions || hbmenu_state == HBMENU_NETLOADER_ACTIVE || hbmenu_state == HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2 || hbmenu_state == HBMENU_TITLETARGET_ERROR || showRebootMenu || !sdmcCurrent)) {
         drawThemeImage(themeImageBottomWallpaperNonGrid, GFX_BOTTOM, 0, 0);
     }
 
@@ -291,15 +290,6 @@ void renderFrame()
             drawAlert("NetLoader", bof, NULL, 0, NULL);
         }else if(hbmenu_state == HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2){
             drawAlert("NetLoader", "The NetLoader is currently unavailable. :( This might be normal and fixable. Try and enable it ?\n\nA : Yes\nB : No\n", NULL, 0, NULL);
-        }else if(hbmenu_state == HBMENU_REGIONFREE){
-            if(regionFreeGamecardIn)
-            {
-                drawMenuEntry(&gamecardMenuEntry, GFX_BOTTOM, true, &menu, 0, 0, false);
-
-                drawAlert("Region free launcher", "The region free launcher is ready to run your out-of-region gamecard !\n\nA : Play\nB : Cancel", NULL, 0, NULL);
-            }else{
-                drawAlert("Region free launcher", "The region free loader cannot detect a gamecard in the slot.\nPlease insert a gamecard in your console before continuing.\n\nB : Cancel\n", NULL, 0, NULL);
-            }
         }else if(hbmenu_state == HBMENU_TITLESELECT){
 
             if (updateGrid(&titleMenu)) {
@@ -924,14 +914,6 @@ int main(int argc, char *argv[])
 					netloader_boot = true;
 					break;
 				}
-			}
-		}else if(hbmenu_state == HBMENU_REGIONFREE){
-			if(hidKeysDown()&KEY_B){
-				hbmenu_state = HBMENU_DEFAULT;
-			}else if(hidKeysDown()&KEY_A && regionFreeGamecardIn)
-			{
-				// region free menu entry is selected so we can just break out like updateMenu() normally would
-				break;
 			}
 		}else if(hbmenu_state == HBMENU_TITLETARGET_ERROR){
 			if(hidKeysDown()&KEY_B){
